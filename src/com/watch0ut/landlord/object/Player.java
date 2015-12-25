@@ -1,0 +1,318 @@
+package com.watch0ut.landlord.object;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.watch0ut.landlord.object.cardtype.*;
+
+/**
+ * Created by GreatYYX on 14-10-10.
+ *
+ * 玩家，除自身属性外，包含自身的牌以及牌合法性判定操作
+ */
+public class Player {
+
+    int id_;
+    Table.POSITION position_;
+    int tribute_;//0为不供不收，大于0为收（1，2，3，6），小于0为贡（-1，-2，-3，-6）
+
+    String name_;
+    int score_;
+
+    enum ROLE {
+        Landlord3A, Landlord3, LandlordA, Farmer
+    }
+    ROLE role_;
+
+    enum STATUS {
+        Idle,       //空闲
+        Seated,     //入坐
+        Ready,      //准备
+        Play,       //出牌
+        Wait,       //等待出牌
+        Finish      //结束
+    }
+    STATUS status_;
+
+    private List<Card> cards_ = new ArrayList<Card>();
+
+
+    public Player(int id) {
+        id_ = id;
+        status_ = STATUS.Idle;
+    }
+
+    public int getId() {
+        return id_;
+    }
+
+    public List<Card> getCards() {
+        return cards_;
+    }
+
+    /**
+     * 整组用户牌设置，仅在发牌时调用
+     * 并完成用户角色判定
+     * @param cards
+     * @return 角色
+     */
+    public ROLE setCards(List<Card> cards) {
+        sortPointFirst(cards);
+        this.cards_ = cards;
+
+        //确定角色
+        Card spade3 = Card.getSpade3();
+        Card spadeA = Card.getSpadeA();
+        if (cards_.contains(spade3) && cards_.contains(spadeA)) {
+            role_ = ROLE.Landlord3A;
+        } else if (cards_.contains(spade3)) {
+            role_ = ROLE.Landlord3;
+        } else if (cards_.contains(spadeA)) {
+            role_ = ROLE.LandlordA;
+        } else {
+            role_ = ROLE.Farmer;
+        }
+
+        return role_;
+    }
+
+    /**
+     * 添加牌
+     */
+    public boolean addCards(List<Card> cards) {
+        return cards_.addAll(cards);
+    }
+
+    /**
+     * 移除牌
+     */
+    public boolean removeCards(List<Card> cards) {
+        if(cards_.containsAll(cards)) {
+            return cards.removeAll(cards);
+        }
+        return false;
+    }
+
+    /**
+     * 获取贡牌
+     * @return 所贡的牌
+     */
+    public Map<Card, Player> getTributeCards() {
+
+        if(tribute_ >= 0) {
+            return null;
+        }
+
+        Card spade3 = Card.getSpade3();
+        Card spadeA = Card.getSpadeA();
+        Map<Card, Player> tribMap = new TreeMap<Card, Player>();
+        int times = Math.abs(tribute_);
+        int pos = cards_.size() - 1;
+
+        while(times > 0) {
+            Card card = cards_.get(pos);
+            //跳过身份牌
+            if(card.equals(spade3) || card.equals(spadeA)) {
+                continue;
+            }
+            //填充
+            tribMap.put(card, this);
+            cards_.remove(pos);
+            times--;
+        }
+
+        return tribMap;
+    }
+
+    public ROLE getRole() {
+        return role_;
+    }
+
+    public void setTribute(int tribute) {
+        tribute_ = tribute_;
+    }
+
+    public int getTribute() {
+        return tribute_;
+    }
+
+    public int getScore() {
+        return score_;
+    }
+
+    public void setScore(int score) {
+        score_ = score_;
+    }
+
+    public Table.POSITION getPosition() {
+        return position_;
+    }
+
+    public void setPosition(Table.POSITION position) {
+        position_ = position;
+    }
+
+    public STATUS getStatus() {
+        return status_;
+    }
+
+    public void setStatus(STATUS status) {
+        status_ = status;
+    }
+
+    /**
+     * 出牌
+     * @param leftType 上家的牌
+     * @param cards 需要出的牌
+     * @return 合法则返回实例化的CardType对象，否则返回null
+     */
+    public CardType play(CardType leftType, List<Card> cards) {
+
+        CardType currType = findType(cards);
+        if(currType == null) {
+            return null;
+        }
+
+        //判断和上家类型是否相同
+        if (((leftType instanceof One) && (currType instanceof One)) ||
+                ((leftType instanceof Two) && (currType instanceof Two)) ||
+                ((leftType instanceof Three) && (currType instanceof Three)) ||
+                ((leftType instanceof Five) && (currType instanceof Five))) {
+
+            //牌面大于上家
+            if(currType.compareTo(leftType) > 0) {
+                if(removeCards(cards)) {
+                    return currType;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 判断出牌类型是否合法并格式化牌类型
+     * @param cards
+     * @param first 第一次出牌则为true，其余皆为false
+     * @return 合法则返回实例化的CardType对象，否则返回null
+     */
+    private CardType findType(List<Card> cards, boolean first) {
+
+        int len = cards.size();
+        CardType cardType = null;
+
+        //第一次出牌需要含有方片4
+        Card diamond4 = Card.getDiamond4();
+        if(first) {
+            if(!cards.contains(diamond4))
+                return null;
+        }
+
+        switch (len) {
+            case 0:
+                return null;
+            case 1:
+                if (One.isValid(cards)) {
+                    cardType = new One(cards);
+                }
+                break;
+            case 2:
+                sortPointFirst(cards);
+                if (Two.isValid(cards)) {
+                    cardType = new Two(cards);
+                }
+                break;
+            case 3:
+                sortPointFirst(cards);
+                if (Three.isValid(cards)) {
+                    cardType = new Three(cards);
+                }
+                break;
+            case 5:
+                sortPointFirst(cards);
+                if (Five.isValid(cards)) {
+                    cardType = new Five(cards);
+                }
+        }
+
+        return cardType;
+    }
+
+    /**
+     * findType方法重载，供非第一次出牌使用
+     * @param cards
+     * @return
+     */
+    private CardType findType(List<Card> cards) {
+        return findType(cards, false);
+    }
+
+    /**
+     * 点数优先排序
+     * @param cards
+     */
+    private void sortPointFirst(List<Card> cards) {
+        if(cards.size() <= 1) {
+            return;
+        }
+
+        Collections.sort(cards, new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                Card c1 = (Card) o1;
+                Card c2 = (Card) o2;
+                if (c1.equals(c2)) {
+                    return 0;
+                }
+
+                if (c1.getPoint() > c2.getPoint()) {
+                    return 1;
+                } else if (c1.getPoint() < c2.getPoint()) {
+                    return -1;
+                } else { //c1.getPoint == c2.getPoint
+                    if (c1.getSuit() > c2.getSuit()) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 花色优先排序
+     * @param cards
+     */
+    private void sortSuitFirst(List<Card> cards) {
+        if(cards.size() <= 1) {
+            return;
+        }
+
+        Collections.sort(cards, new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                Card c1 = (Card) o1;
+                Card c2 = (Card) o2;
+                if (c1.equals(c2)) {
+                    return 0;
+                }
+
+                if (c1.getSuit() > c2.getSuit()) {
+                    return 1;
+                } else if (c1.getSuit() < c2.getSuit()) {
+                    return -1;
+                } else {
+                    if (c1.getPoint() > c2.getPoint()) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            }
+        });
+    }
+}
