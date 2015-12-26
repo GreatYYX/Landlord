@@ -4,6 +4,7 @@ import com.watch0ut.landlord.Configuration;
 import com.watch0ut.landlord.command.AbstractCommand;
 import com.watch0ut.landlord.command.concrete.LoginCommand;
 import com.watch0ut.landlord.command.concrete.LogoutCommand;
+import com.watch0ut.landlord.command.concrete.TextCommand;
 import com.watch0ut.landlord.protocol.WProtocolFactory;
 import org.apache.mina.core.RuntimeIoException;
 import org.apache.mina.core.future.ConnectFuture;
@@ -48,8 +49,8 @@ public class WClient {
     public void disconnect() {
         if (session_ != null) {
             session_.getCloseFuture().awaitUninterruptibly();
-            connector_.dispose();
 //            session_.close(false).awaitUninterruptibly(Configuration.CLIENT_CONNECT_TIMEOUT);
+            connector_.dispose();
             session_ = null;
         }
     }
@@ -69,6 +70,8 @@ public class WClient {
         client.connect();
 
         AbstractCommand cmd = new LoginCommand("yyx", "123456");
+        client.sendCommand(cmd);
+        cmd = new TextCommand("yyx", "hello everyone");
         client.sendCommand(cmd);
         cmd = new LogoutCommand();
         client.sendCommand(cmd);

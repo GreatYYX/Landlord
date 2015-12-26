@@ -2,6 +2,8 @@ package com.watch0ut.landlord.command;
 
 /**
  * Created by GreatYYX on 14-10-20.
+ *
+ * 所有实例类必须存在无参数构造（用于工厂方法）
  */
 public abstract class AbstractCommand {
 

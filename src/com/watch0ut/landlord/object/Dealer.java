@@ -11,42 +11,53 @@ import java.util.Iterator;
  * Created by GreatYYX on 14-10-10.
  *
  * 荷官，负责发牌洗牌判赢等操作
- * 只记录当前一轮的数据，不保留其他状态
+ * 只记录上一轮及当前一轮的数据，不保留其他状态
  */
 public class Dealer {
 
+    //本轮
     List<Card> deck_; //一副牌无大小王共52张
-    Map<Card, Player> tributeMap_; //贡牌堆
-    //Map<Player, Card> revertMap_; //还牌堆
-    int finishCount_; //已经逃出的玩家数量
     int lordCount_; //地主数量
     List<Player> finishLord_; //已逃出地主
     List<Player> finishFarmer_; //已逃出农民
+    int finishCount_; //已经逃出的玩家数量
 
-    Table table_;
+    //上一轮
+//    Map<Card, Player> tributeMap_; //贡牌堆
+//    Map<Player, Card> revertMap_; //还牌堆
+    int[] finishSequence_ = new int[]{-1, -1, -1, -1};//逃出顺序,-1,0,1,2,3，从0开始
+//    int[] chooseTributeSequence_ = new int[]{-1, -1, -1, -1};//选择贡牌顺序，-1不选
+//    int[] chooseRevertSequence_ = new int[]{-1, -1, -1, -1};//选择还牌顺序，-1不选
+    int[] tributeCount_ = new int[]{0, 0, 0, 0};//0为不供不收，大于0为收（1，2，3，6），小于0为贡（-1，-2，-3，-6）
+
     List<Player> playerList_; //table中的playerlist指针
 
-    public void Dealer(Table table) {
-        setTable(table);
-        init();
+    public Dealer() {
     }
 
-    public void setTable(Table table) {
-        table_ = table;
-        playerList_ = table_.getPlayerList();
+    public void setPlayerList(List<Player> players) {
+        playerList_ = players;
     }
 
     /**
      * 每局初始化
      */
-    public void init() {
+    public void roundInit() {
         deck_ = new ArrayList<Card>();
-        tributeMap_ = new TreeMap<Card, Player>();//利用TreeMap自动对Card排序
-        //revertMap_ = new HashMap<Player, Card>();
+//        tributeMap_ = new TreeMap<Card, Player>();//利用TreeMap自动对Card排序
+//        revertMap_ = new HashMap<Player, Card>();
         finishCount_ = 0;
         lordCount_ = 0;
         finishLord_ = new ArrayList<Player>();
         finishFarmer_ = new ArrayList<Player>();
+    }
+
+    /**
+     * Table发生变动后重置历史状态
+     */
+    public void reset() {
+        finishSequence_ = new int[]{-1, -1, -1, -1};
+        tributeCount_ = new int[]{0, 0, 0, 0};
     }
 
     /**
@@ -94,8 +105,8 @@ public class Dealer {
      * 玩家结束
      */
     public void playerFinish(Player player) {
-        table_.setFinishSequence(player, finishCount_);
-        player.setStatus(Player.STATUS.Finish);
+        finishSequence_[player.getTablePosition()] = finishCount_;
+        player.setState(Player.STATE.Finish);
         finishCount_++;
 
         Player.ROLE currRole = player.getRole();
@@ -129,16 +140,16 @@ public class Dealer {
         //补全逃出顺序，并列
         for(int i = 0; i < 4; i++) {
             Player currPlayer = playerList_.get(i);
-            if(!currPlayer.getStatus().equals(Player.STATUS.Finish)) {
-                table_.setFinishSequence(currPlayer, finishCount_);
-                currPlayer.setStatus(Player.STATUS.Finish);
+            if(!currPlayer.getState().equals(Player.STATE.Finish)) {
+                finishSequence_[currPlayer.getTablePosition()] = finishCount_;
+                currPlayer.setState(Player.STATE.Finish);
             }
         }
 
         //判定胜利方，是否需要贡牌
         int lordTribute = 0, farmerTribute = 0;
         if(lordCount_ == 1) {
-            int seq = table_.getFinishSequence(finishLord_.get(0));
+            int seq = finishSequence_[finishLord_.get(0).getTablePosition()];
             switch(seq) {
                 case 0: //农民每人2贡张，地主胜
                     lordTribute = 6;
@@ -159,8 +170,8 @@ public class Dealer {
         }
         else if(lordCount_ == 2) {
             //seq1一定早于seq2
-            int seq1 = table_.getFinishSequence(finishLord_.get(0));
-            int seq2 = table_.getFinishSequence(finishLord_.get(1));
+            int seq1 = finishSequence_[finishLord_.get(0).getTablePosition()];
+            int seq2 = finishSequence_[finishLord_.get(1).getTablePosition()];
 
             //12地33农，地主胜，农民每人贡2张
             if(seq1 == 0 && seq2 == 1) {
@@ -190,15 +201,15 @@ public class Dealer {
             }
         }
 
-        //记录贡牌
+        //记录下一轮贡牌数量
         Iterator<Player> iter;
         iter = finishLord_.iterator();
         while(iter.hasNext()) {
-            iter.next().setTribute(lordTribute);
+            tributeCount_[iter.next().getTablePosition()] = lordTribute;
         }
         iter = finishFarmer_.iterator();
         while(iter.hasNext()) {
-            iter.next().setTribute(farmerTribute);
+            tributeCount_[iter.next().getTablePosition()] = farmerTribute;
         }
     }
 
@@ -206,52 +217,52 @@ public class Dealer {
      * 贡牌（自动）
      * 并确定选取贡牌及选取还牌的顺序
      */
-    public void tribute() {
-        tributeMap_.clear();
-        Map<Integer, Player> chooseSeq = new TreeMap<Integer, Player>();
-        Iterator iter;
-        int tribPlayerNum = 0; //贡牌玩家数
-
-        for(int i = 0; i < 4; i++) {
-            Player currPlayer = playerList_.get(i);
-            //需要贡牌则获取贡牌
-            if(currPlayer.getTribute() < 0) {
-                tributeMap_.putAll(currPlayer.getTributeCards());
-                tribPlayerNum++;
-            }
-            //不需要贡牌则取出上一盘的逃出顺序
-            //将顺序存在TreeMap中自动重新排序
-            else {
-                int seqTribute = table_.getFinishSequence(currPlayer);
-                chooseSeq.put(new Integer(seqTribute), currPlayer);
-            }
-        }
-
-        //填充收取贡牌顺序
-        iter = chooseSeq.entrySet().iterator();
-        int seqTribute = 0;
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-
-            Player currPlayer = (Player)entry.getValue();
-            table_.setChooseTributeSequence(currPlayer, seqTribute);
-            seqTribute++;
-        }
-
-        //计算并填充选取还牌顺序
-        //tributeMap会按照Card大小正向排序，因此反向设置顺序
-        iter = tributeMap_.entrySet().iterator();
-        int seqRevert = tribPlayerNum;
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-
-            Player currPlayer = (Player)entry.getValue();
-            if(table_.getChooseRevertSequence(currPlayer) == -1) {
-                table_.setChooseRevertSequence(currPlayer, seqRevert);
-                seqRevert--;
-            }
-        }
-    }
+//    public void tribute() {
+//        tributeMap_.clear();
+//        Map<Integer, Player> chooseSeq = new TreeMap<Integer, Player>();
+//        Iterator iter;
+//        int tribPlayerNum = 0; //贡牌玩家数
+//
+//        for(int i = 0; i < 4; i++) {
+//            Player currPlayer = playerList_.get(i);
+//            //需要贡牌则获取贡牌
+//            if(currPlayer.getTribute() < 0) {
+//                tributeMap_.putAll(currPlayer.getTributeCards());
+//                tribPlayerNum++;
+//            }
+//            //不需要贡牌则取出上一盘的逃出顺序
+//            //将顺序存在TreeMap中自动重新排序
+//            else {
+//                int seqTribute = table_.getFinishSequence(currPlayer);
+//                chooseSeq.put(new Integer(seqTribute), currPlayer);
+//            }
+//        }
+//
+//        //填充收取贡牌顺序
+//        iter = chooseSeq.entrySet().iterator();
+//        int seqTribute = 0;
+//        while (iter.hasNext()) {
+//            Map.Entry entry = (Map.Entry) iter.next();
+//
+//            Player currPlayer = (Player)entry.getValue();
+//            table_.setChooseTributeSequence(currPlayer, seqTribute);
+//            seqTribute++;
+//        }
+//
+//        //计算并填充选取还牌顺序
+//        //tributeMap会按照Card大小正向排序，因此反向设置顺序
+//        iter = tributeMap_.entrySet().iterator();
+//        int seqRevert = tribPlayerNum;
+//        while (iter.hasNext()) {
+//            Map.Entry entry = (Map.Entry) iter.next();
+//
+//            Player currPlayer = (Player)entry.getValue();
+//            if(table_.getChooseRevertSequence(currPlayer) == -1) {
+//                table_.setChooseRevertSequence(currPlayer, seqRevert);
+//                seqRevert--;
+//            }
+//        }
+//    }
 
     /**
      * 生成[min,max)的随机数

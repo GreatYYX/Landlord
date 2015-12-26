@@ -12,79 +12,85 @@ import java.util.ArrayList;
  */
 public class Table {
 
-    public enum POSITION { Top, Right, Bottom, Left };
+    public static final int UNSEATED = -1;
+    public static final int BOTTOM = 0;
+    public static final int LEFT = 1;
+    public static final int TOP = 2;
+    public static final int RIGHT = 3;
 
-    private List<Player> playerList_;
-    private boolean needTribute_; //新桌第一轮不考虑tribute
+    private int id_;
+    private Player[] players_ = new Player[]{null, null, null, null};
+    private int playerCount_ = 0; //player数量
+    private int roundCount_ = 0; //局数
+    private int[] scores_ = new int[]{0, 0, 0, 0}; //累计比分（index为座位POSITION）
+    private Dealer dealer_;
 
-    //当有Player改变以下数据恢复默认
-    int count_ = 0; //局数
-    int[] finishSequence_ = {-1, -1, -1, -1};//逃出顺序,-1,0,1,2,3，从0开始
-    int[] chooseTributeSequence_ = {-1, -1, -1, -1};//选择贡牌顺序，-1不选
-    int[] chooseRevertSequence_ = {-1, -1, -1, -1};//选择还牌顺序，-1不选
-
-    public Table() {
-        init();
-        playerList_ = new ArrayList<Player>();
-    }
-
-    public void init() {
-        count_ = 0;
-        needTribute_ = false;
-        for(int i = 0; i < 4; i++) {
-            finishSequence_[i] = -1;
-            chooseTributeSequence_[i] = -1;
-            chooseRevertSequence_[i] = -1;
-        }
-    }
-
-    public void setPosition(Player player, POSITION pos) {
-        playerList_.add(player);
-        player.setPosition(pos);
-    }
-
-    POSITION getPosition(Player player) {
-        return player.getPosition();
+    public Table(int id, Dealer dealer) {
+        id_ = id;
+        dealer_ = dealer;
     }
 
     /**
-     * 设置逃出顺序
-     * @param player
-     * @param seq [0,4)，同时逃出则数字相同
+     * 重置，当有player入座或离开后需执行
+     * 仅更新统计信息
      */
-    public void setFinishSequence(Player player, int seq) {
-        finishSequence_[playerList_.indexOf(player)] = seq;
+    public void reset() {
+        roundCount_ = 0;
+        scores_ = new int[]{0, 0, 0, 0};
+        dealer_.reset();
     }
 
-    public int getFinishSequence(Player player) {
-        return finishSequence_[playerList_.indexOf(player)];
+    /**
+     * 入座
+     * @param player
+     * @param pos
+     * @return
+     */
+    public boolean seat(Player player, int pos) {
+        //已有用户则无法占座
+        if(players_[pos] != null) {
+            return false;
+        }
+        //入座
+        players_[pos] = player;
+        player.setTablePosition(pos);
+        player.setTableId(id_);
+        player.setState(Player.STATE.Seated);
+        playerCount_++;
+        reset();
+        return true;
     }
 
-    public int getChooseTributeSequence(Player player) {
-        return chooseTributeSequence_[playerList_.indexOf(player)];
+    /**
+     * 离开座位
+     * @param player
+     * @param pos
+     * @return
+     */
+    public boolean unseat(Player player, int pos) {
+        //空座和非自己座位无法离开座位
+        if(players_[pos] == null || players_[pos] != player) {
+            return false;
+        }
+        //离开
+        players_[pos] = null;
+        player.setTablePosition(UNSEATED);
+        player.setTableId(-1);
+        player.setState(Player.STATE.Idle);
+        playerCount_--;
+        reset();
+        return true;
     }
 
-    public void setChooseTributeSequence(Player player, int seq) {
-        chooseTributeSequence_[playerList_.indexOf(player)] = seq;
+    public Player getPlayer(int pos) {
+        return players_[pos];
     }
 
-    public int getChooseRevertSequence(Player player) {
-        return chooseRevertSequence_[playerList_.indexOf(player)];
+    public Dealer getDealer() {
+        return dealer_;
     }
 
-    public void setChooseRevertSequence(Player player, int seq) {
-        chooseRevertSequence_[playerList_.indexOf(player)] = seq;
-    }
-
-    public int getCount() {
-        return count_;
-    }
-
-    public void setCount(int count) {
-        count_ = count;
-    }
-
-    public List<Player> getPlayerList() {
-        return playerList_;
+    public int getId() {
+        return id_;
     }
 }

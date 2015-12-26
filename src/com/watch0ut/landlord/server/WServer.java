@@ -33,17 +33,18 @@ public class WServer {
         acceptor_.getFilterChain().addLast("logger", new LoggingFilter());
         acceptor_.getFilterChain().addLast("protocol", new ProtocolCodecFilter(new WProtocolFactory()));
         acceptor_.setHandler(createIoHandler());
+//        acceptor_.setHandler(new WServerHandler());
     }
 
     private static IoHandler createIoHandler() {
         StateMachine sm = StateMachineFactory.getInstance(
-                IoHandlerTransition.class).create(WServerHandler.NOT_CONNECTED,
-                new WServerHandler());
+                IoHandlerTransition.class).create(WServerHandlerSM.NOT_CONNECTED,
+                new WServerHandlerSM());
 
         return new StateMachineProxyBuilder().setStateContextLookup(
                 new IoSessionStateContextLookup(new StateContextFactory() {
                     public StateContext create() {
-                        return new WServerHandler.WServerContext();
+                        return new WServerHandlerSM.WServerContext();
                     }
                 })).create(IoHandler.class, sm);
     }

@@ -17,10 +17,23 @@ public class TextCommand extends AbstractCommand {
     private static final char REPLACE_CHAR = '*';
     private static final String[] BLOCK_LIST = {"TMD", "TNND"};
 
-    private String text_;
+    private String text_ = "";
+    private String sender_ = ""; //消息发送者
 
     public TextCommand() {
-        text_ = "";
+    }
+
+    public TextCommand(String sender, String text) {
+        sender_ = sender;
+        text_ = text;
+    }
+
+    public String getSender() {
+        return sender_;
+    }
+
+    public String getText() {
+        return text_;
     }
 
     @Override

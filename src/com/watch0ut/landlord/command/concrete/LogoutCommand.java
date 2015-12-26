@@ -4,6 +4,10 @@ import com.watch0ut.landlord.command.AbstractCommand;
 
 /**
  * Created by GreatYYX on 12/25/15.
+ *
+ * server<-client
+ * 玩家退出
+ *
  */
 public class LogoutCommand extends AbstractCommand {
     public LogoutCommand() {

@@ -1,6 +1,7 @@
 import com.watch0ut.landlord.command.AbstractCommand;
 import com.watch0ut.landlord.command.concrete.TextCommand;
 import com.watch0ut.landlord.object.Dealer;
+import com.watch0ut.landlord.object.Hall;
 import com.watch0ut.landlord.object.Player;
 import com.watch0ut.landlord.object.Table;
 
@@ -8,18 +9,18 @@ public class TestMain {
 
     public static void main(String[] args) {
 	// write your code here
-        Table tab = new Table();
-        tab.setPosition(new Player(0), Table.POSITION.Top);
-        tab.setPosition(new Player(1), Table.POSITION.Right);
-        tab.setPosition(new Player(2), Table.POSITION.Bottom);
-        tab.setPosition(new Player(3), Table.POSITION.Left);
+        Hall hall = new Hall();
+        hall.getTable(0).seat(new Player(0), Table.TOP);
+        hall.getTable(0).seat(new Player(0), Table.LEFT);
+        hall.getTable(0).seat(new Player(0), Table.RIGHT);
+        hall.getTable(0).seat(new Player(0), Table.BOTTOM);
 
-        Dealer dealer = new Dealer();
-        dealer.setTable(tab);
-
-        dealer.init();
-        dealer.shuffle();
-        dealer.deal();
+//        Dealer dealer = new Dealer();
+//        dealer.setTable(tab);
+//
+//        dealer.init();
+//        dealer.shuffle();
+//        dealer.deal();
         //dealer.tribute();
 
 //        Card card = new Card(1, 1);

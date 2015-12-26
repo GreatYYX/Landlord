@@ -16,11 +16,12 @@ import com.watch0ut.landlord.object.cardtype.*;
  */
 public class Player {
 
-    int id_;
-    Table.POSITION position_;
-    int tribute_;//0为不供不收，大于0为收（1，2，3，6），小于0为贡（-1，-2，-3，-6）
+    private int id_;
+    private int tablePosition_ = -1;
+    private int tableId_ = -1;
 
     String name_;
+    String photo_;
     int score_;
 
     enum ROLE {
@@ -28,7 +29,7 @@ public class Player {
     }
     ROLE role_;
 
-    enum STATUS {
+    enum STATE {
         Idle,       //空闲
         Seated,     //入坐
         Ready,      //准备
@@ -36,18 +37,31 @@ public class Player {
         Wait,       //等待出牌
         Finish      //结束
     }
-    STATUS status_;
+    STATE state_;
 
     private List<Card> cards_ = new ArrayList<Card>();
 
-
     public Player(int id) {
         id_ = id;
-        status_ = STATUS.Idle;
+        state_ = STATE.Idle;
+        tablePosition_ = -1;
+        tableId_ = -1;
     }
 
     public int getId() {
         return id_;
+    }
+
+    /**
+     * 基础player信息
+     * @return
+     */
+    public Player getBasicPlayer() {
+        Player player = new Player(id_);
+        player.setName(name_);
+        player.setPhoto(photo_);
+        player.setState(state_);
+        return player;
     }
 
     public List<Card> getCards() {
@@ -101,43 +115,52 @@ public class Player {
      * 获取贡牌
      * @return 所贡的牌
      */
-    public Map<Card, Player> getTributeCards() {
+//    public Map<Card, Player> getTributeCards() {
+//
+//        if(tribute_ >= 0) {
+//            return null;
+//        }
+//
+//        Card spade3 = Card.getSpade3();
+//        Card spadeA = Card.getSpadeA();
+//        Map<Card, Player> tribMap = new TreeMap<Card, Player>();
+//        int times = Math.abs(tribute_);
+//        int pos = cards_.size() - 1;
+//
+//        while(times > 0) {
+//            Card card = cards_.get(pos);
+//            //跳过身份牌
+//            if(card.equals(spade3) || card.equals(spadeA)) {
+//                continue;
+//            }
+//            //填充
+//            tribMap.put(card, this);
+//            cards_.remove(pos);
+//            times--;
+//        }
+//
+//        return tribMap;
+//    }
 
-        if(tribute_ >= 0) {
-            return null;
-        }
 
-        Card spade3 = Card.getSpade3();
-        Card spadeA = Card.getSpadeA();
-        Map<Card, Player> tribMap = new TreeMap<Card, Player>();
-        int times = Math.abs(tribute_);
-        int pos = cards_.size() - 1;
+    public String getName() {
+        return name_;
+    }
 
-        while(times > 0) {
-            Card card = cards_.get(pos);
-            //跳过身份牌
-            if(card.equals(spade3) || card.equals(spadeA)) {
-                continue;
-            }
-            //填充
-            tribMap.put(card, this);
-            cards_.remove(pos);
-            times--;
-        }
+    public void setName(String name) {
+        name_ = name;
+    }
 
-        return tribMap;
+    public String getPhoto() {
+        return photo_;
+    }
+
+    public void setPhoto(String photo) {
+        photo_ = photo;
     }
 
     public ROLE getRole() {
         return role_;
-    }
-
-    public void setTribute(int tribute) {
-        tribute_ = tribute_;
-    }
-
-    public int getTribute() {
-        return tribute_;
     }
 
     public int getScore() {
@@ -148,20 +171,28 @@ public class Player {
         score_ = score_;
     }
 
-    public Table.POSITION getPosition() {
-        return position_;
+    public int getTablePosition() {
+        return tablePosition_;
     }
 
-    public void setPosition(Table.POSITION position) {
-        position_ = position;
+    public void setTablePosition(int position) {
+        tablePosition_ = position;
     }
 
-    public STATUS getStatus() {
-        return status_;
+    public int getTableId() {
+        return tableId_;
     }
 
-    public void setStatus(STATUS status) {
-        status_ = status;
+    public void setTableId(int tableId) {
+        this.tableId_ = tableId;
+    }
+
+    public STATE getState() {
+        return state_;
+    }
+
+    public void setState(STATE state) {
+        state_ = state;
     }
 
     /**
