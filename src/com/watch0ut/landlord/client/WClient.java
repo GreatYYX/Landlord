@@ -2,6 +2,7 @@ package com.watch0ut.landlord.client;
 
 import com.watch0ut.landlord.Configuration;
 import com.watch0ut.landlord.command.AbstractCommand;
+import com.watch0ut.landlord.command.concrete.DisconnectCommand;
 import com.watch0ut.landlord.command.concrete.LoginCommand;
 import com.watch0ut.landlord.command.concrete.LogoutCommand;
 import com.watch0ut.landlord.command.concrete.TextCommand;
@@ -48,6 +49,7 @@ public class WClient {
 
     public void disconnect() {
         if (session_ != null) {
+            sendCommand(new DisconnectCommand()); //退出前必须发送该指令让服务器主动关闭连接
             session_.getCloseFuture().awaitUninterruptibly();
 //            session_.close(false).awaitUninterruptibly(Configuration.CLIENT_CONNECT_TIMEOUT);
             connector_.dispose();

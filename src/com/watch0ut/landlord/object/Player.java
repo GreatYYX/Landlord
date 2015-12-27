@@ -20,16 +20,16 @@ public class Player {
     private int tablePosition_ = -1;
     private int tableId_ = -1;
 
-    String name_;
-    String photo_;
-    int score_;
+    private String name_;
+    private String photo_;
+    private int score_;
 
-    enum ROLE {
+    public enum ROLE {
         Landlord3A, Landlord3, LandlordA, Farmer
     }
-    ROLE role_;
+    private ROLE role_;
 
-    enum STATE {
+    public enum STATE {
         Idle,       //空闲
         Seated,     //入坐
         Ready,      //准备
@@ -37,7 +37,7 @@ public class Player {
         Wait,       //等待出牌
         Finish      //结束
     }
-    STATE state_;
+    private STATE state_;
 
     private List<Card> cards_ = new ArrayList<Card>();
 

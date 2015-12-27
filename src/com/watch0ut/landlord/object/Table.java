@@ -46,9 +46,11 @@ public class Table {
      * @param pos
      * @return
      */
-    public boolean seat(Player player, int pos) {
-        //已有用户则无法占座
-        if(players_[pos] != null) {
+    public boolean seat(Player player, int pos, Player playerBasic) {
+        //目标座位已有用户或自身已经为seated或ready状态则无法占座
+        if(players_[pos] != null ||
+            player.getState().equals(Player.STATE.Seated) ||
+            player.getState().equals(Player.STATE.Ready)) {
             return false;
         }
         //入座
@@ -58,6 +60,10 @@ public class Table {
         player.setState(Player.STATE.Seated);
         playerCount_++;
         reset();
+        //设置playerBasic
+        playerBasic.setTablePosition(pos);
+        playerBasic.setTableId(id_);
+        player.setState(Player.STATE.Seated);
         return true;
     }
 
@@ -67,18 +73,24 @@ public class Table {
      * @param pos
      * @return
      */
-    public boolean unseat(Player player, int pos) {
-        //空座和非自己座位无法离开座位
-        if(players_[pos] == null || players_[pos] != player) {
-            return false;
-        }
+    public boolean unseat(Player player, int pos, Player playerBasic) {
+        //空座，非自己座位，非seated和ready状态则无法离开座位
+//        if(players_[pos] == null || players_[pos] != player ||
+//            (!player.getState().equals(Player.STATE.Seated) &&
+//            !player.getState().equals(Player.STATE.Ready))) {
+//            return false;
+//        }
         //离开
         players_[pos] = null;
         player.setTablePosition(UNSEATED);
-        player.setTableId(-1);
+        player.setTableId(UNSEATED);
         player.setState(Player.STATE.Idle);
         playerCount_--;
         reset();
+        //设置playerBasic
+        playerBasic.setTablePosition(UNSEATED);
+        playerBasic.setTableId(UNSEATED);
+        player.setState(Player.STATE.Idle);
         return true;
     }
 
