@@ -31,7 +31,7 @@ public class Card {
     public int getSuit() { return suit_; }
 
     public String getCard() {
-        return SUIT[suit_] + " " + POINT[point_];
+        return SUIT[suit_] + "-" + POINT[point_];
     }
 
     public static Card getSpade3() {

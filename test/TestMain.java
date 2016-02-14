@@ -10,10 +10,10 @@ public class TestMain {
     public static void main(String[] args) {
 	// write your code here
         Hall hall = new Hall();
-        hall.getTable(0).seat(new Player(0), Table.TOP);
-        hall.getTable(0).seat(new Player(0), Table.LEFT);
-        hall.getTable(0).seat(new Player(0), Table.RIGHT);
-        hall.getTable(0).seat(new Player(0), Table.BOTTOM);
+//        hall.getTable(0).seat(new Player(0), Table.TOP);
+//        hall.getTable(0).seat(new Player(0), Table.LEFT);
+//        hall.getTable(0).seat(new Player(0), Table.RIGHT);
+//        hall.getTable(0).seat(new Player(0), Table.BOTTOM);
 
 //        Dealer dealer = new Dealer();
 //        dealer.setTable(tab);
