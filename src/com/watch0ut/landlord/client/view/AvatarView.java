@@ -1,4 +1,4 @@
-package com.watch0ut.landlord.view;
+package com.watch0ut.landlord.client.view;
 
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;

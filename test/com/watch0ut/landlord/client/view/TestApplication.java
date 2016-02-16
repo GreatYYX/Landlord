@@ -1,4 +1,4 @@
-package com.watch0ut.landlord.view;
+package com.watch0ut.landlord.client.view;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -20,8 +20,8 @@ public class TestApplication extends Application {
         CardView diamond4 = new CardView(0, 0);
         CardView smallRear = new CardView("Rear.png", true);
 
-        AvatarPane avatarPane3A = new AvatarPane(ActionView.LANDLORD_3A, "J.png");
-        AvatarPane avatarPane = new AvatarPane(0, "Q.png");
+        AvatarPane avatarPane3A = new AvatarPane(ActionView.LANDLORD_3A, "J.png", "Jack");
+        AvatarPane avatarPane = new AvatarPane(0, "Q.png", "Queen");
 
         FlowPane root = new FlowPane();
         root.getChildren().add(avatarView2);
