@@ -1,10 +1,10 @@
 package com.watch0ut.landlord.object;
 
+import com.watch0ut.landlord.object.cardtype.CardType;
+
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.Iterator;
 
 /**
@@ -20,7 +20,10 @@ public class Dealer {
     int lordCount_; //地主数量
     List<Player> finishLord_; //已逃出地主
     List<Player> finishFarmer_; //已逃出农民
+    Player firstPlayer_; //方片四持有玩家第一个出牌
     int finishCount_; //已经逃出的玩家数量
+    int playingPosition_; //目前出牌玩家位置
+    CardType[] lastPlayedCardType_ = new CardType[]{null, null, null, null}; //所有玩家上一次出的牌
 
     //上一轮
 //    Map<Card, Player> tributeMap_; //贡牌堆
@@ -30,13 +33,24 @@ public class Dealer {
 //    int[] chooseRevertSequence_ = new int[]{-1, -1, -1, -1};//选择还牌顺序，-1不选
     int[] tributeCount_ = new int[]{0, 0, 0, 0};//0为不供不收，大于0为收（1，2，3，6），小于0为贡（-1，-2，-3，-6）
 
-    List<Player> playerList_; //table中的playerlist指针
+    Table table_;
+    List<Player> playerList_;
 
     public Dealer() {
     }
 
+    public void setTable(Table table) {
+        if(table != null) {
+            table_ = table;
+        }
+    }
+
     public void setPlayerList(List<Player> players) {
         playerList_ = players;
+    }
+
+    public Player getFirstPlayer() {
+        return firstPlayer_;
     }
 
     /**
@@ -50,6 +64,8 @@ public class Dealer {
         lordCount_ = 0;
         finishLord_ = new ArrayList<Player>();
         finishFarmer_ = new ArrayList<Player>();
+        firstPlayer_ = null;
+        lastPlayedCardType_ = new CardType[]{null, null, null, null};
     }
 
     /**
@@ -86,19 +102,37 @@ public class Dealer {
      */
     public void deal() {
         for(int i = 0; i < 4; i++) {
+            //发牌
             List<Card> playerCards = new ArrayList<Card>();
             for(int j = 0; j < 13; j++) {
                 playerCards.add(deck_.get(i * 13 + j));
             }
+            //确定角色
             Player.ROLE role = playerList_.get(i).setCards(playerCards);
             if(role == Player.ROLE.Landlord3A) {
                 lordCount_ = 1;
             } else if(role == Player.ROLE.Landlord3 || role == Player.ROLE.LandlordA) {
                 lordCount_ = 2;
             }
+            //确定第一个出牌玩家
+            if(playerCards.contains(Card.getDiamond4())) {
+                firstPlayer_ = playerList_.get(i);
+                playingPosition_ = firstPlayer_.getTablePosition();
+            }
         }
 
         //deck_.clear();
+    }
+
+    public Player getPlayingPlayer() {
+        return table_.getPlayer(playingPosition_);
+    }
+
+    public void setPlayedCards(Player player, List<Card> cards) {
+        int leftPosition_ = (playingPosition_ - 1) % 4; //上家位置
+        CardType playedCardType = player.play(lastPlayedCardType_[leftPosition_], cards); //和上家比较
+        lastPlayedCardType_[playingPosition_] = playedCardType; //记录当前出牌
+        playingPosition_++; //更新玩家位置
     }
 
     /**

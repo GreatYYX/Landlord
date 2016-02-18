@@ -2,8 +2,10 @@ package com.watch0ut.landlord.server;
 
 import com.watch0ut.landlord.command.AbstractCommand;
 import com.watch0ut.landlord.command.concrete.*;
+import com.watch0ut.landlord.object.Dealer;
 import com.watch0ut.landlord.object.Hall;
 import com.watch0ut.landlord.object.Player;
+import com.watch0ut.landlord.object.Table;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.statemachine.annotation.IoHandlerTransition;
@@ -50,6 +52,7 @@ public class WServerHandlerSM extends IoHandlerAdapter {
 
     @IoHandlerTransition(on = SESSION_OPENED, in = NOT_CONNECTED)
     public void sessionOpened(IoSession session) {
+        LOGGER.info("[SESS {}] Session Opened", session.getId());
     }
 
     @IoHandlerTransition(on = SESSION_CREATED, in = NOT_CONNECTED)
@@ -75,7 +78,7 @@ public class WServerHandlerSM extends IoHandlerAdapter {
         }
         session.close(true);
 
-        LOGGER.info("Session Closed");
+        LOGGER.info("[SESS {}] Session Closed", session.getId());
     }
 
     /**
@@ -86,7 +89,7 @@ public class WServerHandlerSM extends IoHandlerAdapter {
     public void disconnect(WServerContext ctx, IoSession session, DisconnectCommand cmd) {
         session.close(true);
 
-        LOGGER.info("Disconnect: {}", ctx.user);
+        LOGGER.info("[SESS {}] Disconnect: {}", session.getId(), ctx.user);
     }
 
     /**
@@ -118,10 +121,10 @@ public class WServerHandlerSM extends IoHandlerAdapter {
             sendCommand(session, cmdRes);
 
             //客户端刷新
-            AbstractCommand cmdRefresh = new RefreshPlayerListCommand((List<Player>)playerBasicMap_.values());
+            AbstractCommand cmdRefresh = new RefreshPlayerListCommand(new ArrayList<Player>(playerBasicMap_.values()));
             broadcastCommand(cmdRefresh);
 
-            LOGGER.info("Login: {}", ctx.user);
+            LOGGER.info("[SESS {}] Login: {}", session.getId(), ctx.user);
 //        } else {
 //            AbstractCommand cmdRes = new LoginResponseCommand("error password");
 //            sendCommand(session, cmdRes);
@@ -146,10 +149,10 @@ public class WServerHandlerSM extends IoHandlerAdapter {
         }
 
         //客户端刷新
-        AbstractCommand cmdRefresh = new RefreshPlayerListCommand((List<Player>)playerBasicMap_.values());
+        AbstractCommand cmdRefresh = new RefreshPlayerListCommand(new ArrayList<Player>(playerBasicMap_.values()));
         broadcastCommand(cmdRefresh);
 
-        LOGGER.info("Logout: {}", ctx.user);
+        LOGGER.info("[SESS {}] Logout: {}", session.getId(), ctx.user);
     }
 
     /**
@@ -184,18 +187,50 @@ public class WServerHandlerSM extends IoHandlerAdapter {
                 .unseat(player, player.getTablePosition(), playerBasic);
     }
 
-//    /**
-//     * 准备
-//     */
-//    @IoHandlerTransition(on = MESSAGE_RECEIVED, in = SEATED, next = READY)
-//    public void ready(WServerContext ctx, IoSession session, ReadyCommand cmd) {
-//    }
+    /**
+     * 准备
+     */
+    @IoHandlerTransition(on = MESSAGE_RECEIVED, in = SEATED, next = READY)
+    public void ready(WServerContext ctx, IoSession session, ReadyCommand cmd) {
+        synchronized (playerMap_) {
+            Player player = playerMap_.get(ctx.uid);
+            player.setState(Player.STATE.Ready);
+        }
+        synchronized (playerBasicMap_) {
+            Player playerBasic = playerBasicMap_.get(ctx.uid);
+            playerBasic.setState(Player.STATE.Ready);
+        }
+
+        //player是否都已ready
+        Table table = hall_.getTable(playerMap_.get(ctx.uid).getTableId());
+        if(table.getPlayer(0).getState() == Player.STATE.Ready &&
+            table.getPlayer(1).getState() == Player.STATE.Ready &&
+            table.getPlayer(2).getState() == Player.STATE.Ready &&
+            table.getPlayer(3).getState() == Player.STATE.Ready) {
+            Dealer dealer = table.getDealer();
+            dealer.roundInit();
+            dealer.shuffle();
+            GameStartCommand cmdStart = new GameStartCommand();
+            cmdStart.setFirstPlayerUid(dealer.getFirstPlayer().getId());
+            cmdStart.setCards(table.getPlayer(0).getCards());
+            sendCommand(table.getPlayer(0).getId(), cmdStart);
+            cmdStart.setCards(table.getPlayer(1).getCards());
+            sendCommand(table.getPlayer(1).getId(), cmdStart);
+            cmdStart.setCards(table.getPlayer(2).getCards());
+            sendCommand(table.getPlayer(2).getId(), cmdStart);
+            cmdStart.setCards(table.getPlayer(3).getCards());
+            sendCommand(table.getPlayer(3).getId(), cmdStart);
+        }
+
+        AbstractCommand cmdRefresh = new RefreshPlayerListCommand(new ArrayList<Player>(playerBasicMap_.values()));
+        broadcastCommand(cmdRefresh);
+    }
 //
 //    /**
 //     * 游戏进行
 //     */
 //    @IoHandlerTransitions({
-//        @IoHandlerTransition(on = MESSAGE_RECEIVED, in = READY, next = PLAY),
+//        @IoHandlerTransition(on = MESSAGE_RECEIVED, in = READY, next = WAIT),
 //        @IoHandlerTransition(on = MESSAGE_RECEIVED, in = WAIT, next = PLAY)
 //    })
 //    public void play(WServerContext ctx, IoSession session, PlayCommand cmd) {
@@ -240,8 +275,13 @@ public class WServerHandlerSM extends IoHandlerAdapter {
     }
 
     @IoHandlerTransition(on = MESSAGE_RECEIVED, in = ROOT, weight = 10)
-    public void error(Event event, StateContext ctx, IoSession session, AbstractCommand cmd) {
-        LOGGER.warn(cmd.getName() + ": " + ctx.getCurrentState().getId().toLowerCase());
+    public void messageReceived(Event event, StateContext ctx, IoSession session, AbstractCommand cmd) {
+        LOGGER.warn("[SESS {}] Message Received: {}", session.getId(), cmd.getName() + ": " + ctx.getCurrentState().getId().toLowerCase());
+    }
+
+
+    @IoHandlerTransition(on = MESSAGE_SENT, in = ROOT, weight = 10)
+    public void messageSent() {
     }
 
     /**
@@ -251,7 +291,7 @@ public class WServerHandlerSM extends IoHandlerAdapter {
      */
     @IoHandlerTransition(on = EXCEPTION_CAUGHT, in = ROOT, weight = 10)
     public void exceptionCaught(IoSession session, Exception e) {
-        LOGGER.warn("Unexpected error.", e);
+        LOGGER.warn("[SESS {}] Exception Caught: {}", session.getId(), e);
         session.close(true);
     }
 
@@ -263,7 +303,7 @@ public class WServerHandlerSM extends IoHandlerAdapter {
 //        if(e.getId().equals("inputClosed")) {
 //            session.close(true);
 //        }
-        LOGGER.warn("Unhandled event: {}", e);
+        LOGGER.warn("[SESS {}] Unhandled event: {}", session.getId(), e);
     }
 
     /**

@@ -42,9 +42,9 @@ public class WProtocolDecoder extends CumulativeProtocolDecoder {
                 cmdBody.bytesToBody(cmdBodyBytes);
                 out.write(cmdBody);
 
-                LOGGER.info("Command \"{}\" received.", cmdName);
+                LOGGER.info("[SESS {}] Command \"{}\" received.", sess.getId(), cmdName);
             } else {
-                LOGGER.info("Unknown \"{}\" command received, skip.", cmdName);
+                LOGGER.info("[SESS {}] Unknown \"{}\" command received, skip.", sess.getId(), cmdName);
             }
 
             return true;

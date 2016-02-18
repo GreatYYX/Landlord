@@ -19,7 +19,9 @@ public class Hall {
         //创建tables和dealer
         for(int i = 0; i < Configuration.TABLE_PER_HALL; i++) {
             dealers_[i] = new Dealer();
-            tables_[i] = new Table(i, dealers_[i]);
+            tables_[i] = new Table(i);
+            dealers_[i].setTable(tables_[i]);
+            tables_[i].setDealer(dealers_[i]);
         }
     }
 

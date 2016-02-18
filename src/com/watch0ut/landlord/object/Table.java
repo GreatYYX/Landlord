@@ -25,9 +25,14 @@ public class Table {
     private int[] scores_ = new int[]{0, 0, 0, 0}; //累计比分（index为座位POSITION）
     private Dealer dealer_;
 
-    public Table(int id, Dealer dealer) {
+    public Table(int id) {
         id_ = id;
-        dealer_ = dealer;
+    }
+
+    public void setDealer(Dealer dealer) {
+        if(dealer != null) {
+            dealer_ = dealer;
+        }
     }
 
     /**

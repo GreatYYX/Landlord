@@ -1,11 +1,10 @@
 package com.watch0ut.landlord.object;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
 
 import com.watch0ut.landlord.object.cardtype.*;
 
@@ -14,7 +13,7 @@ import com.watch0ut.landlord.object.cardtype.*;
  *
  * 玩家，除自身属性外，包含自身的牌以及牌合法性判定操作
  */
-public class Player {
+public class Player implements Serializable {
 
     private int id_;
     private int tablePosition_ = -1;

@@ -8,6 +8,7 @@ import com.watch0ut.landlord.protocol.WProtocolFactory;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
+import org.apache.mina.filter.logging.LogLevel;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.statemachine.StateMachine;
 import org.apache.mina.statemachine.StateMachineFactory;
