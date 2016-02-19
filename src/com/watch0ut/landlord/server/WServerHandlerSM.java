@@ -6,8 +6,10 @@ import com.watch0ut.landlord.object.Dealer;
 import com.watch0ut.landlord.object.Hall;
 import com.watch0ut.landlord.object.Player;
 import com.watch0ut.landlord.object.Table;
+import com.watch0ut.landlord.server.database.DatabaseHelper;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
+import org.apache.mina.statemachine.StateControl;
 import org.apache.mina.statemachine.annotation.IoHandlerTransition;
 import org.apache.mina.statemachine.annotation.IoHandlerTransitions;
 import org.apache.mina.statemachine.annotation.State;
@@ -17,6 +19,7 @@ import org.apache.mina.statemachine.event.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
 import java.util.*;
 
 import static org.apache.mina.statemachine.event.IoHandlerEvents.*;
@@ -32,6 +35,7 @@ public class WServerHandlerSM extends IoHandlerAdapter {
     private final Hall hall_ = new Hall();
     private final Map<Integer, Player> playerMap_ = Collections.synchronizedMap(new HashMap<Integer, Player>());
     private final Map<Integer, Player> playerBasicMap_ = Collections.synchronizedMap(new HashMap<Integer, Player>());
+    private DatabaseHelper dbHelper_ = new DatabaseHelper();
 
     @State public static final String ROOT = "Root";
     @State(ROOT) public static final String NOT_CONNECTED = "NotConnected"; //未登录（但是SOCKET已经建立）
@@ -61,23 +65,8 @@ public class WServerHandlerSM extends IoHandlerAdapter {
 
     @IoHandlerTransition(on = SESSION_CLOSED, in = ROOT)
     public void sessionClosed(WServerContext ctx, IoSession session) {
-        //为防止强制退出，检测用户是否已经从列表移除
-        Player player = playerMap_.get(ctx.uid);
-        Player playerBasic = playerBasicMap_.get(ctx.uid);
-        if(player != null) {
-            hall_.getTable(player.getTableId()).unseat(player, player.getTablePosition(), playerBasic);
-            synchronized(sessionMap_) {
-                sessionMap_.remove(ctx.uid);
-            }
-            synchronized(playerMap_) {
-                playerMap_.remove(ctx.uid);
-            }
-            synchronized(playerBasicMap_) {
-                playerBasicMap_.remove(ctx.uid);
-            }
-        }
-        session.close(true);
-
+        //为防止强制退出，logout一次
+        logout(ctx, session, new LogoutCommand());
         LOGGER.info("[SESS {}] Session Closed", session.getId());
     }
 
@@ -87,9 +76,9 @@ public class WServerHandlerSM extends IoHandlerAdapter {
      */
     @IoHandlerTransition(on = MESSAGE_RECEIVED, in = NOT_CONNECTED)
     public void disconnect(WServerContext ctx, IoSession session, DisconnectCommand cmd) {
+        logout(ctx, session, new LogoutCommand());
         session.close(true);
-
-        LOGGER.info("[SESS {}] Disconnect: {}", session.getId(), ctx.user);
+        LOGGER.info("[SESS {}] Disconnect", session.getId());
     }
 
     /**
@@ -97,39 +86,38 @@ public class WServerHandlerSM extends IoHandlerAdapter {
      */
     @IoHandlerTransition(on = MESSAGE_RECEIVED, in = NOT_CONNECTED, next = IDLE)
     public void login(WServerContext ctx, IoSession session, LoginCommand cmd) {
-        //数据库读取
-//        if(DB RESULT SUCCESS) {
-            int uid = 0;
-            ctx.user = cmd.getUser();
-            ctx.uid = uid;
+        // 数据库读取并更新
+        String ip = ((InetSocketAddress)session.getRemoteAddress()).getAddress().getHostAddress();
+        Player player = dbHelper_.login(cmd.getUser(), cmd.getPassword(), ip);
+        if(player != null) {
+            ctx.user = player.getUserName();
+            ctx.uid = player.getId();
 //            session.setAttribute("user", ctx.user);
             synchronized(sessionMap_) {
                 sessionMap_.put(ctx.uid, session);
             }
-            Player player = new Player(uid);
             synchronized(playerMap_) {
-                playerMap_.put(uid, player);
+                playerMap_.put(ctx.uid, player);
             }
             synchronized(playerBasicMap_) {
-                playerBasicMap_.put(uid, player.getBasicPlayer());
+                playerBasicMap_.put(ctx.uid, player.getBasicPlayer());
             }
 
-            //更新数据库
-
-            //将对象返回用户
+            // 将对象返回用户
             AbstractCommand cmdRes = new LoginResponseCommand(player);
             sendCommand(session, cmdRes);
 
-            //客户端刷新
+            // 客户端刷新
             AbstractCommand cmdRefresh = new RefreshPlayerListCommand(new ArrayList<Player>(playerBasicMap_.values()));
             broadcastCommand(cmdRefresh);
 
-            LOGGER.info("[SESS {}] Login: {}", session.getId(), ctx.user);
-//        } else {
-//            AbstractCommand cmdRes = new LoginResponseCommand("error password");
-//            sendCommand(session, cmdRes);
-//            LOGGER.info("Login fail: {}", ctx.user);
-//        }
+            LOGGER.info("[SESS {}] Login: {}", session.getId(), cmd.getUser());
+        } else {
+            AbstractCommand cmdRes = new LoginResponseCommand("Login error.");
+            sendCommand(session, cmdRes);
+            LOGGER.info("[SESS {}] Login fail: {}", session.getId(), cmd.getUser());
+            StateControl.breakAndContinue(); // 保持NOT_CONNECTED状态
+        }
     }
 
     /**
@@ -138,21 +126,28 @@ public class WServerHandlerSM extends IoHandlerAdapter {
      */
     @IoHandlerTransition(on = MESSAGE_RECEIVED, in = IDLE, next = NOT_CONNECTED)
     public void logout(WServerContext ctx, IoSession session, LogoutCommand cmd) {
-        synchronized(sessionMap_) {
-            sessionMap_.remove(ctx.uid);
-        }
-        synchronized(playerMap_) {
-            playerMap_.remove(ctx.uid);
-        }
-        synchronized(playerBasicMap_) {
-            playerBasicMap_.remove(ctx.uid);
-        }
+        Player player = playerMap_.get(ctx.uid);
+        Player playerBasic = playerBasicMap_.get(ctx.uid);
+        if(player != null) {
+            if(player.getTableId() != Table.UNSEATED) {
+                hall_.getTable(player.getTableId()).unseat(player, player.getTablePosition(), playerBasic);
+            }
+            synchronized(sessionMap_) {
+                sessionMap_.remove(ctx.uid);
+            }
+            synchronized(playerMap_) {
+                playerMap_.remove(ctx.uid);
+            }
+            synchronized(playerBasicMap_) {
+                playerBasicMap_.remove(ctx.uid);
+            }
 
-        //客户端刷新
-        AbstractCommand cmdRefresh = new RefreshPlayerListCommand(new ArrayList<Player>(playerBasicMap_.values()));
-        broadcastCommand(cmdRefresh);
+            //客户端刷新
+            AbstractCommand cmdRefresh = new RefreshPlayerListCommand(new ArrayList<Player>(playerBasicMap_.values()));
+            broadcastCommand(cmdRefresh);
 
-        LOGGER.info("[SESS {}] Logout: {}", session.getId(), ctx.user);
+            LOGGER.info("[SESS {}] Logout", session.getId());
+        }
     }
 
     /**
@@ -321,7 +316,8 @@ public class WServerHandlerSM extends IoHandlerAdapter {
      * @param cmd
      */
     private void sendCommand(IoSession session, AbstractCommand cmd) {
-        session.write(cmd);
+        if(session.isConnected())
+            session.write(cmd);
     }
 
     /**

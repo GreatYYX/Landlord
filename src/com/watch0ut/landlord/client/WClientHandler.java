@@ -1,6 +1,11 @@
 package com.watch0ut.landlord.client;
 
+import com.watch0ut.landlord.command.AbstractCommand;
+import com.watch0ut.landlord.command.concrete.LoginCommand;
+import com.watch0ut.landlord.command.concrete.LoginResponseCommand;
+import com.watch0ut.landlord.command.concrete.LogoutCommand;
 import org.apache.mina.core.service.IoHandlerAdapter;
+import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,5 +15,15 @@ import org.slf4j.LoggerFactory;
 public class WClientHandler extends IoHandlerAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(WClientHandler.class);
 
+    @Override
+    public void messageReceived(IoSession session, Object message) throws Exception {
+        AbstractCommand cmd = (AbstractCommand)message;
+        String name = cmd.getName();
+        if(name.equalsIgnoreCase("LoginResponseCommand")) {
+
+        } else {
+            LOGGER.error("Command router missing: {}", cmd.getClass());
+        }
+    }
 
 }

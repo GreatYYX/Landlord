@@ -71,13 +71,19 @@ public class WClient {
         WClient client = new WClient();
         client.connect();
 
+        AbstractCommand cmd1 = new LoginCommand("badguy", "123456");
+        client.sendCommand(cmd1);
         AbstractCommand cmd = new LoginCommand("yyx", "123456");
         client.sendCommand(cmd);
         cmd = new TextCommand("yyx", "hello everyone");
         client.sendCommand(cmd);
         cmd = new LogoutCommand();
         client.sendCommand(cmd);
-
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         client.disconnect();
     }
 }

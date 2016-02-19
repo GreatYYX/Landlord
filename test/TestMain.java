@@ -1,15 +1,10 @@
-import com.watch0ut.landlord.command.AbstractCommand;
-import com.watch0ut.landlord.command.concrete.TextCommand;
-import com.watch0ut.landlord.object.Dealer;
-import com.watch0ut.landlord.object.Hall;
-import com.watch0ut.landlord.object.Player;
-import com.watch0ut.landlord.object.Table;
+import com.watch0ut.landlord.server.database.DatabaseOperator;
 
 public class TestMain {
 
     public static void main(String[] args) {
 	// write your code here
-        Hall hall = new Hall();
+//        Hall hall = new Hall();
 //        hall.getTable(0).seat(new Player(0), Table.TOP);
 //        hall.getTable(0).seat(new Player(0), Table.LEFT);
 //        hall.getTable(0).seat(new Player(0), Table.RIGHT);
@@ -38,5 +33,7 @@ public class TestMain {
 //
 //
 //        System.out.println(name);
+
+        DatabaseOperator db = new DatabaseOperator();
     }
 }

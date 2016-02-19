@@ -15,12 +15,17 @@ import com.watch0ut.landlord.object.cardtype.*;
  */
 public class Player implements Serializable {
 
-    private int id_;
     private int tablePosition_ = -1;
     private int tableId_ = -1;
 
-    private String name_;
+    private int id_;
+    private String userName_;
+    private String nickName_;
     private String photo_;
+    private int roundCount_;
+    private int winCount_;
+    private int loseCount_;
+    private int landlordCount_;
     private int score_;
 
     public enum ROLE {
@@ -40,15 +45,27 @@ public class Player implements Serializable {
 
     private List<Card> cards_ = new ArrayList<Card>();
 
-    public Player(int id) {
-        id_ = id;
+    public Player() {
         state_ = STATE.Idle;
         tablePosition_ = -1;
         tableId_ = -1;
     }
 
-    public int getId() {
-        return id_;
+    public Player(int id, String userName, String nickName, String photo, int score,
+                  int roundCount, int winCount, int loseCount, int landlordCount) {
+        state_ = STATE.Idle;
+        tablePosition_ = -1;
+        tableId_ = -1;
+
+        id_ = id;
+        userName_ = userName;
+        nickName_ = nickName;
+        photo_ = photo;
+        score_ = score;
+        roundCount_ = roundCount;
+        winCount_ = winCount;
+        loseCount_ = loseCount;
+        landlordCount_ = landlordCount;
     }
 
     /**
@@ -56,10 +73,11 @@ public class Player implements Serializable {
      * @return
      */
     public Player getBasicPlayer() {
-        Player player = new Player(id_);
-        player.setName(name_);
-        player.setPhoto(photo_);
+        Player player = new Player(id_, userName_, nickName_, photo_,
+                score_, roundCount_, winCount_, loseCount_, landlordCount_);
         player.setState(state_);
+        player.setTableId(tableId_);
+        player.setTablePosition(tablePosition_);
         return player;
     }
 
@@ -140,59 +158,6 @@ public class Player implements Serializable {
 //
 //        return tribMap;
 //    }
-
-
-    public String getName() {
-        return name_;
-    }
-
-    public void setName(String name) {
-        name_ = name;
-    }
-
-    public String getPhoto() {
-        return photo_;
-    }
-
-    public void setPhoto(String photo) {
-        photo_ = photo;
-    }
-
-    public ROLE getRole() {
-        return role_;
-    }
-
-    public int getScore() {
-        return score_;
-    }
-
-    public void setScore(int score) {
-        score_ = score_;
-    }
-
-    public int getTablePosition() {
-        return tablePosition_;
-    }
-
-    public void setTablePosition(int position) {
-        tablePosition_ = position;
-    }
-
-    public int getTableId() {
-        return tableId_;
-    }
-
-    public void setTableId(int tableId) {
-        this.tableId_ = tableId;
-    }
-
-    public STATE getState() {
-        return state_;
-    }
-
-    public void setState(STATE state) {
-        state_ = state;
-    }
 
     /**
      * 出牌
@@ -344,5 +309,105 @@ public class Player implements Serializable {
                 }
             }
         });
+    }
+
+    public int getId() {
+        return id_;
+    }
+
+    public void setId(int id) {
+        id_ = id;
+    }
+
+    public String getUserName() {
+        return userName_;
+    }
+
+    public void setUserName(String name) {
+        userName_ = name;
+    }
+
+    public String getNickName() {
+        return nickName_;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName_ = nickName;
+    }
+
+    public String getPhoto() {
+        return photo_;
+    }
+
+    public void setPhoto(String photo) {
+        photo_ = photo;
+    }
+
+    public ROLE getRole() {
+        return role_;
+    }
+
+    public int getScore() {
+        return score_;
+    }
+
+    public void setScore(int score) {
+        score_ = score_;
+    }
+
+    public int getRoundCount() {
+        return roundCount_;
+    }
+
+    public void setRoundCount(int roundCount) {
+        roundCount_ = roundCount;
+    }
+
+    public int getWinCount() {
+        return winCount_;
+    }
+
+    public void setWinCount(int winCount) {
+        winCount_ = winCount;
+    }
+
+    public int getLoseCount_() {
+        return loseCount_;
+    }
+
+    public void setLoseCount(int loseCount) {
+        loseCount_ = loseCount;
+    }
+
+    public int getLandlordCount() {
+        return landlordCount_;
+    }
+
+    public void setLandlordCount(int landlordCount) {
+        landlordCount_ = landlordCount;
+    }
+
+    public int getTablePosition() {
+        return tablePosition_;
+    }
+
+    public void setTablePosition(int position) {
+        tablePosition_ = position;
+    }
+
+    public int getTableId() {
+        return tableId_;
+    }
+
+    public void setTableId(int tableId) {
+        this.tableId_ = tableId;
+    }
+
+    public STATE getState() {
+        return state_;
+    }
+
+    public void setState(STATE state) {
+        state_ = state;
     }
 }
