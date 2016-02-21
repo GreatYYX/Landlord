@@ -1,42 +1,52 @@
 package com.watch0ut.landlord.client.view;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 /**
+ * 主程序测试类
  * Created by Jack on 16/2/13.
  */
 public class TestApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        AvatarView avatarView2 = new AvatarView("2.png", AvatarView.SMALL);
-        AvatarView avatarView4 = new AvatarView("4.png", AvatarView.MIDDLE);
-        AvatarView avatarView8 = new AvatarView("8.png", AvatarView.BIG);
-
-        CardView rear = new CardView("Rear.png");
-        CardView diamond4 = new CardView(0, 0);
-        CardView smallRear = new CardView("Rear.png", true);
-
-        AvatarPane avatarPane3A = new AvatarPane(ActionView.LANDLORD_3A, "J.png", "Jack");
-        AvatarPane avatarPane = new AvatarPane(0, "Q.png", "Queen");
-
-        FlowPane root = new FlowPane();
-        root.getChildren().add(avatarView2);
-        root.getChildren().add(avatarView4);
-        root.getChildren().add(avatarView8);
-
-        root.getChildren().add(smallRear);
-        root.getChildren().add(rear);
-        root.getChildren().add(diamond4);
-
-        root.getChildren().add(avatarPane3A);
-        root.getChildren().add(avatarPane);
 
         primaryStage.setTitle("Landlord");
-        primaryStage.setScene(new Scene(root, 600, 400));
+
+        // 测试SignInPane
+//        Parent signInPane = FXMLLoader.load(getClass().getResource("SignInPane.fxml"));
+//        primaryStage.setScene(new Scene(signInPane, 280, 260));
+//        primaryStage.setResizable(false);
+
+        // 测试ActionView
+//        primaryStage.setScene(new Scene(TestActionView.initialize(), 130, 40));
+
+        // 测试AvatarView
+//        primaryStage.setScene(new Scene(TestAvatarView.initialize(), 400, 130));
+
+        // 测试AvatarPane
+//        primaryStage.setScene(new Scene(TestAvatarPane.initialize(), 400, 200));
+
+        // 测试TablePane
+//        primaryStage.setScene(new Scene(TestTablePane.initialize(), 150, 200));
+
+        // 测试CardTablePane
+//        primaryStage.setScene(new Scene(TestCardTablePane.initialize(), 540, 600));
+
+        // 测试CardView
+//        primaryStage.setScene(new Scene(TestCardView.initialize(), 400, 400));
+
+        // 测试PlayerInfoPane
+//        primaryStage.setScene(new Scene(TestPlayerInfoPane.initialize(), 240, 100));
+
+        // 测试ChatPane
+        primaryStage.setScene(new Scene(TestChatPane.initialize(), 240, 450));
+
         primaryStage.show();
     }
 

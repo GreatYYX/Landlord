@@ -1,26 +1,31 @@
 package com.watch0ut.landlord.client.view;
 
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
+ * 头像控件，尺寸共六种，分别为tiny，mini，small，middle，big和large。
+ * 默认的头像名为idle。
  * Created by Jack on 16/2/13.
  */
-public class AvatarView extends Label {
-    public final static String IDLE = "idle.png";
-    public final static String TABLE = "../widget/table_small.png";
-    public final static String TABLE_PLAY = "../widget/table_small_play.png";
+public class AvatarView extends ImageView {
 
-    public final static int SMALL_SIZE = 64;
-    public final static int MIDDLE_SIZE = 96;
-    public final static int BIG_SIZE = 128;
+    private final static int TINY_SIZE = 16;
+    private final static int MINI_SIZE = 32;
+    private final static int SMALL_SIZE = 48;
+    private final static int MIDDLE_SIZE = 64;
+    private final static int BIG_SIZE = 96;
+    private final static int LARGE_SIZE = 128;
 
     private final static String AVATAR_PATH = "icon/avatar/";
+    public final static String IDLE = "idle.png";
 
-    public final static int SMALL = 1;
-    public final static int MIDDLE = 2;
-    public final static int BIG = 3;
+    public final static int TINY = 1;
+    public final static int MINI = 2;
+    public final static int SMALL = 3;
+    public final static int MIDDLE = 4;
+    public final static int BIG = 5;
+    public final static int LARGE = 6;
 
     /**
      * 构造函数，三个参数
@@ -41,6 +46,10 @@ public class AvatarView extends Label {
         update(picture, type);
     }
 
+    public AvatarView(Image image, int sizeType) {
+        update(image, sizeType);
+    }
+
     /**
      * 更新头像图片和尺寸
      * @param picture 头像名称
@@ -48,41 +57,52 @@ public class AvatarView extends Label {
      * @param height 头像高度
      */
     public void update(String picture, int width, int height) {
-        setWidth(width);
-        setHeight(height);
+        setFitWidth(width);
+        setFitHeight(height);
 
+        Image image = null;
         try {
-            Image image = new Image(getClass().getResourceAsStream(AVATAR_PATH + picture));
-            ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(width);
-            imageView.setFitHeight(height);
-            setGraphic(imageView);
-        } catch (Exception e) {
+            image = new Image(getClass().getResourceAsStream(AVATAR_PATH + picture));
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
+        setImage(image);
     }
 
     /**
      * 更新头像图片和尺寸
      * @param picture 头像名称
-     * @param type 尺寸类型
+     * @param sizeType 尺寸类型
      */
-    public void update(String picture, int type) {
-        int size;
-        switch (type) {
-            case SMALL:
-                size = SMALL_SIZE;
-                break;
-            case MIDDLE:
-                size = MIDDLE_SIZE;
-                break;
-            case BIG:
-                size = BIG_SIZE;
-                break;
-            default:
-                size = SMALL_SIZE;
-        }
-
+    public void update(String picture, int sizeType) {
+        int size = getSizeByType(sizeType);
         update(picture, size, size);
+    }
+
+    public void update(Image image, int sizeType) {
+        int size = getSizeByType(sizeType);
+        setFitWidth(size);
+        setFitHeight(size);
+
+        setImage(image);
+    }
+
+    public static int getSizeByType(int sizeType) {
+        switch (sizeType) {
+            case TINY:
+                return TINY_SIZE;
+            case MINI:
+                return MINI_SIZE;
+            case SMALL:
+                return SMALL_SIZE;
+            case MIDDLE:
+                return MIDDLE_SIZE;
+            case BIG:
+                return BIG_SIZE;
+            case LARGE:
+                return LARGE_SIZE;
+            default:
+                return 0;
+        }
     }
 }
