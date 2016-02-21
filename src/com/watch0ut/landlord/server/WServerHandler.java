@@ -26,11 +26,10 @@ public class WServerHandler extends IoHandlerAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(WServerHandler.class);
 
     private final Map<Integer, IoSession> sessionMap_ = Collections.synchronizedMap(new HashMap<Integer, IoSession>());
-    //    private final Set<String> users_ = Collections.synchronizedSet(new HashSet<String>());
-    private DatabaseHelper dbHelper_ = new DatabaseHelper();
-    private final Hall hall_ = new Hall();
     private final Map<Integer, Player> playerMap_ = Collections.synchronizedMap(new HashMap<Integer, Player>()); // 用户总表
     private final Map<Integer, Player> playerBasicMap_ = Collections.synchronizedMap(new HashMap<Integer, Player>()); // 用户简化表
+    private final DatabaseHelper dbHelper_ = new DatabaseHelper();
+    private final Hall hall_ = new Hall();
 
     private static final String CONTEXT = "WServerContext";
     static class WServerContext extends AbstractStateContext {
@@ -87,15 +86,16 @@ public class WServerHandler extends IoHandlerAdapter {
             logout(session, (LogoutCommand) message);
         } else if(cmdName.equalsIgnoreCase("seat") && playerInState(ctx.uid, Player.STATE.Idle)) {
             seat(session, (SeatCommand) message);
-        } else if(cmdName.equalsIgnoreCase("unseat") && (playerInState(ctx.uid, Player.STATE.Idle) || playerInState(ctx.uid, Player.STATE.Ready))) {
+        } else if(cmdName.equalsIgnoreCase("unseat") &&
+                (playerInState(ctx.uid, Player.STATE.Seated) || playerInState(ctx.uid, Player.STATE.Ready))) {
             unseat(session, (UnseatCommand) message);
         } else if(cmdName.equalsIgnoreCase("ready") && playerInState(ctx.uid, Player.STATE.Seated)) {
             ready(session, (ReadyCommand) message);
         } else if(cmdName.equalsIgnoreCase("play") && playerInState(ctx.uid, Player.STATE.Play)) {
             play(session, (PlayCommand) message);
-        } else if(cmdName.equalsIgnoreCase("text") && (playerInState(ctx.uid, Player.STATE.Seated) ||
-                playerInState(ctx.uid, Player.STATE.Wait) || playerInState(ctx.uid, Player.STATE.Play) ||
-                playerInState(ctx.uid, Player.STATE.Finish))) {
+        } else if(cmdName.equalsIgnoreCase("text") &&
+                (playerInState(ctx.uid, Player.STATE.Seated) || playerInState(ctx.uid, Player.STATE.Wait) ||
+                 playerInState(ctx.uid, Player.STATE.Play) || playerInState(ctx.uid, Player.STATE.Finish))) {
             textMessage(session, (TextCommand) message);
         } else if(cmdName.equalsIgnoreCase("disconnect")) {
             disconnect(session, (DisconnectCommand) message);
@@ -266,13 +266,17 @@ public class WServerHandler extends IoHandlerAdapter {
      */
     public void play(IoSession session, PlayCommand cmd) throws Exception {
         WServerContext ctx = (WServerContext)session.getAttribute(CONTEXT);
+        AbstractCommand cmdRes;
         Player player = playerMap_.get(ctx.uid);
         Dealer dealer = hall_.getTable(player.getTableId()).getDealer();
         if(ctx.uid == dealer.getPlayingPlayer().getId()) {
             playOrFinish(dealer, cmd.getCardType());
+            cmdRes = new PlayResponseCommand(cmd.getSeqId(), PlayResponseCommand.SUCCESS);
+            sendCommand(session, cmdRes);
         } else {
             // timeout后接收到到Play指令被忽略
-            // AbstractCommand cmd = new PlayResponseCommand(cmd.getCardType());
+            cmdRes = new PlayResponseCommand(cmd.getSeqId(), PlayResponseCommand.ERROR);
+            sendCommand(session, cmdRes);
         }
     }
 

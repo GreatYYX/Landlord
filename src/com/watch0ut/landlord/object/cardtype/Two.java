@@ -10,7 +10,7 @@ import com.watch0ut.landlord.object.Card;
 public class Two extends CardType {
 
     public static boolean isValid(List<Card> cards) {
-        return (cards.get(0).getPoint() == cards.get(1).getPoint());
+        return (cards.size() == 2 && cards.get(0).getPoint() == cards.get(1).getPoint());
     }
 
     public Two(List<Card> cards) {

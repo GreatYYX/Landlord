@@ -6,9 +6,12 @@ import java.net.InetSocketAddress;
 import com.watch0ut.landlord.Configuration;
 import com.watch0ut.landlord.protocol.WProtocolFactory;
 import org.apache.mina.core.service.IoAcceptor;
-import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.logging.LoggingFilter;
+import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.statemachine.StateMachine;
 import org.apache.mina.statemachine.StateMachineFactory;
 import org.apache.mina.statemachine.StateMachineProxyBuilder;
@@ -16,9 +19,6 @@ import org.apache.mina.statemachine.annotation.IoHandlerTransition;
 import org.apache.mina.statemachine.context.IoSessionStateContextLookup;
 import org.apache.mina.statemachine.context.StateContext;
 import org.apache.mina.statemachine.context.StateContextFactory;
-import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by GreatYYX on 12/24/15.

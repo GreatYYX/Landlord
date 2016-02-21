@@ -46,7 +46,7 @@ public class Player implements Serializable {
     private List<Card> cards_ = new ArrayList<Card>();
     // player基本信息
     // 采用直接维护Player对象的方式
-    // 而非每次从新获取状态以提高性能
+    // 而非每次重新获取状态以提高性能
     private Player basicPlayer_ = null;
 
 //    public Player() {

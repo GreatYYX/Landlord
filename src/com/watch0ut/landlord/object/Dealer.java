@@ -136,7 +136,6 @@ public class Dealer {
      * @return true则继续游戏，false则游戏结束
      */
     public boolean playAndMoveNext(Player player, CardType cardType) throws InvalidCardType {
-        CardType playedCardType = null;
         if(firstPlayer_ == player) { // 本轮第一个出牌
             if(cardType == null) throw new InvalidCardType(); // 此时cardType不能是null，必须出牌
             prevCardType_ = player.play(null, cardType);

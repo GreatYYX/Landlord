@@ -10,7 +10,7 @@ import com.watch0ut.landlord.object.Card;
 public class One extends CardType {
 
     public static boolean isValid(List<Card> cards) {
-        return true;
+        return cards.size() == 1;
     }
 
     public One(List<Card> cards) {

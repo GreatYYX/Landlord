@@ -14,8 +14,9 @@ public class Five extends CardType {
     private TYPE type_;
 
     public static boolean isValid(List<Card> cards) {
-        if(isStraight(cards) || isFlush(cards) ||
-           isThreePlusTwo(cards) || isFourPlusOne(cards)) {
+        if(cards.size() == 5 &&
+           (isStraight(cards) || isFlush(cards) ||
+           isThreePlusTwo(cards) || isFourPlusOne(cards))) {
             return true;
         }
         return false;

@@ -9,6 +9,11 @@
 - 服务器基于Apache MINA 2，数据库为PostGreSQL（开启pgcrypto）。
 - 客户端使用JavaFX 2编写图形界面。
 
+## 三方库
+
+- mina-core-2.0.9 (commons-lang, mina-core, mina-statemachine slf4j-api, slf4j-simple)
+- postgresql-9.4.1207
+
 # 游戏规则明细
 
 撰写：GreatYYX 审定：JackPan
