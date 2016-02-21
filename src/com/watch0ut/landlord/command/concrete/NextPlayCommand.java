@@ -1,14 +1,22 @@
 package com.watch0ut.landlord.command.concrete;
 
 import com.watch0ut.landlord.command.AbstractCommand;
+import com.watch0ut.landlord.object.cardtype.CardType;
 
 /**
- * Created by GreatYYX on 14-10-21.
+ * Created by GreatYYX on 2/19/16.
  *
  * server->client
- * 游戏结束
+ * 客户端超时，强制切换到下个用户出牌
+ *
  */
-public class GameOverCommand extends AbstractCommand {
+public class NextPlayCommand extends AbstractCommand {
+
+
+    public NextPlayCommand(CardType currType, int nextUid) {
+
+    }
+
     @Override
     public byte[] bodyToBytes() throws Exception {
         return new byte[0];

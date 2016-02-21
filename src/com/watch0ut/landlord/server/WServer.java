@@ -8,7 +8,6 @@ import com.watch0ut.landlord.protocol.WProtocolFactory;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
-import org.apache.mina.filter.logging.LogLevel;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.statemachine.StateMachine;
 import org.apache.mina.statemachine.StateMachineFactory;
@@ -33,22 +32,22 @@ public class WServer {
         acceptor_ =  new NioSocketAcceptor();
         acceptor_.getFilterChain().addLast("logger", new LoggingFilter());
         acceptor_.getFilterChain().addLast("protocol", new ProtocolCodecFilter(new WProtocolFactory()));
-        acceptor_.setHandler(createIoHandler());
-//        acceptor_.setHandler(new WServerHandler());
+//        acceptor_.setHandler(createWServerHandlerSM());
+        acceptor_.setHandler(new WServerHandler());
     }
 
-    private static IoHandler createIoHandler() {
-        StateMachine sm = StateMachineFactory.getInstance(
-                IoHandlerTransition.class).create(WServerHandlerSM.NOT_CONNECTED,
-                new WServerHandlerSM());
-
-        return new StateMachineProxyBuilder().setStateContextLookup(
-                new IoSessionStateContextLookup(new StateContextFactory() {
-                    public StateContext create() {
-                        return new WServerHandlerSM.WServerContext();
-                    }
-                })).create(IoHandler.class, sm);
-    }
+//    private static IoHandler createWServerHandlerSM() {
+//        StateMachine sm = StateMachineFactory.getInstance(
+//                IoHandlerTransition.class).create(WServerHandlerSM.NOT_CONNECTED,
+//                new WServerHandlerSM());
+//
+//        return new StateMachineProxyBuilder().setStateContextLookup(
+//                new IoSessionStateContextLookup(new StateContextFactory() {
+//                    public StateContext create() {
+//                        return new WServerHandlerSM.WServerContext();
+//                    }
+//                })).create(IoHandler.class, sm);
+//    }
 
     public void start() throws IOException {
         acceptor_.bind(new InetSocketAddress(Configuration.SEVER_PORT));

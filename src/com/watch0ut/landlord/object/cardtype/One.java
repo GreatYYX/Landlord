@@ -8,7 +8,6 @@ import com.watch0ut.landlord.object.Card;
  * Created by GreatYYX on 14-10-10.
  */
 public class One extends CardType {
-    private List<Card> cards_;
 
     public static boolean isValid(List<Card> cards) {
         return true;

@@ -23,7 +23,7 @@ public class DatabaseHelper {
     public Player login(String user, String pwd, String ip) {
         Player player = null;
         try {
-            // 登陆（需pgcrypt模块支持）
+            // 登陆（需pgcrypto模块支持）
             PreparedStatement pst = db_.getConn().prepareStatement(
                     "SELECT * FROM player WHERE username=? AND password=crypt(?,password) LIMIT 1");
             pst.setString(1, user);
@@ -31,8 +31,8 @@ public class DatabaseHelper {
             ResultSet rs = pst.executeQuery();
             if(rs.next()) {
                 player = new Player(rs.getInt("id"), rs.getString("username"), rs.getString("nickname"),
-                       rs.getString("photo"), rs.getInt("score"), rs.getInt("roundCount"),
-                       rs.getInt("winCount"), rs.getInt("loseCount"), rs.getInt("landlordCount"));
+                       rs.getString("photo"), rs.getInt("score"), rs.getInt("gamecount"),
+                       rs.getInt("wincount"), rs.getInt("losecount"), rs.getInt("landlordcount"));
                 // 更新信息
                 pst = db_.getConn().prepareStatement(
                         "UPDATE player SET lastloginip=?, lastlogintime=now() WHERE username=?");

@@ -1,8 +1,5 @@
 package com.watch0ut.landlord.object;
 
-import java.util.List;
-import java.util.ArrayList;
-
 /**
  * Created by GreatYYX on 14-10-10.
  *
@@ -14,14 +11,14 @@ public class Table {
 
     public static final int UNSEATED = -1;
     public static final int BOTTOM = 0;
-    public static final int LEFT = 1;
     public static final int TOP = 2;
-    public static final int RIGHT = 3;
+    public static final int RIGHT = 1;
+    public static final int LEFT = 3;
 
     private int id_;
     private Player[] players_ = new Player[]{null, null, null, null};
     private int playerCount_ = 0; //player数量
-    private int roundCount_ = 0; //局数
+    private int gameCount_ = 0; //局数
     private int[] scores_ = new int[]{0, 0, 0, 0}; //累计比分（index为座位POSITION）
     private Dealer dealer_;
 
@@ -40,7 +37,7 @@ public class Table {
      * 仅更新统计信息
      */
     public void reset() {
-        roundCount_ = 0;
+        gameCount_ = 0;
         scores_ = new int[]{0, 0, 0, 0};
         dealer_.reset();
     }
@@ -51,7 +48,7 @@ public class Table {
      * @param pos
      * @return
      */
-    public boolean seat(Player player, int pos, Player playerBasic) {
+    public boolean seat(Player player, int pos) {
         //目标座位已有用户或自身已经为seated或ready状态则无法占座
         if(players_[pos] != null ||
             player.getState().equals(Player.STATE.Seated) ||
@@ -65,10 +62,6 @@ public class Table {
         player.setState(Player.STATE.Seated);
         playerCount_++;
         reset();
-        //设置playerBasic
-        playerBasic.setTablePosition(pos);
-        playerBasic.setTableId(id_);
-        player.setState(Player.STATE.Seated);
         return true;
     }
 
@@ -78,7 +71,7 @@ public class Table {
      * @param pos
      * @return
      */
-    public boolean unseat(Player player, int pos, Player playerBasic) {
+    public boolean unseat(Player player, int pos) {
         //空座，非自己座位，非seated和ready状态则无法离开座位
 //        if(players_[pos] == null || players_[pos] != player ||
 //            (!player.getState().equals(Player.STATE.Seated) &&
@@ -92,10 +85,6 @@ public class Table {
         player.setState(Player.STATE.Idle);
         playerCount_--;
         reset();
-        //设置playerBasic
-        playerBasic.setTablePosition(UNSEATED);
-        playerBasic.setTableId(UNSEATED);
-        player.setState(Player.STATE.Idle);
         return true;
     }
 

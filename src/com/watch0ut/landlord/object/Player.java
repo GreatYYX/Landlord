@@ -22,7 +22,7 @@ public class Player implements Serializable {
     private String userName_;
     private String nickName_;
     private String photo_;
-    private int roundCount_;
+    private int gameCount_;
     private int winCount_;
     private int loseCount_;
     private int landlordCount_;
@@ -44,15 +44,19 @@ public class Player implements Serializable {
     private STATE state_;
 
     private List<Card> cards_ = new ArrayList<Card>();
+    // player基本信息
+    // 采用直接维护Player对象的方式
+    // 而非每次从新获取状态以提高性能
+    private Player basicPlayer_ = null;
 
-    public Player() {
-        state_ = STATE.Idle;
-        tablePosition_ = -1;
-        tableId_ = -1;
-    }
+//    public Player() {
+//        state_ = STATE.Idle;
+//        tablePosition_ = -1;
+//        tableId_ = -1;
+//    }
 
     public Player(int id, String userName, String nickName, String photo, int score,
-                  int roundCount, int winCount, int loseCount, int landlordCount) {
+                  int gameCount, int winCount, int loseCount, int landlordCount) {
         state_ = STATE.Idle;
         tablePosition_ = -1;
         tableId_ = -1;
@@ -62,7 +66,7 @@ public class Player implements Serializable {
         nickName_ = nickName;
         photo_ = photo;
         score_ = score;
-        roundCount_ = roundCount;
+        gameCount_ = gameCount;
         winCount_ = winCount;
         loseCount_ = loseCount;
         landlordCount_ = landlordCount;
@@ -73,12 +77,11 @@ public class Player implements Serializable {
      * @return
      */
     public Player getBasicPlayer() {
-        Player player = new Player(id_, userName_, nickName_, photo_,
-                score_, roundCount_, winCount_, loseCount_, landlordCount_);
-        player.setState(state_);
-        player.setTableId(tableId_);
-        player.setTablePosition(tablePosition_);
-        return player;
+        if(basicPlayer_ == null) {
+            basicPlayer_ = new Player(id_, userName_, nickName_, photo_,
+                    score_, gameCount_, winCount_, loseCount_, landlordCount_);
+        }
+        return basicPlayer_;
     }
 
     public List<Card> getCards() {
@@ -161,26 +164,36 @@ public class Player implements Serializable {
 
     /**
      * 出牌
-     * @param leftType 上家的牌
-     * @param cards 需要出的牌
-     * @return 合法则返回实例化的CardType对象，否则返回null
      */
-    public CardType play(CardType leftType, List<Card> cards) {
+    public CardType play(CardType prevType, List<Card> cards) {
+        return play(prevType, findType(cards));
+    }
 
-        CardType currType = findType(cards);
-        if(currType == null) {
+    /**
+     * 出牌
+     * @param prevType 之前玩家出的最大牌，null则说明没有大过当前玩家上一轮的牌（本轮仍然当前玩家出牌）
+     * @param currType 需要出的牌，null则为不出
+     * @return 合法则返回实例化的CardType对象，否则返回null（不出或比上家小）
+     */
+    public CardType play(CardType prevType, CardType currType) {
+
+        if(currType == null) { // 不出牌
             return null;
         }
 
+        if(prevType == null) { // 一圈中最大，仍本玩家出牌
+            return currType;
+        }
+
         //判断和上家类型是否相同
-        if (((leftType instanceof One) && (currType instanceof One)) ||
-                ((leftType instanceof Two) && (currType instanceof Two)) ||
-                ((leftType instanceof Three) && (currType instanceof Three)) ||
-                ((leftType instanceof Five) && (currType instanceof Five))) {
+        if (((prevType instanceof One) && (currType instanceof One)) ||
+                ((prevType instanceof Two) && (currType instanceof Two)) ||
+                ((prevType instanceof Three) && (currType instanceof Three)) ||
+                ((prevType instanceof Five) && (currType instanceof Five))) {
 
             //牌面大于上家
-            if(currType.compareTo(leftType) > 0) {
-                if(removeCards(cards)) {
+            if(currType.compareTo(prevType) > 0) {
+                if(removeCards(currType.getCards())) {
                     return currType;
                 }
             }
@@ -317,6 +330,7 @@ public class Player implements Serializable {
 
     public void setId(int id) {
         id_ = id;
+        if(basicPlayer_ != null) basicPlayer_.setId(id);
     }
 
     public String getUserName() {
@@ -325,6 +339,7 @@ public class Player implements Serializable {
 
     public void setUserName(String name) {
         userName_ = name;
+        if(basicPlayer_ != null) basicPlayer_.setUserName(name);
     }
 
     public String getNickName() {
@@ -332,7 +347,8 @@ public class Player implements Serializable {
     }
 
     public void setNickName(String nickName) {
-        this.nickName_ = nickName;
+        nickName_ = nickName;
+        if(basicPlayer_ != null) basicPlayer_.setNickName(nickName);
     }
 
     public String getPhoto() {
@@ -341,6 +357,7 @@ public class Player implements Serializable {
 
     public void setPhoto(String photo) {
         photo_ = photo;
+        if(basicPlayer_ != null) basicPlayer_.setPhoto(photo);
     }
 
     public ROLE getRole() {
@@ -353,14 +370,16 @@ public class Player implements Serializable {
 
     public void setScore(int score) {
         score_ = score_;
+        if(basicPlayer_ != null) basicPlayer_.setScore(score);
     }
 
-    public int getRoundCount() {
-        return roundCount_;
+    public int getGameCount() {
+        return gameCount_;
     }
 
-    public void setRoundCount(int roundCount) {
-        roundCount_ = roundCount;
+    public void setGameCount(int gameCount) {
+        gameCount_ = gameCount;
+        if(basicPlayer_ != null) basicPlayer_.setGameCount(gameCount);
     }
 
     public int getWinCount() {
@@ -369,6 +388,7 @@ public class Player implements Serializable {
 
     public void setWinCount(int winCount) {
         winCount_ = winCount;
+        if(basicPlayer_ != null) basicPlayer_.setWinCount(winCount);
     }
 
     public int getLoseCount_() {
@@ -377,6 +397,7 @@ public class Player implements Serializable {
 
     public void setLoseCount(int loseCount) {
         loseCount_ = loseCount;
+        if(basicPlayer_ != null) basicPlayer_.setLoseCount(loseCount);
     }
 
     public int getLandlordCount() {
@@ -385,6 +406,7 @@ public class Player implements Serializable {
 
     public void setLandlordCount(int landlordCount) {
         landlordCount_ = landlordCount;
+        if(basicPlayer_ != null) basicPlayer_.setLandlordCount(landlordCount);
     }
 
     public int getTablePosition() {
@@ -393,6 +415,7 @@ public class Player implements Serializable {
 
     public void setTablePosition(int position) {
         tablePosition_ = position;
+        if(basicPlayer_ != null) basicPlayer_.setTablePosition(position);
     }
 
     public int getTableId() {
@@ -400,7 +423,8 @@ public class Player implements Serializable {
     }
 
     public void setTableId(int tableId) {
-        this.tableId_ = tableId;
+        tableId_ = tableId;
+        if(basicPlayer_ != null) basicPlayer_.setTableId(tableId);
     }
 
     public STATE getState() {
@@ -409,5 +433,6 @@ public class Player implements Serializable {
 
     public void setState(STATE state) {
         state_ = state;
+        if(basicPlayer_ != null) basicPlayer_.setState(state);
     }
 }

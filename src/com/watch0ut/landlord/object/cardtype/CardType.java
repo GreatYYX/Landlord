@@ -11,6 +11,7 @@ import com.watch0ut.landlord.object.Card;
  * 出牌类型。所有传入CardType子类的List必须先经过Operator中的点数优先排序！！
  */
 public class CardType implements Comparable<Object> {
+    protected List<Card> cards_ = null;
 
     /**
      * 判断合法性的静态方法
@@ -20,6 +21,14 @@ public class CardType implements Comparable<Object> {
      */
     public static boolean isValid(List<Card> cards) {
         return true;
+    }
+
+    /**
+     * 获取牌
+     * @return
+     */
+    public List<Card> getCards() {
+        return cards_;
     }
 
     /**

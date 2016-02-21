@@ -13,8 +13,6 @@ public class Five extends CardType {
     enum TYPE { Straight, Flush, ThreePlusTwo, FourPlusOne, StraightFlush };
     private TYPE type_;
 
-    private List<Card> cards_;
-
     public static boolean isValid(List<Card> cards) {
         if(isStraight(cards) || isFlush(cards) ||
            isThreePlusTwo(cards) || isFourPlusOne(cards)) {

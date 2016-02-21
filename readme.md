@@ -6,7 +6,7 @@
 
 # 技术概况
 
-- 服务器基于Apache MINA 2，采用StateMachine驱动。数据库为PostGreSQL（开启pgcrypt）。
+- 服务器基于Apache MINA 2，数据库为PostGreSQL（开启pgcrypto）。
 - 客户端使用JavaFX 2编写图形界面。
 
 # 游戏规则明细
@@ -19,7 +19,7 @@
 
 ## 发牌出牌顺序及牌数
 - 逆时针发牌。
-- 顺时针出牌。
+- 逆时针出牌。
 - 一副牌去除大小王，共52张。
 
 ## 合法牌型及大小比较

@@ -22,8 +22,6 @@ public class SeatResponseCommand extends AbstractCommand {
 
     private int stateCode_; //状态码
     private String msg_; //失败原因
-    private int tableId_;
-    private int tablePosition_;
 
     public SeatResponseCommand() {
 
@@ -32,14 +30,6 @@ public class SeatResponseCommand extends AbstractCommand {
     public SeatResponseCommand(int stateCode, String msg) {
         stateCode_ = stateCode;
         msg_ = msg;
-    }
-
-    public int getTableId() {
-        return tableId_;
-    }
-
-    public int getTablePosition_() {
-        return tablePosition_;
     }
 
     public int getStateCode() {
@@ -55,12 +45,7 @@ public class SeatResponseCommand extends AbstractCommand {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
         oos.writeObject(stateCode_);
-        if(stateCode_ == SUCCESS) {
-            oos.writeObject(tableId_);
-            oos.writeObject(tablePosition_);
-        } else {
-            oos.writeObject(msg_);
-        }
+        oos.writeObject(msg_);
         return bos.toByteArray();
     }
 
@@ -69,11 +54,6 @@ public class SeatResponseCommand extends AbstractCommand {
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         ObjectInputStream ois = new ObjectInputStream(bis);
         stateCode_ = (Integer)ois.readObject();
-        if(stateCode_ == SUCCESS) {
-            tableId_ = (Integer)ois.readObject();
-            tablePosition_ = (Integer)ois.readObject();
-        } else {
-            msg_ = (String)ois.readObject();
-        }
+        msg_ = (String)ois.readObject();
     }
 }
