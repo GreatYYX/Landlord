@@ -7,6 +7,7 @@ import javafx.scene.text.Font;
 
 /**
  * 消息面板，包括时间、玩家和消息内容
+ *
  * Created by Jack on 16/2/21.
  */
 public class MessagePane extends VBox {

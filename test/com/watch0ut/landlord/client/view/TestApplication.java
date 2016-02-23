@@ -1,14 +1,12 @@
 package com.watch0ut.landlord.client.view;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 /**
  * 主程序测试类
+ *
  * Created by Jack on 16/2/13.
  */
 public class TestApplication extends Application {
@@ -44,8 +42,11 @@ public class TestApplication extends Application {
         // 测试PlayerInfoPane
 //        primaryStage.setScene(new Scene(TestPlayerInfoPane.initialize(), 240, 100));
 
+        // 测试EffectTextLabel
+        primaryStage.setScene(new Scene(TestMarkLabel.initialize(), 150, 200));
+
         // 测试ChatPane
-        primaryStage.setScene(new Scene(TestChatPane.initialize(), 240, 450));
+//        primaryStage.setScene(new Scene(TestChatPane.initialize(), 240, 450));
 
         primaryStage.show();
     }

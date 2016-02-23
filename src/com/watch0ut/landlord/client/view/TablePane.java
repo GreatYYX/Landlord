@@ -7,6 +7,7 @@ import javafx.scene.layout.StackPane;
 
 /**
  * 桌子，还提供显示玩家状态，当所有玩家都准备完毕，就进入PLAY状态
+ *
  * Created by Jack on 16/2/20.
  */
 public class TablePane extends StackPane {

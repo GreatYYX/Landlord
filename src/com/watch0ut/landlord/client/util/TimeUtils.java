@@ -5,6 +5,7 @@ import java.util.Date;
 
 /**
  * 时间工具类，提供常用一些函数
+ *
  * Created by Jack on 16/2/21.
  */
 public class TimeUtils {

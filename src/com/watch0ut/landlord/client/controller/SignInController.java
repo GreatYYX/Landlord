@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 
 /**
  * 登录对话框的控制器，登录等操作在此实现
+ *
  * Created by Jack on 16/2/18.
  */
 public class SignInController {

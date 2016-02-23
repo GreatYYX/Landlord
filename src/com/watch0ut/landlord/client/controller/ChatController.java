@@ -9,6 +9,7 @@ import javafx.scene.input.KeyEvent;
 
 /**
  * 聊天面板控制器
+ *
  * Created by Jack on 16/2/21.
  */
 public class ChatController {

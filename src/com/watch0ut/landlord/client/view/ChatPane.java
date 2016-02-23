@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 
 /**
  * 聊天面板
+ *
  * Created by Jack on 16/2/21.
  */
 public class ChatPane extends VBox {

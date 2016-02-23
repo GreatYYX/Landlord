@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 
 /**
  * 测试玩家个人信息面板
+ *
  * Created by Jack on 16/2/21.
  */
 public class TestPlayerInfoPane {

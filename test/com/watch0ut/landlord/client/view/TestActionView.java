@@ -5,6 +5,7 @@ import javafx.scene.layout.FlowPane;
 
 /**
  * 测试ActionView，查看各种角色的效果
+ *
  * Created by Jack on 16/2/21.
  */
 public class TestActionView {

@@ -11,6 +11,7 @@ import javafx.scene.text.TextAlignment;
 
 /**
  * 牌桌，包含牌桌号和四个玩家，会显示玩家的头像和昵称。
+ *
  * Created by Jack on 16/2/19.
  */
 public class CardTablePane extends VBox {

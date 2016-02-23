@@ -5,6 +5,7 @@ import javafx.scene.layout.FlowPane;
 
 /**
  * 测试头像面板，测试各种尺寸和各种名字长度
+ *
  * Created by Jack on 16/2/21.
  */
 public class TestAvatarPane {

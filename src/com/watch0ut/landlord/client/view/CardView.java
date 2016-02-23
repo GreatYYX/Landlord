@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 
 /**
  * 纸牌
+ *
  * Created by Jack on 16/2/13.
  */
 public class CardView extends ImageView {

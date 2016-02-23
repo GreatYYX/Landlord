@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 
 /**
  * 测试聊天面板，可以发送和接收消息
+ *
  * Created by Jack on 16/2/21.
  */
 public class TestChatPane {

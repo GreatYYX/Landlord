@@ -5,6 +5,7 @@ import javafx.scene.image.ImageView;
 
 /**
  * 角色控件，分为四种：农民，地主3，地主A和地址3A
+ *
  * Created by Jack on 16/2/13.
  */
 public class ActionView extends ImageView {

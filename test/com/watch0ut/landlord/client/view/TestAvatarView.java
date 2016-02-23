@@ -5,6 +5,7 @@ import javafx.scene.layout.FlowPane;
 
 /**
  * 测试AvatarView，构造各种尺寸的头像
+ *
  * Created by Jack on 16/2/21.
  */
 public class TestAvatarView {

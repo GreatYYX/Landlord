@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 
 /**
  * 玩家个人信息面板，显示头像、昵称和积分
+ *
  * Created by Jack on 16/2/21.
  */
 public class PlayerInfoPane extends FlowPane {

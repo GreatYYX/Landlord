@@ -7,6 +7,7 @@ import javafx.scene.text.TextAlignment;
 
 /**
  * 头像面板,显示头像和名字
+ *
  * Created by Jack on 16/2/13.
  */
 public class AvatarPane extends VBox {

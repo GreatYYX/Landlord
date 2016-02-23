@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 /**
  * 头像控件，尺寸共六种，分别为tiny，mini，small，middle，big和large。
  * 默认的头像名为idle。
+ *
  * Created by Jack on 16/2/13.
  */
 public class AvatarView extends ImageView {
