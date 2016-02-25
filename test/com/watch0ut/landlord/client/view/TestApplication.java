@@ -43,7 +43,10 @@ public class TestApplication extends Application {
 //        primaryStage.setScene(new Scene(TestPlayerInfoPane.initialize(), 240, 100));
 
         // 测试EffectTextLabel
-        primaryStage.setScene(new Scene(TestMarkLabel.initialize(), 150, 200));
+//        primaryStage.setScene(new Scene(TestMarkLabel.initialize(), 150, 200));
+
+        // 测试StopwatchPane
+        primaryStage.setScene(new Scene(TestStopwatchPane.initialize(), 150, 150));
 
         // 测试ChatPane
 //        primaryStage.setScene(new Scene(TestChatPane.initialize(), 240, 450));
