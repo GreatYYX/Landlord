@@ -45,8 +45,10 @@ public class TestApplication extends Application {
         // 测试EffectTextLabel
 //        primaryStage.setScene(new Scene(TestMarkLabel.initialize(), 150, 200));
 
+        // 测试PlayerPane
+        primaryStage.setScene(new Scene(TestPlayerPane.initialize(), 150, 360));
         // 测试StopwatchPane
-        primaryStage.setScene(new Scene(TestStopwatchPane.initialize(), 150, 150));
+//        primaryStage.setScene(new Scene(TestStopwatchPane.initialize(), 150, 150));
 
         // 测试ChatPane
 //        primaryStage.setScene(new Scene(TestChatPane.initialize(), 240, 450));
