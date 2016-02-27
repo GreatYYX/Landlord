@@ -33,6 +33,8 @@ public class TestApplication extends Application {
         // 测试TablePane
 //        primaryStage.setScene(new Scene(TestTablePane.initialize(), 150, 200));
 
+        primaryStage.setScene(new Scene(TestPlayerListTable.initialize(), 250, 300));
+
         // 测试CardTablePane
 //        primaryStage.setScene(new Scene(TestCardTablePane.initialize(), 540, 600));
 
@@ -52,7 +54,7 @@ public class TestApplication extends Application {
 //        primaryStage.setScene(new Scene(TestStopwatchPane.initialize(), 150, 150));
 
         // 测试ReadyButton和OperatePane
-        primaryStage.setScene(new Scene(TestButtons.initialize(), 144, 100));
+//        primaryStage.setScene(new Scene(TestButtons.initialize(), 144, 100));
 
         // 测试ChatPane
 //        primaryStage.setScene(new Scene(TestChatPane.initialize(), 240, 450));

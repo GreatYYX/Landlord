@@ -14,7 +14,7 @@ public class TestButtons {
     public static Parent initialize() {
         VBox vBox = new VBox(10);
         vBox.setAlignment(Pos.CENTER);
-        
+
         ReadyButton readyButton = new ReadyButton();
         OperatePane operatePane = new OperatePane();
 

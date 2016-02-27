@@ -369,7 +369,8 @@ public class Player implements Serializable {
     }
 
     public void setScore(int score) {
-        score_ = score_;
+        // score_ = score_; 被你这行代码坑死了。。。
+        score_ = score;
         if(basicPlayer_ != null) basicPlayer_.setScore(score);
     }
 
