@@ -11,7 +11,6 @@ import javafx.scene.layout.StackPane;
  * Created by Jack on 16/2/20.
  */
 public class TablePane extends StackPane {
-    private Image nullImage;
     private Image readyImage;
     private Image tableImage;
     private Image playingTableImage;
@@ -28,7 +27,6 @@ public class TablePane extends StackPane {
         setMaxSize(48, 48);
 
         try {
-            nullImage = new Image(getClass().getResourceAsStream("icon/widget/null.png"));
             readyImage = new Image(getClass().getResourceAsStream("icon/widget/ready.png"));
             tableImage = new Image(getClass().getResourceAsStream("icon/widget/table_small.png"));
             playingTableImage = new Image(getClass().getResourceAsStream("icon/widget/table_small_play.png"));
@@ -43,22 +41,22 @@ public class TablePane extends StackPane {
 
         gridPane = new GridPane();
 
-        upReadyImage = new ImageView(nullImage);
+        upReadyImage = new ImageView();
         upReadyImage.setFitWidth(16);
         upReadyImage.setFitHeight(16);
         gridPane.add(upReadyImage, 1, 0);
 
-        leftReadyImage = new ImageView(nullImage);
+        leftReadyImage = new ImageView();
         leftReadyImage.setFitWidth(16);
         leftReadyImage.setFitHeight(16);
         gridPane.add(leftReadyImage, 0, 1);
 
-        downReadyImage = new ImageView(nullImage);
+        downReadyImage = new ImageView();
         downReadyImage.setFitWidth(16);
         downReadyImage.setFitHeight(16);
         gridPane.add(downReadyImage, 1, 2);
 
-        rightReadyImage = new ImageView(nullImage);
+        rightReadyImage = new ImageView();
         rightReadyImage.setFitWidth(16);
         rightReadyImage.setFitHeight(16);
         gridPane.add(rightReadyImage, 2, 1);
@@ -72,7 +70,7 @@ public class TablePane extends StackPane {
     }
 
     public void setUpLeave() {
-        upReadyImage.setImage(nullImage);
+        upReadyImage.setImage(null);
     }
 
     public void setLeftReady() {
@@ -80,7 +78,7 @@ public class TablePane extends StackPane {
     }
 
     public void setLeftLeave() {
-        leftReadyImage.setImage(nullImage);
+        leftReadyImage.setImage(null);
     }
 
     public void setDownReady() {
@@ -88,7 +86,7 @@ public class TablePane extends StackPane {
     }
 
     public void setDownLeave() {
-        downReadyImage.setImage(nullImage);
+        downReadyImage.setImage(null);
     }
 
     public void setRightReady() {
@@ -96,7 +94,7 @@ public class TablePane extends StackPane {
     }
 
     public void setRightLeave() {
-        rightReadyImage.setImage(nullImage);
+        rightReadyImage.setImage(null);
     }
 
     public void setTablePlay() {

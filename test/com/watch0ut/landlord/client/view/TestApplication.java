@@ -33,7 +33,11 @@ public class TestApplication extends Application {
         // 测试TablePane
 //        primaryStage.setScene(new Scene(TestTablePane.initialize(), 150, 200));
 
-        primaryStage.setScene(new Scene(TestPlayerListTable.initialize(), 250, 300));
+        // 测试PlayerListTable
+//        primaryStage.setScene(new Scene(TestPlayerListTable.initialize(), 250, 300));
+
+        // 测试HallPane
+        primaryStage.setScene(new Scene(new HallPane(), 800, 600));
 
         // 测试CardTablePane
 //        primaryStage.setScene(new Scene(TestCardTablePane.initialize(), 540, 600));

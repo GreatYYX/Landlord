@@ -39,7 +39,7 @@ public class CardTablePane extends VBox {
         gridPane.setVgap(4);
 
         try {
-            idleImage = new Image(getClass().getResourceAsStream(AvatarView.IDLE));
+            idleImage = new Image(getClass().getResourceAsStream("icon/avatar/" + AvatarView.IDLE));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
