@@ -20,13 +20,16 @@ public class CardView extends ImageView {
     public final static int SMALL_WIDTH = 84;
     public final static int SMALL_HEIGHT = 103;
 
+    private Card card;
+
     /**
      * 构造函数，根据花色和点数，显示对应图片。
      * @param suit 花色, 0对应方片、1对应草花、2对应红桃、3对应黑桃
      * @param point 点数，0对应4、11对应2、12对应3
      */
     public CardView(int suit, int point) {
-        String name = new Card(point, suit).getCard() + ".png";
+        card = new Card(point, suit);
+        String name = card.getCard() + ".png";
         update(name);
     }
 
@@ -35,6 +38,7 @@ public class CardView extends ImageView {
      * @param card 包含花色和点数信息
      */
     public CardView(Card card) {
+        this.card = card;
         String name = card.getCard() + ".png";
         update(name);
     }
@@ -52,6 +56,10 @@ public class CardView extends ImageView {
             update(name, SMALL_WIDTH, SMALL_HEIGHT);
         else
             update(name);
+    }
+
+    public Card getCard() {
+        return card;
     }
 
     public void update(String name) {
