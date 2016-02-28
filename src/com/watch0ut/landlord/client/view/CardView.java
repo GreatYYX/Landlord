@@ -12,7 +12,7 @@ import javafx.scene.image.ImageView;
 public class CardView extends ImageView {
 
     private final static String CARD_PATH = "icon/card/";
-    public final static String REAR = "Rear.png";
+    private final static String REAR = "Rear.png";
 
     public final static int WIDTH = 126;
     public final static int HEIGHT = 154;
@@ -21,6 +21,10 @@ public class CardView extends ImageView {
     public final static int SMALL_HEIGHT = 103;
 
     private Card card;
+
+    public CardView() {
+        update(REAR);
+    }
 
     /**
      * 构造函数，根据花色和点数，显示对应图片。
@@ -43,19 +47,9 @@ public class CardView extends ImageView {
         update(name);
     }
 
-    /**
-     * 构造函数，根据图片的名字显示相应的图片
-     * @param name 图片名字
-     */
-    public CardView(String name) {
-        update(name);
-    }
-
-    public CardView(String name, boolean small) {
-        if (small)
-            update(name, SMALL_WIDTH, SMALL_HEIGHT);
-        else
-            update(name);
+    public void setSmall() {
+        setFitWidth(SMALL_WIDTH);
+        setFitHeight(SMALL_HEIGHT);
     }
 
     public Card getCard() {

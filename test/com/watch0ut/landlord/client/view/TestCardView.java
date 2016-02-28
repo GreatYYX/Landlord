@@ -12,8 +12,9 @@ import javafx.scene.layout.FlowPane;
 public class TestCardView {
 
     public static Parent initialize() {
-        CardView rear = new CardView(CardView.REAR);
-        CardView smallRear = new CardView(CardView.REAR, true);
+        CardView rear = new CardView();
+        CardView smallRear = new CardView();
+        smallRear.setSmall();
 
         CardView diamond4 = new CardView(0, 0);
         CardView spade3 = new CardView(Card.getSpade3());
