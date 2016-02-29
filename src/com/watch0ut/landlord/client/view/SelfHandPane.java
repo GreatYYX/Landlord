@@ -17,7 +17,7 @@ import java.util.List;
  *
  * Created by Jack on 16/2/28.
  */
-public class SelfHandPane extends VBox {
+public class SelfHandPane extends VBox implements HandPane {
     private final static int DELTA_WIDTH = 23;
     private final static int DELTA_HEIGHT = 23;
 
@@ -107,7 +107,11 @@ public class SelfHandPane extends VBox {
         if (!surplusLabel.isVisible()) {
             surplusLabel.setVisible(true);
         }
-        surplusLabel.updateSurplus(handView.size());
+        int number = handView.size();
+        if (number == 0)
+            surplusLabel.setVisible(false);
+        else
+            surplusLabel.updateSurplus(number);
     }
 
     public int getCardNumber() {

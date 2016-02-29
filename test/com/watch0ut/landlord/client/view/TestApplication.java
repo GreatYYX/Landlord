@@ -40,10 +40,13 @@ public class TestApplication extends Application {
 //        primaryStage.setScene(new Scene(new HallPane(), 800, 600));
 
         // 测试PlayedCardPane
-        primaryStage.setScene(new Scene(TestPlayedCardPane.initialize(), 150, 105));
+//        primaryStage.setScene(new Scene(TestPlayedCardPane.initialize(), 150, 105));
 
         // 测试SelfHandPane
 //        primaryStage.setScene(new Scene(TestSelfHandPane.initialize(), 500, 250));
+
+        // 测试OtherHandPane
+        primaryStage.setScene(new Scene(TestOtherHandPane.initialize(), 400, 400));
 
         // 测试CardTablePane
 //        primaryStage.setScene(new Scene(TestCardTablePane.initialize(), 540, 600));

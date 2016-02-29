@@ -40,7 +40,7 @@ public class TestSelfHandPane {
         HBox hBox = new HBox(10);
         hBox.setAlignment(Pos.CENTER);
 
-        Button dealButton = new Button("Deal");
+        Button dealButton = new Button("Draw");
         Button playButton = new Button("Play");
         playButton.setDisable(true);
         Button passButton = new Button("Pass");
@@ -50,7 +50,7 @@ public class TestSelfHandPane {
             @Override
             public void handle(ActionEvent event) {
                 dealButton.setDisable(true);
-                selfHandController.deal();
+                selfHandController.draw();
                 playButton.setDisable(false);
                 passButton.setDisable(false);
             }
