@@ -188,7 +188,10 @@ public class WServerHandler extends IoHandlerAdapter {
     public void seat(IoSession session, SeatCommand cmd) {
         WServerContext ctx = (WServerContext)session.getAttribute(CONTEXT);
         Player player = playerMap_.get(ctx.uid);
-        boolean ret = hall_.getTable(cmd.getTableId()).seat(player, cmd.getTablePosition_());
+        boolean ret = false;
+        synchronized (player) {
+            ret = hall_.getTable(cmd.getTableId()).seat(player, cmd.getTablePosition_());
+        }
         if(ret) {
             // 告知用户入座
             AbstractCommand cmdRes = new SeatResponseCommand(SeatResponseCommand.SUCCESS, "");
@@ -214,7 +217,10 @@ public class WServerHandler extends IoHandlerAdapter {
     public void unseat(IoSession session, UnseatCommand cmd) {
         WServerContext ctx = (WServerContext)session.getAttribute(CONTEXT);
         Player player = playerMap_.get(ctx.uid);
-        boolean ret = hall_.getTable(player.getTableId()).unseat(player, player.getTablePosition());
+        boolean ret = false;
+        synchronized (player) {
+            ret = hall_.getTable(player.getTableId()).unseat(player, player.getTablePosition());
+        }
 
         // 推送
         AbstractCommand cmdRefresh = new RefreshPlayerListCommand((List<Player>)playerBasicMap_.values());
@@ -230,10 +236,13 @@ public class WServerHandler extends IoHandlerAdapter {
      */
     public void ready(IoSession session, ReadyCommand cmd) {
         WServerContext ctx = (WServerContext)session.getAttribute(CONTEXT);
-        playerMap_.get(ctx.uid).setState(Player.STATE.Ready);
+        Player player = playerMap_.get(ctx.uid);
+        synchronized (player) {
+            player.setState(Player.STATE.Ready);
+        }
 
         //player是否都已ready
-        Table table = hall_.getTable(playerMap_.get(ctx.uid).getTableId());
+        Table table = hall_.getTable(player.getTableId());
         if(table.getPlayer(0).getState().equals(Player.STATE.Ready) &&
                 table.getPlayer(1).getState().equals(Player.STATE.Ready) &&
                 table.getPlayer(2).getState().equals(Player.STATE.Ready) &&
@@ -244,9 +253,12 @@ public class WServerHandler extends IoHandlerAdapter {
             GameStartCommand cmdStart = new GameStartCommand();
             cmdStart.setFirstPlayerUid(dealer.getFirstPlayer().getId());
             for(int i = 0; i < 4; i++) {
-                playerMap_.get(table.getPlayer(i).getId()).setState(Player.STATE.Wait); // Ready->Wait
-                cmdStart.setCards(table.getPlayer(i).getCards());
-                sendCommand(table.getPlayer(i).getId(), cmdStart);
+                Player p = playerMap_.get(table.getPlayer(i).getId());
+                synchronized (p) {
+                    p.setState(Player.STATE.Wait); // Ready->Wait
+                }
+                cmdStart.setCards(p.getCards());
+                sendCommand(p.getId(), cmdStart);
             }
             // 设定开局计时器
             dealer.setTimer(new Timer());
@@ -286,8 +298,12 @@ public class WServerHandler extends IoHandlerAdapter {
     protected void playOrFinish(Dealer dealer, CardType cardType) throws Exception {
         dealer.getTimer().cancel(); // 关闭计时器
 
-        playerMap_.get(dealer.getPlayingPlayer().getId()).setState(Player.STATE.Wait); // 当前用户状态切换为Wait
-        boolean moveOn = dealer.playAndMoveNext(dealer.getPlayingPlayer(), cardType);
+        Player player = playerMap_.get(dealer.getPlayingPlayer().getId());
+        boolean moveOn = false;
+        synchronized (player) {
+            player.setState(Player.STATE.Wait); // 当前用户状态切换为Wait
+            moveOn = dealer.playAndMoveNext(dealer.getPlayingPlayer(), cardType);
+        }
         if(moveOn) {
             // 游戏继续
             AbstractCommand cmdNext = new NextPlayCommand(null, dealer.getPlayingPlayer().getId());
@@ -377,7 +393,10 @@ public class WServerHandler extends IoHandlerAdapter {
         @Override
         public void run() {
             if(!timeout) { // 第一次执行
-                playerMap_.get(dealer_.getFirstPlayer().getId()).setState(Player.STATE.Play);
+                Player player = playerMap_.get(dealer_.getFirstPlayer().getId());
+                synchronized (player) {
+                    player.setState(Player.STATE.Play);
+                }
                 timeout = true;
             } else { // 第二次则timeout（不出牌）
                 try {

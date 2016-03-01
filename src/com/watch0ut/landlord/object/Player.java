@@ -74,12 +74,16 @@ public class Player implements Serializable {
 
     /**
      * 基础player信息
+     * 包含基本属性和状态，不包含牌及身份
      * @return
      */
     public Player getBasicPlayer() {
         if(basicPlayer_ == null) {
             basicPlayer_ = new Player(id_, userName_, nickName_, photo_,
                     score_, gameCount_, winCount_, loseCount_, landlordCount_);
+            basicPlayer_.setState(state_);
+            basicPlayer_.setTableId(tableId_);
+            basicPlayer_.setTablePosition(tablePosition_);
         }
         return basicPlayer_;
     }
@@ -369,7 +373,6 @@ public class Player implements Serializable {
     }
 
     public void setScore(int score) {
-        // score_ = score_; 被你这行代码坑死了。。。
         score_ = score;
         if(basicPlayer_ != null) basicPlayer_.setScore(score);
     }
