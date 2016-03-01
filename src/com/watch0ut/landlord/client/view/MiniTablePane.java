@@ -14,7 +14,7 @@ import javafx.scene.text.TextAlignment;
  *
  * Created by Jack on 16/2/19.
  */
-public class CardTablePane extends VBox {
+public class MiniTablePane extends VBox {
 
     private Image idleImage;
 
@@ -27,10 +27,10 @@ public class CardTablePane extends VBox {
     private Label downLabel;
     private AvatarView rightAvatar;
     private Label rightLabel;
-    private TablePane tablePane;
+    private TableView tableView;
     private Label numberLabel;
 
-    public CardTablePane(int number) {
+    public MiniTablePane(int number) {
         setAlignment(Pos.CENTER);
 
         gridPane = new GridPane();
@@ -47,8 +47,8 @@ public class CardTablePane extends VBox {
         initializeAvatars();
         initializeLabels();
 
-        tablePane = new TablePane();
-        gridPane.add(tablePane, 1, 1);
+        tableView = new TableView();
+        gridPane.add(tableView, 1, 1);
 
         getChildren().add(gridPane);
 

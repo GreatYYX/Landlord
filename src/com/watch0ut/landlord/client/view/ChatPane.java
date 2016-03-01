@@ -23,7 +23,7 @@ public class ChatPane extends VBox {
 
     public ChatPane() {
         setMinWidth(240);
-        setMaxWidth(240);
+//        setMaxWidth(240);
 
         messageListBox = new VBox(8);
         messageListBox.setPadding(new Insets(4, 4, 4, 4));
@@ -46,6 +46,12 @@ public class ChatPane extends VBox {
         HBox hBox = new HBox(4, messageText, sendButton);
         hBox.setPadding(new Insets(2, 2, 2, 2));
         getChildren().add(hBox);
+    }
+
+    @Override
+    public void setPrefSize(double prefWidth, double prefHeight) {
+        super.setPrefSize(prefWidth, prefHeight);
+        messageListBox.setPrefSize(prefWidth, prefHeight - 32);
     }
 
     public void setSendButtonHandler(EventHandler<ActionEvent> value) {

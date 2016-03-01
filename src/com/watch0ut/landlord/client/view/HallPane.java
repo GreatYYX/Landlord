@@ -20,7 +20,7 @@ public class HallPane extends BorderPane {
     private final static int RIGHT_WIDTH = 240;
 
     private FlowPane tablesPane;
-    private List<CardTablePane> tableList;
+    private List<MiniTablePane> tableList;
     private PlayerListTable playerListTable;
 
     public HallPane() {
@@ -33,9 +33,9 @@ public class HallPane extends BorderPane {
         tablesPane.setVgap(10);
         tablesPane.setHgap(10);
         for (int i = 0; i < Configuration.TABLE_PER_HALL; i++) {
-            CardTablePane cardTablePane = new CardTablePane(i + 1);
-            tableList.add(cardTablePane);
-            tablesPane.getChildren().add(cardTablePane);
+            MiniTablePane miniTablePane = new MiniTablePane(i + 1);
+            tableList.add(miniTablePane);
+            tablesPane.getChildren().add(miniTablePane);
         }
         setCenter(tablesPane);
 

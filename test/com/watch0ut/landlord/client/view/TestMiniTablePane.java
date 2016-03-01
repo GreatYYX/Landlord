@@ -9,7 +9,7 @@ import javafx.scene.layout.FlowPane;
  *
  * Created by Jack on 16/2/21.
  */
-public class TestCardTablePane {
+public class TestMiniTablePane {
 
     public static Parent initialize() {
         FlowPane flowPane = new FlowPane();
@@ -18,7 +18,7 @@ public class TestCardTablePane {
         flowPane.setVgap(10);
 
         for (int i = 1; i <= 16; i++) {
-            flowPane.getChildren().add(new CardTablePane(i));
+            flowPane.getChildren().add(new MiniTablePane(i));
         }
 
         return flowPane;

@@ -20,7 +20,6 @@ public class PlayerListTable extends StackPane {
 
     public PlayerListTable() {
         setMinWidth(240);
-        setPrefSize(250, 250);
 
         TableColumn<PlayerModel, String> avatarColumn =
                 new TableColumn<PlayerModel, String>();

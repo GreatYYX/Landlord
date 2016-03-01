@@ -30,8 +30,8 @@ public class TestApplication extends Application {
         // 测试AvatarPane
 //        primaryStage.setScene(new Scene(TestAvatarPane.initialize(), 400, 200));
 
-        // 测试TablePane
-//        primaryStage.setScene(new Scene(TestTablePane.initialize(), 150, 200));
+        // 测试TableView
+//        primaryStage.setScene(new Scene(TestTableView.initialize(), 150, 200));
 
         // 测试PlayerListTable
 //        primaryStage.setScene(new Scene(TestPlayerListTable.initialize(), 250, 300));
@@ -46,10 +46,10 @@ public class TestApplication extends Application {
 //        primaryStage.setScene(new Scene(TestSelfHandPane.initialize(), 500, 250));
 
         // 测试OtherHandPane
-        primaryStage.setScene(new Scene(TestOtherHandPane.initialize(), 400, 400));
+//        primaryStage.setScene(new Scene(TestOtherHandPane.initialize(), 400, 400));
 
-        // 测试CardTablePane
-//        primaryStage.setScene(new Scene(TestCardTablePane.initialize(), 540, 600));
+        // 测试MiniTablePane
+//        primaryStage.setScene(new Scene(TestMiniTablePane.initialize(), 540, 600));
 
         // 测试CardView
 //        primaryStage.setScene(new Scene(TestCardView.initialize(), 400, 400));
@@ -71,6 +71,10 @@ public class TestApplication extends Application {
 
         // 测试ChatPane
 //        primaryStage.setScene(new Scene(TestChatPane.initialize(), 240, 450));
+
+        // 测试TablePane
+        primaryStage.setScene(new Scene(TestTablePane.initialize(), 1164, 694));
+        primaryStage.setResizable(false);
 
         primaryStage.show();
     }
