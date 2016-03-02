@@ -15,10 +15,10 @@ public class TestButtons {
         VBox vBox = new VBox(10);
         vBox.setAlignment(Pos.CENTER);
 
-        ReadyButton readyButton = new ReadyButton();
+        StartButton startButton = new StartButton();
         OperatePane operatePane = new OperatePane();
 
-        vBox.getChildren().addAll(readyButton, operatePane);
+        vBox.getChildren().addAll(startButton, operatePane);
         return vBox;
     }
 }

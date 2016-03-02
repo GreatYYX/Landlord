@@ -3,6 +3,7 @@ package com.watch0ut.landlord.client.view;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -14,7 +15,36 @@ import javafx.scene.layout.VBox;
  */
 public class TablePane extends BorderPane {
 
+    public final static int LACK = 0;
+    public final static int FULL = 1;
+
     private final static String BG_PATH = "icon/widget/table_bg.png";
+    private final static int CENTER_WIDTH = 924;
+    private final static int CENTER_HEIGHT = 694;
+    private final static int CENTER_X = 462;
+    private final static int CENTER_Y = 347;
+    private final static int HALF_INNER_SQUARE = 168;
+
+    private final static int SELF_READY_X = CENTER_X - PlayerPane.WIDTH / 2;
+    private final static int SELF_READY_Y = CENTER_Y + HALF_INNER_SQUARE - PlayerPane.HEIGHT / 2;
+
+    private final static int EARLY_READY_X = CENTER_X - HALF_INNER_SQUARE - PlayerPane.WIDTH / 2;
+    private final static int EARLY_READY_Y = CENTER_Y - PlayerPane.HEIGHT / 2;
+
+    private final static int LATE_READY_X = CENTER_X + HALF_INNER_SQUARE - PlayerPane.WIDTH / 2;
+    private final static int LATE_READY_Y = CENTER_Y - PlayerPane.HEIGHT / 2;
+
+    private final static int RELATIVELY_READY_X = CENTER_X - PlayerPane.WIDTH / 2;
+    private final static int RELATIVELY_READY_Y = CENTER_Y - HALF_INNER_SQUARE - PlayerPane.HEIGHT / 2;
+
+    private int state;
+
+    private PlayerPane self;
+    private PlayerPane early;
+    private PlayerPane late;
+    private PlayerPane relatively;
+
+    private StartButton startButton;
 
     private PlayerInfoPane playerInfoPane;
     private PlayerListTable playerListTable;
@@ -24,6 +54,56 @@ public class TablePane extends BorderPane {
         setMinSize(1164, 694);
         setMaxSize(1164, 694);
 
+        state = LACK;
+
+        initializeCenter();
+        initializeRight();
+
+    }
+
+    private void initializeCenter() {
+        AnchorPane frontPane = new AnchorPane();
+        frontPane.setPrefSize(CENTER_WIDTH, CENTER_HEIGHT);
+        
+        self = new PlayerPane();
+        self.setLayoutX(SELF_READY_X);
+        self.setLayoutY(SELF_READY_Y);
+        frontPane.getChildren().addAll(self);
+
+        early = new PlayerPane();
+        early.setLayoutX(EARLY_READY_X);
+        early.setLayoutY(EARLY_READY_Y);
+        frontPane.getChildren().add(early);
+
+        late = new PlayerPane();
+        late.setLayoutX(LATE_READY_X);
+        late.setLayoutY(LATE_READY_Y);
+        frontPane.getChildren().add(late);
+
+        relatively = new PlayerPane();
+        relatively.setLayoutX(RELATIVELY_READY_X);
+        relatively.setLayoutY(RELATIVELY_READY_Y);
+        frontPane.getChildren().add(relatively);
+
+        startButton = new StartButton();
+        updateStartButtonPosition();
+        frontPane.getChildren().add(startButton);
+
+        StackPane centerPane = new StackPane();
+        ImageView background = new ImageView();
+        background.setFitWidth(CENTER_WIDTH);
+        background.setFitHeight(CENTER_HEIGHT);
+        try {
+            Image image = new Image(getClass().getResourceAsStream(BG_PATH));
+            background.setImage(image);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        centerPane.getChildren().addAll(background, frontPane);
+        setCenter(centerPane);
+    }
+
+    private void initializeRight() {
         playerInfoPane = new PlayerInfoPane();
         playerListTable = new PlayerListTable();
         playerListTable.setMinHeight(112);
@@ -35,18 +115,19 @@ public class TablePane extends BorderPane {
         rightBox.getChildren().addAll(playerInfoPane, playerListTable, chatPane);
 
         setRight(rightBox);
+    }
 
-        StackPane centerPane = new StackPane();
-        ImageView background = new ImageView();
-        background.setFitWidth(924);
-        background.setFitHeight(694);
-        try {
-            Image image = new Image(getClass().getResourceAsStream(BG_PATH));
-            background.setImage(image);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+    public void updateStartButtonPosition() {
+        switch (state) {
+            case FULL:
+                break;
+            case LACK:
+                startButton.setLayoutX(CENTER_X - startButton.getPrefWidth() / 2);
+                startButton.setLayoutY(CENTER_HEIGHT - startButton.getPrefHeight() - 20);
+                break;
+            default:
+                startButton.setLayoutX(CENTER_X - startButton.getPrefWidth() / 2);
+                startButton.setLayoutY(CENTER_HEIGHT - startButton.getPrefHeight() - 20);
         }
-        centerPane.getChildren().add(background);
-        setCenter(centerPane);
     }
 }

@@ -14,6 +14,9 @@ import javafx.scene.layout.VBox;
  */
 public class PlayerPane extends VBox {
 
+    public final static int WIDTH = 128;
+    public final static int HEIGHT = 148;
+
     private AnchorPane idleParent;
     private VBox playedParent;
 
@@ -26,8 +29,9 @@ public class PlayerPane extends VBox {
         setMinSize(128, 148);
 
         idleParent = new AnchorPane();
-        idleParent.setMinSize(128, 148);
-        idleParent.setMaxSize(128, 148);
+        idleParent.setMinSize(WIDTH, HEIGHT);
+        idleParent.setMaxSize(WIDTH, HEIGHT);
+        idleParent.setStyle("-fx-border-color: black");
 
         playedParent = new VBox(4);
         playedParent.setAlignment(Pos.CENTER);
