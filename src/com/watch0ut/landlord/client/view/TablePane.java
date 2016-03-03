@@ -1,5 +1,7 @@
 package com.watch0ut.landlord.client.view;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,15 +29,23 @@ public class TablePane extends BorderPane {
 
     private final static int SELF_READY_X = CENTER_X - PlayerPane.WIDTH / 2;
     private final static int SELF_READY_Y = CENTER_Y + HALF_INNER_SQUARE - PlayerPane.HEIGHT / 2;
+    private final static int SELF_PLAY_X = CENTER_X - 215 - PlayerPane.WIDTH;
+    private final static int SELF_PLAY_Y = CENTER_HEIGHT - 180;
 
     private final static int EARLY_READY_X = CENTER_X - HALF_INNER_SQUARE - PlayerPane.WIDTH / 2;
     private final static int EARLY_READY_Y = CENTER_Y - PlayerPane.HEIGHT / 2;
+    private final static int EARLY_PLAY_X = 10;
+    private final static int EARLY_PLAY_Y = CENTER_Y - PlayerPane.HEIGHT / 2;
 
     private final static int LATE_READY_X = CENTER_X + HALF_INNER_SQUARE - PlayerPane.WIDTH / 2;
     private final static int LATE_READY_Y = CENTER_Y - PlayerPane.HEIGHT / 2;
+    private final static int LATE_PLAY_X = CENTER_WIDTH - PlayerPane.WIDTH - 10;
+    private final static int LATE_PLAY_Y = CENTER_Y - PlayerPane.HEIGHT / 2;
 
     private final static int RELATIVELY_READY_X = CENTER_X - PlayerPane.WIDTH / 2;
     private final static int RELATIVELY_READY_Y = CENTER_Y - HALF_INNER_SQUARE - PlayerPane.HEIGHT / 2;
+    private final static int RELATIVELY_PLAY_X = CENTER_X + 148;
+    private final static int RELATIVELY_PLAY_Y = 42;
 
     private int state;
 
@@ -89,6 +99,14 @@ public class TablePane extends BorderPane {
         updateStartButtonPosition();
         frontPane.getChildren().add(startButton);
 
+        startButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                setState(TablePane.FULL);
+                updatePlayerPosition();
+            }
+        });
+
         StackPane centerPane = new StackPane();
         ImageView background = new ImageView();
         background.setFitWidth(CENTER_WIDTH);
@@ -129,5 +147,26 @@ public class TablePane extends BorderPane {
                 startButton.setLayoutX(CENTER_X - startButton.getPrefWidth() / 2);
                 startButton.setLayoutY(CENTER_HEIGHT - startButton.getPrefHeight() - 20);
         }
+    }
+
+    public void updatePlayerPosition() {
+        if (state == FULL) {
+//            self.play();
+            self.setLayoutX(SELF_PLAY_X);
+            self.setLayoutY(SELF_PLAY_Y);
+
+            early.setLayoutX(EARLY_PLAY_X);
+            early.setLayoutY(EARLY_PLAY_Y);
+
+            late.setLayoutX(LATE_PLAY_X);
+            late.setLayoutY(LATE_PLAY_Y);
+
+            relatively.setLayoutX(RELATIVELY_PLAY_X);
+            relatively.setLayoutY(RELATIVELY_PLAY_Y);
+        }
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }
