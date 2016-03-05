@@ -1,5 +1,6 @@
 package com.watch0ut.landlord.server.database;
 
+import com.watch0ut.landlord.Configuration;
 import com.watch0ut.landlord.object.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,5 +47,16 @@ public class DatabaseHelper {
         }
 
         return player;
+    }
+
+    public void disconnectPenalty(int uid) {
+        try {
+            PreparedStatement pst = db_.getConn().prepareStatement(
+                    "UPDATE player SET score=score-? WHERE id=?");
+            pst.setInt(1, Configuration.DISCONNECT_PENALTY);
+            pst.setInt(2, uid);
+            pst.executeUpdate();
+        } catch (SQLException e) {
+        }
     }
 }

@@ -155,11 +155,29 @@ public class WServerHandler extends IoHandlerAdapter {
      * 登出
      * IDLE->NOT_CONNECTED
      * 登出后不断开Socket
+     * 当客户端断线时（sessionClosed）或用户强制退出时（客户端需禁止游戏中玩家退出），
+     * 也会强制调用该方法，此时如果正在进行游戏，所有同桌用户将被强制结束游戏。
      */
     public void logout(IoSession session, LogoutCommand cmd) {
         WServerContext ctx = (WServerContext)session.getAttribute(CONTEXT);
         Player player = playerMap_.get(ctx.uid);
         if(player != null) {
+            // 如果还在游戏，所有玩家强制停止
+            if(playerInState(ctx.uid, Player.STATE.Wait) || playerInState(ctx.uid, Player.STATE.Play)
+                    || playerInState(ctx.uid, Player.STATE.Finish)) {
+                Table table = hall_.getTable(player.getTableId());
+                AbstractCommand cmdForceStop = new GameOverCommand(true);
+                for(int i = 0; i < 4; i++) {
+                    Player currPlayer = table.getPlayer(i);
+                    if(currPlayer != player) { // 同桌其余玩家被结束游戏
+                        currPlayer.setState(Player.STATE.Seated);
+                        sendCommand(currPlayer.getId(), cmdForceStop);
+                    } else { // 自身被处以惩罚
+                        dbHelper_.disconnectPenalty(player.getId());
+                    }
+                }
+            }
+            // 如果还在座位
             if(player.getTableId() != Table.UNSEATED) {
                 hall_.getTable(player.getTableId()).unseat(player, player.getTablePosition());
             }
