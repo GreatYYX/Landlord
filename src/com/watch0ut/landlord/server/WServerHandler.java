@@ -268,7 +268,7 @@ public class WServerHandler extends IoHandlerAdapter {
             Dealer dealer = table.getDealer();
             dealer.gameInit();
             dealer.shuffle();
-            GameStartCommand cmdStart = new GameStartCommand();
+            GameStartCommand cmdStart = new GameStartCommand(dealer.getSeqId());
             cmdStart.setFirstPlayerUid(dealer.getFirstPlayer().getId());
             for(int i = 0; i < 4; i++) {
                 Player p = playerMap_.get(table.getPlayer(i).getId());
@@ -299,13 +299,13 @@ public class WServerHandler extends IoHandlerAdapter {
         AbstractCommand cmdRes;
         Player player = playerMap_.get(ctx.uid);
         Dealer dealer = hall_.getTable(player.getTableId()).getDealer();
-        if(ctx.uid == dealer.getPlayingPlayer().getId()) {
+        if(dealer.getSeqId() == cmd.getSeqId()) {
             playOrFinish(dealer, cmd.getCardType());
-            cmdRes = new PlayResponseCommand(cmd.getSeqId(), PlayResponseCommand.SUCCESS);
+            cmdRes = new PlayResponseCommand(dealer.getSeqId(), PlayResponseCommand.SUCCESS);
             sendCommand(session, cmdRes);
         } else {
             // timeout后接收到到Play指令被忽略
-            cmdRes = new PlayResponseCommand(cmd.getSeqId(), PlayResponseCommand.ERROR);
+            cmdRes = new PlayResponseCommand(dealer.getSeqId(), PlayResponseCommand.ERROR);
             sendCommand(session, cmdRes);
         }
     }
@@ -324,7 +324,7 @@ public class WServerHandler extends IoHandlerAdapter {
         }
         if(moveOn) {
             // 游戏继续
-            AbstractCommand cmdNext = new NextPlayCommand(null, dealer.getPlayingPlayer().getId());
+            AbstractCommand cmdNext = new NextPlayCommand(cardType, dealer.getPlayingPlayer().getId(), dealer.seqIdIncrement());
             Table table = dealer.getTable();
             for(int i = 0; i < 4; i++) {
                 sendCommand(table.getPlayer(i).getId(), cmdNext);

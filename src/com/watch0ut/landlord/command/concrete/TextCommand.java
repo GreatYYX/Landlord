@@ -18,7 +18,7 @@ public class TextCommand extends AbstractCommand {
     private static final String[] BLOCK_LIST = {"TMD", "TNND"};
 
     private String text_ = "";
-    private String sender_ = ""; //消息发送者
+    private String sender_ = ""; //消息发送者，使用nickname
 
     public TextCommand() {
     }

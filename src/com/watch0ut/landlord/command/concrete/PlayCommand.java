@@ -1,9 +1,14 @@
 package com.watch0ut.landlord.command.concrete;
 
 import com.watch0ut.landlord.command.AbstractCommand;
+import com.watch0ut.landlord.object.Card;
 import com.watch0ut.landlord.object.cardtype.CardType;
 
-import java.util.Random;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.List;
 
 /**
  * Created by GreatYYX on 2/19/16.
@@ -15,13 +20,13 @@ import java.util.Random;
  */
 public class PlayCommand extends AbstractCommand {
     private CardType cardType_;
-    private String seqId_; // 用于确保Play与PlayResponse命令的对应，客户端使用generateSeqId生成
+    private int seqId_;
 
     public PlayCommand() {
 
     }
 
-    public PlayCommand(String seqId, CardType cardType) {
+    public PlayCommand(int seqId, CardType cardType) {
         seqId_ = seqId;
         cardType_ = cardType;
     }
@@ -30,28 +35,24 @@ public class PlayCommand extends AbstractCommand {
         return cardType_;
     }
 
-    public String getSeqId() {
+    public int getSeqId() {
         return seqId_;
-    }
-
-    public static String generateSeqId(int uid) {
-        StringBuilder seqId = new StringBuilder();
-        Random rand = new Random();
-        int idx;
-        for(int i = 0; i < 5; i++) {
-            idx = rand.nextInt(26);
-            seqId.append((char)(idx + 'a'));
-        }
-        return seqId.toString();
     }
 
     @Override
     public byte[] bodyToBytes() throws Exception {
-        return new byte[0];
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeInt(seqId_);
+        oos.writeObject(cardType_);
+        return bos.toByteArray();
     }
 
     @Override
     public void bytesToBody(byte[] bytes) throws Exception {
-
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+        ObjectInputStream ois = new ObjectInputStream(bis);
+        seqId_ = ois.readInt();
+        cardType_ = (CardType)ois.readObject();
     }
 }
