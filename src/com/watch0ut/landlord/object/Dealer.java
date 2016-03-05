@@ -10,7 +10,7 @@ import java.util.*;
  *
  * 荷官，负责发牌洗牌判赢等操作
  * 只记录上一局及当前一局的数据，不保留其他状态
- * 注：一局指从GameInit到GameFinish，一局指出牌的一圈
+ * 注：一局指从GameInit到GameFinish，一轮指从出牌到产生最大出牌（没有人要）为止的整个过程
  */
 public class Dealer {
 
@@ -20,10 +20,12 @@ public class Dealer {
     List<Player> finishLord_; //已逃出地主
     List<Player> finishFarmer_; //已逃出农民
     Player firstPlayer_; //方片四持有玩家第一个出牌，或一轮中出最大牌的玩家下一轮第一个出
-    CardType prevCardType_; // 本轮中之前玩家出的最大牌
+    CardType prevMaxCardType_; // 本轮中之前玩家出的最大牌
     int finishCount_; //已经逃出的玩家数量
     int playingPosition_; //目前出牌玩家位置
     Timer timer_;
+    Player relayPlayer_; // 接风玩家
+    boolean canRelay_; // 确认可以接风（下家均压不过出完牌的上家）
 
     //上一局
 //    Map<Card, Player> tributeMap_; //贡牌堆
@@ -65,7 +67,9 @@ public class Dealer {
         finishLord_ = new ArrayList<Player>();
         finishFarmer_ = new ArrayList<Player>();
         firstPlayer_ = null;
-        prevCardType_ = null;
+        prevMaxCardType_ = null;
+        relayPlayer_ = null;
+        canRelay_ = false;
     }
 
     /**
@@ -136,11 +140,29 @@ public class Dealer {
      * @return true则继续游戏，false则游戏结束
      */
     public boolean playAndMoveNext(Player player, CardType cardType) throws InvalidCardType {
+        //接风逻辑
+        if(relayPlayer_ != null && relayPlayer_ == player) {
+            if(!canRelay_) { // 进入接风确认环节
+                canRelay_ = true;
+            } else { // 确认可以接风
+                relayPlayer_ = null;
+                canRelay_ = false;
+                firstPlayer_ = player;
+            }
+        }
+
+        CardType currCardType = null;
         if(firstPlayer_ == player) { // 本轮第一个出牌
             if(cardType == null) throw new InvalidCardType(); // 此时cardType不能是null，必须出牌
-            prevCardType_ = player.play(null, cardType);
+            currCardType = player.play(null, cardType);
         } else {
-            prevCardType_ = player.play(prevCardType_, cardType);
+            currCardType = player.play(prevMaxCardType_, cardType);
+        }
+        if(currCardType != null) { // 当前最大出牌，更新最大出牌及下一轮第一个出牌玩家
+            prevMaxCardType_ = currCardType;
+            firstPlayer_ = player;
+            relayPlayer_ = null; // 一旦产生firstPlayer，接风标记抹去
+            canRelay_ = false;
         }
 
         // 判断玩家是否出完牌
@@ -150,10 +172,14 @@ public class Dealer {
             }
         }
 
-        //更新玩家位置
+        // 更新玩家位置
         playingPosition_ = (playingPosition_ + 1) % 4;
         while(finishSequence_[playingPosition_] == -1) {
             playingPosition_ = (playingPosition_ + 1) % 4;
+        }
+        // 设定接风标记
+        if(player.getCards().size() == 0) {
+            relayPlayer_ = table_.getPlayer(playingPosition_);
         }
 
         return true;

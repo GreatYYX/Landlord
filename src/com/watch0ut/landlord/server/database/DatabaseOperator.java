@@ -16,7 +16,7 @@ public class DatabaseOperator {
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseOperator.class);
 
     private static final String JDBC_URL = "jdbc:postgresql://127.0.0.1:5432/landlord";
-    private static final String JDBC_USER = "root";
+    private static final String JDBC_USER = "landlord";
     private static final String JDBC_PWD = "123456";
 
     private Connection conn_ = null;

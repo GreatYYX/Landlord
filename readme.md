@@ -10,9 +10,9 @@
 
 ## 三方库
 
-- mina-core-2.0.9 (commons-lang, mina-core, mina-statemachine slf4j-api, slf4j-simple)
-- postgresql-9.4.1207
+- mina-core-2.0.9 (commons-lang, mina-core, mina-statemachine, slf4j-api, slf4j-simple)
+- postgresql-9.5
 
 # 游戏规则明细
-[rule.md](rule.md)
+参考[rule.md](rule.md)。
 
