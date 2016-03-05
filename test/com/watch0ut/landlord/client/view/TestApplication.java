@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 /**
  * 主程序测试类
  *
@@ -11,15 +13,19 @@ import javafx.stage.Stage;
  */
 public class TestApplication extends Application {
 
-    @Override
-    public void start(Stage primaryStage) throws Exception{
 
+    @Override
+    public void start(Stage primaryStage) throws IOException {
+        testPanes(primaryStage);
+    }
+
+
+
+    private void testPanes(Stage primaryStage) throws IOException {
         primaryStage.setTitle("Landlord");
 
         // 测试SignInPane
-//        Parent signInPane = FXMLLoader.load(getClass().getResource("SignInPane.fxml"));
-//        primaryStage.setScene(new Scene(signInPane, 280, 260));
-//        primaryStage.setResizable(false);
+        primaryStage.setScene(new Scene(new SignInPane(), 280, 310));
 
         // 测试ActionView
 //        primaryStage.setScene(new Scene(TestActionView.initialize(), 130, 40));
@@ -73,10 +79,9 @@ public class TestApplication extends Application {
 //        primaryStage.setScene(new Scene(TestChatPane.initialize(), 240, 450));
 
         // 测试TablePane
-        primaryStage.setScene(new Scene(TestTablePane.initialize(), 1164, 694));
-        primaryStage.setResizable(false);
+//        primaryStage.setScene(new Scene(TestTablePane.initialize(), 1164, 694));
 
-        primaryStage.show();
+        primaryStage.setResizable(false);
     }
 
 

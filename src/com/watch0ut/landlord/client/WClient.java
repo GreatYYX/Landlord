@@ -73,7 +73,7 @@ public class WClient {
 
         AbstractCommand cmd1 = new LoginCommand("badguy", "123456");
         client.sendCommand(cmd1);
-        AbstractCommand cmd = new LoginCommand("yyx", "123456");
+        AbstractCommand cmd = new LoginCommand("root@example.com", "123456");
         client.sendCommand(cmd);
         cmd = new TextCommand("yyx", "hello everyone");
         client.sendCommand(cmd);
