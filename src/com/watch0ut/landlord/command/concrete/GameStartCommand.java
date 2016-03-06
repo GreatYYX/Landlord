@@ -20,9 +20,14 @@ public class GameStartCommand extends AbstractCommand {
 
     private List<Card> cards_;
     private int firstPlayerUid_;
+    private int seqId_;
 
     public GameStartCommand() {
 
+    }
+
+    public GameStartCommand(int seqId) {
+        seqId_ = seqId;
     }
 
     public void setFirstPlayerUid(int uid) {
@@ -41,12 +46,17 @@ public class GameStartCommand extends AbstractCommand {
         return cards_;
     }
 
+    public int getSeqId() {
+        return seqId_;
+    }
+
     @Override
     public byte[] bodyToBytes() throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
         oos.writeObject(cards_);
         oos.writeObject(firstPlayerUid_);
+        oos.writeInt(seqId_);
         return bos.toByteArray();
     }
 
@@ -56,5 +66,6 @@ public class GameStartCommand extends AbstractCommand {
         ObjectInputStream ois = new ObjectInputStream(bis);
         cards_ = (List<Card>)ois.readObject();
         firstPlayerUid_ = (Integer)ois.readObject();
+        seqId_ = ois.readInt();
     }
 }

@@ -26,6 +26,7 @@ public class Dealer {
     Timer timer_;
     Player relayPlayer_; // 接风玩家
     boolean canRelay_; // 确认可以接风（下家均压不过出完牌的上家）
+    int seqId_; // 第一次采用generateSeqId生成，后续采用seqIdIncrement自增
 
     //上一局
 //    Map<Card, Player> tributeMap_; //贡牌堆
@@ -55,6 +56,15 @@ public class Dealer {
         return firstPlayer_;
     }
 
+    public int getSeqId() {
+        return seqId_;
+    }
+
+    public int seqIdIncrement() {
+        return ++seqId_;
+    }
+
+
     /**
      * 每局初始化
      */
@@ -70,6 +80,7 @@ public class Dealer {
         prevMaxCardType_ = null;
         relayPlayer_ = null;
         canRelay_ = false;
+        seqId_ = generateSeqId();
     }
 
     /**
@@ -386,5 +397,20 @@ public class Dealer {
         Card tmp = deck_.get(a);
         deck_.set(a, deck_.get(b));
         deck_.set(b, tmp);
+    }
+
+    /**
+     * 生成SequenceID用于保证网络传输唯一性
+     * 在GameStart时候产生，([GameStart|NextPlay],Play,PlayResponse三者需保持一致，转移到下一个Player时候即调用NextPlay时需+1)
+     * @return
+     */
+    private int generateSeqId() {
+        // java max int = 2^31-1 = 2,147,483,647
+        int seqId = 0, base = 1;
+        for(int i = 0; i < 8; i++) {
+            seqId = seqId + base * randRange(0, 10);
+            base = base * 10;
+        }
+        return seqId;
     }
 }
