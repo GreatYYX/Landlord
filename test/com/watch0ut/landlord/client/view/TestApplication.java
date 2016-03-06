@@ -17,6 +17,7 @@ public class TestApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         testPanes(primaryStage);
+        primaryStage.show();
     }
 
 
@@ -25,7 +26,7 @@ public class TestApplication extends Application {
         primaryStage.setTitle("Landlord");
 
         // 测试SignInPane
-        primaryStage.setScene(new Scene(new SignInPane(), 280, 310));
+//        primaryStage.setScene(new Scene(new SignInPane(), 280, 310));
 
         // 测试ActionView
 //        primaryStage.setScene(new Scene(TestActionView.initialize(), 130, 40));
@@ -43,7 +44,7 @@ public class TestApplication extends Application {
 //        primaryStage.setScene(new Scene(TestPlayerListTable.initialize(), 250, 300));
 
         // 测试HallPane
-//        primaryStage.setScene(new Scene(new HallPane(), 800, 600));
+        primaryStage.setScene(new Scene(new HallPane(), 800, 620));
 
         // 测试PlayedCardPane
 //        primaryStage.setScene(new Scene(TestPlayedCardPane.initialize(), 150, 105));
@@ -81,7 +82,7 @@ public class TestApplication extends Application {
         // 测试TablePane
 //        primaryStage.setScene(new Scene(TestTablePane.initialize(), 1164, 694));
 
-        primaryStage.setResizable(false);
+//        primaryStage.setResizable(false);
     }
 
 

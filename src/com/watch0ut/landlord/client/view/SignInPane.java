@@ -2,8 +2,11 @@ package com.watch0ut.landlord.client.view;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.PopupWindow;
 
 /**
  * 登录面板
@@ -14,12 +17,16 @@ public class SignInPane extends AnchorPane {
 
     private AvatarView logoView;
     private TextField usernameField;
+    private Tooltip usernameTip;
     private PasswordField passwordField;
+    private Tooltip passwordTip;
     private CheckBox rememberCheckBox;
     private CheckBox autoCheckBox;
     private Button loginButton;
     private Hyperlink signUpLink;
     private Hyperlink resetPasswordLink;
+
+    private LoginButtonEventHandler handler = new LoginButtonEventHandler();
 
     public SignInPane() {
         setPrefSize(280, 310);
@@ -36,12 +43,18 @@ public class SignInPane extends AnchorPane {
         usernameField.setLayoutY(120);
         getChildren().add(usernameField);
 
+        usernameTip = new Tooltip("请输入用户名");
+        usernameField.setTooltip(usernameTip);
+
         passwordField = new PasswordField();
         passwordField.setPrefSize(220, 40);
         passwordField.setPromptText("密码");
         passwordField.setLayoutX(30);
         passwordField.setLayoutY(160);
         getChildren().add(passwordField);
+
+        passwordTip = new Tooltip("请输入密码");
+        passwordField.setTooltip(passwordTip);
 
         rememberCheckBox = new CheckBox("记住密码");
         rememberCheckBox.setLayoutX(30);
@@ -66,15 +79,93 @@ public class SignInPane extends AnchorPane {
         getChildren().addAll(signUpLink, resetPasswordLink);
     }
 
-    public void setLoginHandler(EventHandler<ActionEvent> handler) {
+    public void setUsername(String username) {
+        usernameField.setText(username);
+    }
+
+    public String getUsername() {
+        return usernameField.getText().trim();
+    }
+
+    public void setPassword(String password) {
+        passwordField.setText(password);
+    }
+
+    public String getPassword() {
+        return passwordField.getText().trim();
+    }
+
+    public void setRememberCheckBox(boolean value) {
+        rememberCheckBox.setSelected(value);
+    }
+
+    public boolean isRememberPassword() {
+        return rememberCheckBox.isSelected();
+    }
+
+    public void setAutoLogin(boolean value) {
+        autoCheckBox.setSelected(value);
+    }
+
+    public boolean isAutoLogin() {
+        return autoCheckBox.isSelected();
+    }
+
+    public void showUsernameTip(String tip) {
+        usernameTip.setText(tip);
+        double x = usernameTip.getAnchorX();
+        double y = usernameTip.getAnchorY();
+        usernameTip.show(usernameField, x, y);
+    }
+
+    public void showPasswordTip(String tip) {
+        passwordTip.setText(tip);
+        double x = passwordTip.getAnchorX();
+        double y = passwordTip.getAnchorY();
+        passwordTip.show(passwordField, x, y);
+    }
+
+    public void onLogin() {
+        usernameField.setEditable(false);
+        passwordField.setEditable(false);
+        rememberCheckBox.setDisable(true);
+        autoCheckBox.setDisable(true);
+        loginButton.setText("登录中...");
+        loginButton.addEventHandler(MouseEvent.MOUSE_ENTERED, handler);
+        loginButton.addEventHandler(MouseEvent.MOUSE_EXITED, handler);
+    }
+
+    public void onNormal() {
+        usernameField.setEditable(true);
+        passwordField.setEditable(true);
+        rememberCheckBox.setDisable(false);
+        autoCheckBox.setDisable(false);
+        loginButton.setText("登录");
+        loginButton.removeEventHandler(MouseEvent.MOUSE_ENTERED, handler);
+        loginButton.removeEventHandler(MouseEvent.MOUSE_EXITED, handler);
+    }
+
+    class LoginButtonEventHandler implements EventHandler<MouseEvent> {
+
+        @Override
+        public void handle(MouseEvent event) {
+            if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
+                loginButton.setText("取消");
+            } else if (event.getEventType() == MouseEvent.MOUSE_EXITED) {
+                loginButton.setText("登录中...");
+            }
+        }
+    }
+
+    public void setOnLogin(EventHandler<ActionEvent> handler) {
         loginButton.setOnAction(handler);
     }
 
-    public void setSingUpHandler(EventHandler<ActionEvent> handler) {
+    public void setOnSingUp(EventHandler<ActionEvent> handler) {
         signUpLink.setOnAction(handler);
     }
 
-    public void setResetHandler(EventHandler<ActionEvent> handler) {
+    public void setOnResetPassword(EventHandler<ActionEvent> handler) {
         resetPasswordLink.setOnAction(handler);
     }
 }

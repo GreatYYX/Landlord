@@ -1,15 +1,13 @@
-package com.watch0ut.landlord.client;
+package com.watch0ut.landlord.client.util;
 
 import com.watch0ut.landlord.Configuration;
 import com.watch0ut.landlord.command.AbstractCommand;
 import com.watch0ut.landlord.command.concrete.DisconnectCommand;
-import com.watch0ut.landlord.command.concrete.LoginCommand;
-import com.watch0ut.landlord.command.concrete.LogoutCommand;
-import com.watch0ut.landlord.command.concrete.TextCommand;
 import com.watch0ut.landlord.protocol.WProtocolFactory;
 import org.apache.mina.core.RuntimeIoException;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
+import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.logging.LoggingFilter;
@@ -24,17 +22,37 @@ import java.net.InetSocketAddress;
  */
 public class WClient {
 
-
+    private static WClient instance;
     private static final Logger LOGGER = LoggerFactory.getLogger(WClient.class);
     private IoConnector connector_;
     private IoSession session_;
 
-    public WClient() {
+    public static WClient getInstance() {
+        if (instance == null) {
+            synchronized (WClient.class) {
+                if (instance == null) {
+                    instance = new WClient();
+                }
+            }
+        }
+        return instance ;
+    }
+
+    private WClient() {
         connector_ = new NioSocketConnector();
         connector_.setConnectTimeoutMillis(Configuration.CLIENT_CONNECT_TIMEOUT);
         connector_.getFilterChain().addLast("logger", new LoggingFilter());
         connector_.getFilterChain().addLast("protocol", new ProtocolCodecFilter(new WProtocolFactory()));
-        connector_.setHandler(new WClientHandler());
+    }
+
+    public void setHandler(IoHandler handler) {
+        connector_.setHandler(handler);
+    }
+
+    public boolean isConnected() {
+        if (session_ == null)
+            return false;
+        return session_.isConnected();
     }
 
     public void connect() {
@@ -65,25 +83,5 @@ public class WClient {
         if (session_ != null) {
             session_.write(cmd);
         }
-    }
-
-    public static void main(String args[]) {
-        WClient client = new WClient();
-        client.connect();
-
-        AbstractCommand cmd1 = new LoginCommand("badguy", "123456");
-        client.sendCommand(cmd1);
-        AbstractCommand cmd = new LoginCommand("root@example.com", "123456");
-        client.sendCommand(cmd);
-        cmd = new TextCommand("yyx", "hello everyone");
-        client.sendCommand(cmd);
-        cmd = new LogoutCommand();
-        client.sendCommand(cmd);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        client.disconnect();
     }
 }

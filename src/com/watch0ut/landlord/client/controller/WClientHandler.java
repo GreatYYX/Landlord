@@ -1,9 +1,6 @@
-package com.watch0ut.landlord.client;
+package com.watch0ut.landlord.client.controller;
 
 import com.watch0ut.landlord.command.AbstractCommand;
-import com.watch0ut.landlord.command.concrete.LoginCommand;
-import com.watch0ut.landlord.command.concrete.LoginResponseCommand;
-import com.watch0ut.landlord.command.concrete.LogoutCommand;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
