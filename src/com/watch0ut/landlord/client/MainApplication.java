@@ -2,6 +2,7 @@ package com.watch0ut.landlord.client;
 
 import com.watch0ut.landlord.client.controller.HallController;
 import com.watch0ut.landlord.client.controller.SignInController;
+import com.watch0ut.landlord.client.service.WClient;
 import com.watch0ut.landlord.client.view.HallPane;
 import com.watch0ut.landlord.client.view.SignInPane;
 import com.watch0ut.landlord.object.Player;
@@ -17,23 +18,33 @@ import javafx.stage.Stage;
 public class MainApplication extends Application {
     private Stage signInStage;
     private Stage hallStage;
-    
-    public void initSignInStage(Stage stage) {
+
+    private HallController hallController;
+
+    @Override
+    public void init() throws Exception {
+        super.init();
+    }
+
+    public void initStage(Stage stage) {
         signInStage = stage;
         signInStage.setTitle("登录");
         SignInPane signInPane = new SignInPane();
-        new SignInController(this, signInPane);
+        WClient.getInstance().setSignInController(new SignInController(this, signInPane));
         signInStage.setScene(new Scene(signInPane, 280, 310));
         signInStage.setResizable(false);
         signInStage.show();
-    }
 
-    public void initHallStage(Player player) {
         hallStage = new Stage();
         hallStage.setTitle("大厅");
-        HallPane hallPane = new HallPane(player);
-        new HallController(this, hallPane);
+        HallPane hallPane = new HallPane();
+        hallController = new HallController(this, hallPane);
+        WClient.getInstance().setHallController(hallController);
         hallStage.setScene(new Scene(hallPane, 800, 620));
+    }
+
+    public void showHall(Player player) {
+        hallController.updatePlayer(player);
         hallStage.show();
     }
 
@@ -51,7 +62,16 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        initSignInStage(primaryStage);
+        initStage(primaryStage);
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        WClient client = WClient.getInstance();
+        if (client.isConnected()) {
+            client.disconnect();
+        }
     }
 
     public static void main(String[] args) {

@@ -98,6 +98,18 @@ public class HallPane extends VBox {
         getChildren().add(menuBar);
     }
 
+    public void updatePlayer(Player player) {
+        playerInfoPane.update(
+                player.getPhoto(),
+                player.getNickName(),
+                player.getScore()
+        );
+    }
+
+    public PlayerListTable getPlayerListTable() {
+        return playerListTable;
+    }
+
     public void setOnAbout(EventHandler<ActionEvent> value) {
         aboutMenuItem.setOnAction(value);
     }

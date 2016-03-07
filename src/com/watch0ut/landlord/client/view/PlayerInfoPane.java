@@ -37,6 +37,20 @@ public class PlayerInfoPane extends FlowPane {
         getChildren().add(vBox);
     }
 
+    public void update(String photo, String nickName, int score) {
+        updateAvatar(photo);
+        updateNickName(nickName);
+        updateScore(score);
+    }
+
+    public void updateAvatar(String photo) {
+        avatarView.update(photo, AvatarView.SMALL);
+    }
+
+    public void updateNickName(String nickName) {
+        nickNameLabel.setText("昵称：" + nickName);
+    }
+
     public void updateScore(int score) {
         scoreLabel.setText("积分：" + score);
     }

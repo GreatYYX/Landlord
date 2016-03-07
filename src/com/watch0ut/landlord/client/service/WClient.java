@@ -1,13 +1,18 @@
-package com.watch0ut.landlord.client.util;
+package com.watch0ut.landlord.client.service;
 
 import com.watch0ut.landlord.Configuration;
+import com.watch0ut.landlord.client.controller.HallController;
+import com.watch0ut.landlord.client.controller.SignInController;
 import com.watch0ut.landlord.command.AbstractCommand;
 import com.watch0ut.landlord.command.concrete.DisconnectCommand;
+import com.watch0ut.landlord.command.concrete.LoginResponseCommand;
+import com.watch0ut.landlord.command.concrete.RefreshPlayerListCommand;
 import com.watch0ut.landlord.protocol.WProtocolFactory;
 import org.apache.mina.core.RuntimeIoException;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
 import org.apache.mina.core.service.IoHandler;
+import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.logging.LoggingFilter;
@@ -18,6 +23,8 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 
 /**
+ * 客户端，主要负责与服务器通信
+ *
  * Created by GreatYYX on 12/24/15.
  */
 public class WClient {
@@ -26,6 +33,9 @@ public class WClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(WClient.class);
     private IoConnector connector_;
     private IoSession session_;
+
+    private SignInController signInController;
+    private HallController hallController;
 
     public static WClient getInstance() {
         if (instance == null) {
@@ -43,16 +53,20 @@ public class WClient {
         connector_.setConnectTimeoutMillis(Configuration.CLIENT_CONNECT_TIMEOUT);
         connector_.getFilterChain().addLast("logger", new LoggingFilter());
         connector_.getFilterChain().addLast("protocol", new ProtocolCodecFilter(new WProtocolFactory()));
+        connector_.setHandler(new WClientHandler());
     }
 
-    public void setHandler(IoHandler handler) {
-        connector_.setHandler(handler);
+
+    public void setSignInController(SignInController signInController) {
+        this.signInController = signInController;
+    }
+
+    public void setHallController(HallController hallController) {
+        this.hallController = hallController;
     }
 
     public boolean isConnected() {
-        if (session_ == null)
-            return false;
-        return session_.isConnected();
+        return session_ != null && session_.isConnected();
     }
 
     public void connect() {
@@ -82,6 +96,31 @@ public class WClient {
     public void sendCommand(AbstractCommand cmd) {
         if (session_ != null) {
             session_.write(cmd);
+        }
+    }
+
+    class WClientHandler extends IoHandlerAdapter {
+        @Override
+        public void messageReceived(IoSession session, Object message) throws Exception {
+            AbstractCommand cmd = (AbstractCommand)message;
+            String name = cmd.getName();
+            if(name.equalsIgnoreCase("LoginResponse")) {
+                if (signInController == null)
+                    return;
+                LoginResponseCommand command = (LoginResponseCommand) cmd;
+                if (command.getStateCode() == LoginResponseCommand.SUCCESS) {
+                    signInController.onLoginSucceeded(command.getPlayer());
+                } else {
+                    signInController.onLoginFailed(command.getMessage());
+                }
+            } else if (name.equalsIgnoreCase("RefreshPlayerList")) {
+                if (hallController == null)
+                    return;
+                RefreshPlayerListCommand command = (RefreshPlayerListCommand) cmd;
+                hallController.updatePlayerList(command.getPlayerList());
+            } else {
+                System.err.println("Command router missing: " + cmd.getClass());
+            }
         }
     }
 }

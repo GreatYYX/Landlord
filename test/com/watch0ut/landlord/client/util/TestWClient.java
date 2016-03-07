@@ -1,11 +1,14 @@
 package com.watch0ut.landlord.client.util;
 
+import com.watch0ut.landlord.client.service.WClient;
 import com.watch0ut.landlord.command.AbstractCommand;
 import com.watch0ut.landlord.command.concrete.LoginCommand;
 import com.watch0ut.landlord.command.concrete.LogoutCommand;
 import com.watch0ut.landlord.command.concrete.TextCommand;
 
 /**
+ * 测试WClient
+ *
  * Created by Jack on 16/3/6.
  */
 public class TestWClient {

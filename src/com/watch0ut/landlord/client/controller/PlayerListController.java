@@ -54,13 +54,22 @@ public class PlayerListController {
         }
     }
 
+    public void clear() {
+        playerItems.clear();
+    }
+
     public void updatePlayer(Player player) {
-        for (PlayerModel playerModel : playerItems) {
+        int i = 0;
+        for (; i < playerItems.size(); i++) {
+            PlayerModel playerModel = playerItems.get(i);
             if (playerModel.getId() == player.getId()) {
                 playerModel.setAvatar(player.getPhoto());
                 playerModel.setNickName(player.getNickName());
                 playerModel.setScore(player.getScore());
             }
+        }
+        if (i == playerItems.size()) {
+            addPlayer(player);
         }
     }
 }

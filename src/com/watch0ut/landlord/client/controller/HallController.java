@@ -1,12 +1,15 @@
 package com.watch0ut.landlord.client.controller;
 
 import com.watch0ut.landlord.client.MainApplication;
-import com.watch0ut.landlord.client.util.WClient;
+import com.watch0ut.landlord.client.service.WClient;
 import com.watch0ut.landlord.client.view.HallPane;
 import com.watch0ut.landlord.command.concrete.LogoutCommand;
+import com.watch0ut.landlord.object.Player;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+
+import java.util.List;
 
 /**
  * 大厅控制器
@@ -18,12 +21,25 @@ public class HallController {
     private HallPane hallPane;
     private MainApplication application;
 
+    private PlayerListController playerListController;
+
     public HallController(Application application, HallPane pane) {
         this.application = (MainApplication) application;
         this.hallPane = pane;
         hallPane.setOnAbout(new AboutHandler());
         hallPane.setOnLogout(new LogoutHandler());
         hallPane.setOnExit(new ExitHandler());
+        playerListController = new PlayerListController(hallPane.getPlayerListTable());
+    }
+
+    public void updatePlayer(Player player) {
+        hallPane.updatePlayer(player);
+    }
+
+    public void updatePlayerList(List<Player> players) {
+        for (Player player : players) {
+            playerListController.updatePlayer(player);
+        }
     }
 
     public void about() {
@@ -31,6 +47,7 @@ public class HallController {
     }
 
     public void logout() {
+        playerListController.clear();
         WClient client = WClient.getInstance();
         client.sendCommand(new LogoutCommand());
         application.closeHall();

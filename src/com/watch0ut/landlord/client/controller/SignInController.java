@@ -1,18 +1,14 @@
 package com.watch0ut.landlord.client.controller;
 
 import com.watch0ut.landlord.client.MainApplication;
-import com.watch0ut.landlord.client.util.WClient;
+import com.watch0ut.landlord.client.service.WClient;
 import com.watch0ut.landlord.client.view.SignInPane;
-import com.watch0ut.landlord.command.AbstractCommand;
 import com.watch0ut.landlord.command.concrete.LoginCommand;
-import com.watch0ut.landlord.command.concrete.LoginResponseCommand;
 import com.watch0ut.landlord.object.Player;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import org.apache.mina.core.service.IoHandlerAdapter;
-import org.apache.mina.core.session.IoSession;
 
 /**
  * 登录对话框的控制器，登录等操作在此实现
@@ -30,7 +26,6 @@ public class SignInController {
         this.signInPane.setOnLogin(new LoginHandler());
         this.signInPane.setOnSingUp(new SignUpHandler());
         this.signInPane.setOnResetPassword(new ResetPasswordHandler());
-        WClient.getInstance().setHandler(new LoginIoHandler());
     }
 
     private void login() {
@@ -58,7 +53,7 @@ public class SignInController {
             public void run() {
                 signInPane.onNormal();
                 application.closeSignIn();
-                application.initHallStage(player);
+                application.showHall(player);
             }
         });
     }
@@ -72,25 +67,6 @@ public class SignInController {
             }
         });
 
-    }
-
-    class LoginIoHandler extends IoHandlerAdapter {
-
-        @Override
-        public void messageReceived(IoSession session, Object message) throws Exception {
-            AbstractCommand cmd = (AbstractCommand)message;
-            String name = cmd.getName();
-            if(name.equalsIgnoreCase("LoginResponse")) {
-                LoginResponseCommand command = (LoginResponseCommand) cmd;
-                if (command.getStateCode() == LoginResponseCommand.SUCCESS) {
-                    onLoginSucceeded(command.getPlayer());
-                } else {
-                    onLoginFailed(command.getMessage());
-                }
-            } else {
-                System.err.println("Command router missing: " + cmd.getClass());
-            }
-        }
     }
 
     class LoginHandler implements EventHandler<ActionEvent> {
