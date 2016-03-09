@@ -2,6 +2,7 @@ package com.watch0ut.landlord.server.database;
 
 import com.watch0ut.landlord.Configuration;
 import com.watch0ut.landlord.object.Player;
+import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +37,10 @@ public class DatabaseHelper {
                        rs.getInt("wincount"), rs.getInt("losecount"), rs.getInt("landlordcount"));
                 // 更新信息
                 pst = db_.getConn().prepareStatement(
-                        "UPDATE player SET lastloginip=?, lastlogintime=now() WHERE username=?");
+                        "UPDATE player SET lastloginip=?, lastlogintime=now(), token=? WHERE username=?");
                 pst.setString(1, ip);
-                pst.setString(2, user);
+                pst.setString(2, generateToken());
+                pst.setString(3, user);
                 pst.executeUpdate();
             }
 
@@ -49,6 +51,10 @@ public class DatabaseHelper {
         return player;
     }
 
+    /**
+     * 用户断线惩罚
+     * @param uid
+     */
     public void disconnectPenalty(int uid) {
         try {
             PreparedStatement pst = db_.getConn().prepareStatement(
@@ -58,5 +64,14 @@ public class DatabaseHelper {
             pst.executeUpdate();
         } catch (SQLException e) {
         }
+    }
+
+    /**
+     * 用户从client登陆后的token，用于网页接口的免登陆
+     * 长度小于40字节
+     * @return
+     */
+    private String generateToken() {
+        return RandomStringUtils.randomAlphanumeric(30);
     }
 }

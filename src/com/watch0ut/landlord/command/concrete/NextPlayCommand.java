@@ -23,6 +23,10 @@ public class NextPlayCommand extends AbstractCommand {
     private CardType currCardType_; // 当前玩家出的牌（可能是空）
     private int nextUid_;
 
+    public NextPlayCommand() {
+
+    }
+
     public NextPlayCommand(CardType currCardType, int nextUid, int seqId) {
         currCardType_ = currCardType;
         nextUid_ = nextUid;
