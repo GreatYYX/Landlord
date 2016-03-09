@@ -1,5 +1,7 @@
 package com.watch0ut.landlord.client.view;
 
+import com.watch0ut.landlord.object.Player;
+import com.watch0ut.landlord.object.Table;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
@@ -19,19 +21,21 @@ public class MiniTablePane extends VBox {
     private Image idleImage;
 
     private GridPane gridPane;
-    private AvatarView upAvatar;
-    private Label upLabel;
+    private AvatarView topAvatar;
+    private Label topLabel;
     private AvatarView leftAvatar;
     private Label leftLabel;
-    private AvatarView downAvatar;
-    private Label downLabel;
+    private AvatarView bottomAvatar;
+    private Label bottomLabel;
     private AvatarView rightAvatar;
     private Label rightLabel;
     private TableView tableView;
     private Label numberLabel;
+    private int tableId;
 
     public MiniTablePane(int number) {
         setAlignment(Pos.CENTER);
+        tableId = number - 1;
 
         gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
@@ -57,55 +61,79 @@ public class MiniTablePane extends VBox {
     }
 
     private void initializeAvatars() {
-        upAvatar = new AvatarView(idleImage, AvatarView.MINI);
-        gridPane.add(upAvatar, 1, 0);
-        gridPane.setHalignment(upAvatar, HPos.CENTER);
-        gridPane.setValignment(upAvatar, VPos.CENTER);
+        topAvatar = new AvatarView(idleImage, AvatarView.MINI);
+        gridPane.add(topAvatar, 1, 0);
+        GridPane.setHalignment(topAvatar, HPos.CENTER);
+        GridPane.setValignment(topAvatar, VPos.CENTER);
 
         leftAvatar = new AvatarView(idleImage, AvatarView.MINI);
         gridPane.add(leftAvatar, 0, 1);
-        gridPane.setHalignment(leftAvatar, HPos.CENTER);
-        gridPane.setValignment(leftAvatar, VPos.CENTER);
+        GridPane.setHalignment(leftAvatar, HPos.CENTER);
+        GridPane.setValignment(leftAvatar, VPos.CENTER);
 
-        downAvatar = new AvatarView(idleImage, AvatarView.MINI);
-        gridPane.add(downAvatar, 1, 2);
-        gridPane.setHalignment(downAvatar, HPos.CENTER);
-        gridPane.setValignment(downAvatar, VPos.CENTER);
+        bottomAvatar = new AvatarView(idleImage, AvatarView.MINI);
+        gridPane.add(bottomAvatar, 1, 2);
+        GridPane.setHalignment(bottomAvatar, HPos.CENTER);
+        GridPane.setValignment(bottomAvatar, VPos.CENTER);
 
         rightAvatar = new AvatarView(idleImage, AvatarView.MINI);
         gridPane.add(rightAvatar, 2, 1);
-        gridPane.setHalignment(rightAvatar, HPos.CENTER);
-        gridPane.setValignment(rightAvatar, VPos.CENTER);
+        GridPane.setHalignment(rightAvatar, HPos.CENTER);
+        GridPane.setValignment(rightAvatar, VPos.CENTER);
     }
 
     private void initializeLabels() {
-        upLabel = new Label();
-        upLabel.setWrapText(true);
-        upLabel.setTextAlignment(TextAlignment.RIGHT);
-        gridPane.add(upLabel, 0, 0);
-        gridPane.setHalignment(upLabel, HPos.RIGHT);
-        gridPane.setValignment(upLabel, VPos.CENTER);
+        topLabel = new Label();
+        topLabel.setWrapText(true);
+        topLabel.setTextAlignment(TextAlignment.RIGHT);
+        gridPane.add(topLabel, 0, 0);
+        GridPane.setHalignment(topLabel, HPos.RIGHT);
+        GridPane.setValignment(topLabel, VPos.CENTER);
 
         leftLabel = new Label();
         leftLabel.setWrapText(true);
         leftLabel.setTextAlignment(TextAlignment.CENTER);
         gridPane.add(leftLabel, 0, 2);
-        gridPane.setValignment(leftLabel, VPos.TOP);
-        gridPane.setHalignment(leftLabel, HPos.CENTER);
+        GridPane.setValignment(leftLabel, VPos.TOP);
+        GridPane.setHalignment(leftLabel, HPos.CENTER);
 
-        downLabel = new Label();
-        downLabel.setWrapText(true);
-        downLabel.setTextAlignment(TextAlignment.LEFT);
-        gridPane.add(downLabel, 2, 2);
-        gridPane.setHalignment(downLabel, HPos.LEFT);
-        gridPane.setValignment(downLabel, VPos.CENTER);
+        bottomLabel = new Label();
+        bottomLabel.setWrapText(true);
+        bottomLabel.setTextAlignment(TextAlignment.LEFT);
+        gridPane.add(bottomLabel, 2, 2);
+        GridPane.setHalignment(bottomLabel, HPos.LEFT);
+        GridPane.setValignment(bottomLabel, VPos.CENTER);
 
         rightLabel = new Label();
         rightLabel.setWrapText(true);
         rightLabel.setTextAlignment(TextAlignment.CENTER);
         gridPane.add(rightLabel, 2, 0);
-        gridPane.setValignment(rightLabel, VPos.BOTTOM);
-        gridPane.setHalignment(rightLabel, HPos.CENTER);
+        GridPane.setValignment(rightLabel, VPos.BOTTOM);
+        GridPane.setHalignment(rightLabel, HPos.CENTER);
+    }
+    
+    public void seat(Player player) {
+        switch (player.getTablePosition()) {
+            case Table.TOP:
+                topAvatar.update(player.getPhoto(), AvatarView.MINI);
+                topLabel.setText(player.getNickName());
+                break;
+            case Table.BOTTOM:
+                bottomAvatar.update(player.getPhoto(), AvatarView.MINI);
+                bottomLabel.setText(player.getNickName());
+                break;
+            case Table.LEFT:
+                leftAvatar.update(player.getPhoto(), AvatarView.MINI);
+                leftLabel.setText(player.getNickName());
+                break;
+            case Table.RIGHT:
+                rightAvatar.update(player.getPhoto(), AvatarView.MINI);
+                rightLabel.setText(player.getNickName());
+                break;
+        }
     }
 
+    public int getTableId() {
+        return tableId;
+    }
 }

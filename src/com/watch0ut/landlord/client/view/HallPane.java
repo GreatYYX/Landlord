@@ -106,6 +106,10 @@ public class HallPane extends VBox {
         );
     }
 
+    public List<MiniTablePane> getTableList() {
+        return tableList;
+    }
+
     public PlayerListTable getPlayerListTable() {
         return playerListTable;
     }

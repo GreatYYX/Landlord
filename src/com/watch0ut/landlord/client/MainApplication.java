@@ -3,6 +3,7 @@ package com.watch0ut.landlord.client;
 import com.watch0ut.landlord.client.controller.HallController;
 import com.watch0ut.landlord.client.controller.SignInController;
 import com.watch0ut.landlord.client.service.WClient;
+import com.watch0ut.landlord.client.service.WClientHandler;
 import com.watch0ut.landlord.client.view.HallPane;
 import com.watch0ut.landlord.client.view.SignInPane;
 import com.watch0ut.landlord.object.Player;
@@ -27,10 +28,10 @@ public class MainApplication extends Application {
     }
 
     public void initStage(Stage stage) {
+        WClientHandler handler = new WClientHandler();
         signInStage = stage;
         signInStage.setTitle("登录");
         SignInPane signInPane = new SignInPane();
-        WClient.getInstance().setSignInController(new SignInController(this, signInPane));
         signInStage.setScene(new Scene(signInPane, 280, 310));
         signInStage.setResizable(false);
         signInStage.show();
@@ -39,8 +40,11 @@ public class MainApplication extends Application {
         hallStage.setTitle("大厅");
         HallPane hallPane = new HallPane();
         hallController = new HallController(this, hallPane);
-        WClient.getInstance().setHallController(hallController);
         hallStage.setScene(new Scene(hallPane, 800, 620));
+
+        handler.setSignInController(new SignInController(this, signInPane));
+        handler.setHallController(hallController);
+        WClient.getInstance().setHandler(handler);
     }
 
     public void showHall(Player player) {

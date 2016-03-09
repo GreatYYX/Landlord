@@ -7,6 +7,7 @@ import com.watch0ut.landlord.command.AbstractCommand;
 import com.watch0ut.landlord.command.concrete.DisconnectCommand;
 import com.watch0ut.landlord.command.concrete.LoginResponseCommand;
 import com.watch0ut.landlord.command.concrete.RefreshPlayerListCommand;
+import com.watch0ut.landlord.command.concrete.SeatResponseCommand;
 import com.watch0ut.landlord.protocol.WProtocolFactory;
 import org.apache.mina.core.RuntimeIoException;
 import org.apache.mina.core.future.ConnectFuture;
@@ -34,9 +35,6 @@ public class WClient {
     private IoConnector connector_;
     private IoSession session_;
 
-    private SignInController signInController;
-    private HallController hallController;
-
     public static WClient getInstance() {
         if (instance == null) {
             synchronized (WClient.class) {
@@ -45,7 +43,7 @@ public class WClient {
                 }
             }
         }
-        return instance ;
+        return instance;
     }
 
     private WClient() {
@@ -53,16 +51,10 @@ public class WClient {
         connector_.setConnectTimeoutMillis(Configuration.CLIENT_CONNECT_TIMEOUT);
         connector_.getFilterChain().addLast("logger", new LoggingFilter());
         connector_.getFilterChain().addLast("protocol", new ProtocolCodecFilter(new WProtocolFactory()));
-        connector_.setHandler(new WClientHandler());
     }
 
-
-    public void setSignInController(SignInController signInController) {
-        this.signInController = signInController;
-    }
-
-    public void setHallController(HallController hallController) {
-        this.hallController = hallController;
+    public void setHandler(IoHandler ioHandler) {
+        connector_.setHandler(ioHandler);
     }
 
     public boolean isConnected() {
@@ -98,29 +90,6 @@ public class WClient {
             session_.write(cmd);
         }
     }
-
-    class WClientHandler extends IoHandlerAdapter {
-        @Override
-        public void messageReceived(IoSession session, Object message) throws Exception {
-            AbstractCommand cmd = (AbstractCommand)message;
-            String name = cmd.getName();
-            if(name.equalsIgnoreCase("LoginResponse")) {
-                if (signInController == null)
-                    return;
-                LoginResponseCommand command = (LoginResponseCommand) cmd;
-                if (command.getStateCode() == LoginResponseCommand.SUCCESS) {
-                    signInController.onLoginSucceeded(command.getPlayer());
-                } else {
-                    signInController.onLoginFailed(command.getMessage());
-                }
-            } else if (name.equalsIgnoreCase("RefreshPlayerList")) {
-                if (hallController == null)
-                    return;
-                RefreshPlayerListCommand command = (RefreshPlayerListCommand) cmd;
-                hallController.updatePlayerList(command.getPlayerList());
-            } else {
-                System.err.println("Command router missing: " + cmd.getClass());
-            }
-        }
-    }
 }
+
+

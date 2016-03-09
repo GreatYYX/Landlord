@@ -36,7 +36,7 @@ public class SignInPane extends AnchorPane {
         logoView.setLayoutY(12);
         getChildren().add(logoView);
 
-        usernameField = new TextField();
+        usernameField = new TextField("root@example.com");
         usernameField.setPrefSize(220, 40);
         usernameField.setPromptText("用户名");
         usernameField.setLayoutX(30);
@@ -47,6 +47,7 @@ public class SignInPane extends AnchorPane {
         usernameField.setTooltip(usernameTip);
 
         passwordField = new PasswordField();
+        passwordField.setText("123456");
         passwordField.setPrefSize(220, 40);
         passwordField.setPromptText("密码");
         passwordField.setLayoutX(30);

@@ -19,8 +19,9 @@ public class SeatCommand extends AbstractCommand {
     private int tableId_;
     private int tablePosition_;
 
-    public SeatCommand() {
-
+    public SeatCommand(int id, int position) {
+        this.tableId_ = id;
+        this.tablePosition_ = position;
     }
 
     public int getTableId() {
