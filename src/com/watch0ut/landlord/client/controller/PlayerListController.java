@@ -59,16 +59,17 @@ public class PlayerListController {
     }
 
     public void updatePlayer(Player player) {
-        int i = 0;
-        for (; i < playerItems.size(); i++) {
+        boolean isNotFound = true;
+        for (int i = 0; i < playerItems.size(); i++) {
             PlayerModel playerModel = playerItems.get(i);
             if (playerModel.getId() == player.getId()) {
+                isNotFound = false;
                 playerModel.setAvatar(player.getPhoto());
                 playerModel.setNickName(player.getNickName());
                 playerModel.setScore(player.getScore());
             }
         }
-        if (i == playerItems.size()) {
+        if (isNotFound) {
             addPlayer(player);
         }
     }

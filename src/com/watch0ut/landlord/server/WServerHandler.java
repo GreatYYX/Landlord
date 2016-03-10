@@ -216,7 +216,7 @@ public class WServerHandler extends IoHandlerAdapter {
             sendCommand(session, cmdRes);
 
             // 推送
-            AbstractCommand cmdRefresh = new RefreshPlayerListCommand((List<Player>)playerBasicMap_.values());
+            AbstractCommand cmdRefresh = new RefreshPlayerListCommand(new ArrayList<Player>(playerBasicMap_.values()));
             broadcastCommand(cmdRefresh);
 
             LOGGER.info("[SESS {}] seated", session.getId());
@@ -241,7 +241,7 @@ public class WServerHandler extends IoHandlerAdapter {
         }
 
         // 推送
-        AbstractCommand cmdRefresh = new RefreshPlayerListCommand((List<Player>)playerBasicMap_.values());
+        AbstractCommand cmdRefresh = new RefreshPlayerListCommand(new ArrayList<Player>(playerBasicMap_.values()));
         broadcastCommand(cmdRefresh);
 
         LOGGER.info("[SESS {}] unseated", session.getId());

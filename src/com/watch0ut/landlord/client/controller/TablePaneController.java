@@ -1,5 +1,6 @@
 package com.watch0ut.landlord.client.controller;
 
+import com.watch0ut.landlord.client.MainApplication;
 import com.watch0ut.landlord.client.view.TablePane;
 
 /**
@@ -7,9 +8,11 @@ import com.watch0ut.landlord.client.view.TablePane;
  */
 public class TablePaneController {
 
+    private MainApplication application;
     private TablePane tablePane;
 
-    public TablePaneController(TablePane tablePane) {
+    public TablePaneController(MainApplication application, TablePane tablePane) {
+        this.application = application;
         this.tablePane = tablePane;
     }
 

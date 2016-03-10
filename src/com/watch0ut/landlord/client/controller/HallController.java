@@ -7,6 +7,7 @@ import com.watch0ut.landlord.client.view.MiniTablePane;
 import com.watch0ut.landlord.command.concrete.LogoutCommand;
 import com.watch0ut.landlord.object.Player;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
@@ -58,18 +59,38 @@ public class HallController {
                     if (tableId != self.getTableId()) {
                         self.setTableId(player.getTableId());
                         self.setTablePosition(player.getTablePosition());
-                        seat();
+                        seat(player);
                     }
                 } else {
-
+                    if (tableId != self.getTableId()) {
+                        unseat(player);
+                    }
                 }
             }
         }
     }
 
-    private void seat() {
+    private void seat(Player player) {
         MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(self.getTableId());
-        miniTablePaneController.seat(self);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                miniTablePaneController.seat(player);
+                application.showTable();
+            }
+        });
+    }
+
+    private void unseat(Player player) {
+        MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(self.getTableId());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                miniTablePaneController.unseat(self);
+                self.setTableId(player.getTableId());
+                self.setTablePosition(player.getTablePosition());
+            }
+        });
     }
 
     public void onSeatSucceed() {
