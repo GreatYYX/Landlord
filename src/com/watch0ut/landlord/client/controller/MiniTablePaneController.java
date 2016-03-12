@@ -24,10 +24,17 @@ public class MiniTablePaneController {
 
     public void seat(Player player) {
         miniTablePane.seat(player);
+        // TODO: 暂时用黑框标记，后面统一调整
+        miniTablePane.setStyle("-fx-border-color: black");
     }
 
     public void unseat(Player player) {
         miniTablePane.unseat(player);
+        miniTablePane.setStyle("");
+    }
+
+    public void ready(Player player) {
+        miniTablePane.ready(player);
     }
 
     public void setMouseClickedHandler() {

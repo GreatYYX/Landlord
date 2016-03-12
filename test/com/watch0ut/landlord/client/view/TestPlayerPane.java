@@ -42,7 +42,7 @@ public class TestPlayerPane {
         leaveButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                playerPane.leave();
+                playerPane.unseat();
             }
         });
 
@@ -50,7 +50,7 @@ public class TestPlayerPane {
         enterButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                playerPane.enter("Q.png", "Queen");
+                playerPane.seat("Q.png", "Queen");
             }
         });
 

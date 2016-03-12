@@ -69,7 +69,7 @@ public class PlayerPane extends VBox {
         getChildren().add(playedParent);
     }
 
-    public void leave() {
+    public void unseat() {
         if (getChildren().contains(playedParent)) {
             getChildren().remove(playedParent);
             updateAction(ActionView.FARMER);
@@ -78,7 +78,7 @@ public class PlayerPane extends VBox {
         idleParent.getChildren().removeAll(avatarPane, readyImage);
     }
 
-    public void enter(String picture, String nickName) {
+    public void seat(String picture, String nickName) {
         updatePlayer(picture, nickName);
         idleParent.getChildren().add(avatarPane);
     }

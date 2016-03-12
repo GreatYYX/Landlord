@@ -30,9 +30,9 @@ public class TestTableView {
         final TableView tablePane = new TableView();
         vBox.getChildren().add(tablePane);
 
-        initializeUpReadyButton(vBox, tablePane);
+        initializeTopReadyButton(vBox, tablePane);
         initializeLeftReadyButton(vBox, tablePane);
-        initializeDownReadyButton(vBox, tablePane);
+        initializeBottomReadyButton(vBox, tablePane);
         initializeRightReadyButton(vBox, tablePane);
 
         Button playButton = new Button("Play");
@@ -51,15 +51,15 @@ public class TestTableView {
         return vBox;
     }
 
-    private static void initializeUpReadyButton(VBox vBox, final TableView tablePane) {
-        Button upReadyButton = new Button("Up Ready");
+    private static void initializeTopReadyButton(VBox vBox, final TableView tablePane) {
+        Button upReadyButton = new Button("Top Ready");
         upReadyButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 if (TestTableView.upReadyCount % 2 == 0)
-                    tablePane.setUpReady();
+                    tablePane.setTopReady();
                 else
-                    tablePane.setUpLeave();
+                    tablePane.setTopIdle();
                 TestTableView.upReadyCount++;
             }
         });
@@ -74,22 +74,22 @@ public class TestTableView {
                 if (TestTableView.leftReadyCount % 2 == 0)
                     tablePane.setLeftReady();
                 else
-                    tablePane.setLeftLeave();
+                    tablePane.setLeftIdle();
                 TestTableView.leftReadyCount++;
             }
         });
         vBox.getChildren().add(leftReadyButton);
     }
 
-    private static void initializeDownReadyButton(VBox vBox, final TableView tablePane) {
-        Button downReadyButton = new Button("Down Ready");
+    private static void initializeBottomReadyButton(VBox vBox, final TableView tablePane) {
+        Button downReadyButton = new Button("Bottom Ready");
         downReadyButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 if (TestTableView.downReadyCount % 2 == 0)
-                    tablePane.setDownReady();
+                    tablePane.setBottomReady();
                 else
-                    tablePane.setDownLeave();
+                    tablePane.setBottomIdle();
                 TestTableView.downReadyCount++;
             }
         });
@@ -104,7 +104,7 @@ public class TestTableView {
                 if (TestTableView.rightReadyCount % 2 == 0)
                     tablePane.setRightReady();
                 else
-                    tablePane.setRightLeave();
+                    tablePane.setRightIdle();
                 TestTableView.rightReadyCount++;
             }
         });

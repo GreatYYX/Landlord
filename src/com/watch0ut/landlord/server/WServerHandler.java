@@ -248,6 +248,27 @@ public class WServerHandler extends IoHandlerAdapter {
     }
 
     /**
+     * 判断table中的player是否全都为Ready状态
+     * @param table 需要判断状态的牌桌
+     * @return 所有玩家全为Ready状态返回true，否则false
+     */
+    private boolean isAllReady(Table table) {
+        Player bottomPlayer = table.getPlayer(0);
+        if (bottomPlayer == null || bottomPlayer.getState() != Player.STATE.Ready)
+            return false;
+        Player rightPlayer = table.getPlayer(1);
+        if (rightPlayer == null || rightPlayer.getState() != Player.STATE.Ready)
+            return false;
+        Player topPlayer = table.getPlayer(2);
+        if (topPlayer == null || topPlayer.getState() != Player.STATE.Ready)
+            return false;
+        Player leftPlayer = table.getPlayer(3);
+        if (leftPlayer == null || leftPlayer.getState() != Player.STATE.Ready)
+            return false;
+        return true;
+    }
+
+    /**
      * 准备
      * SEATED->READY
      * 同桌全部READY后READY->WAIT，其中一位为READY->WAIT->PLAY
@@ -261,10 +282,7 @@ public class WServerHandler extends IoHandlerAdapter {
 
         //player是否都已ready
         Table table = hall_.getTable(player.getTableId());
-        if(table.getPlayer(0).getState().equals(Player.STATE.Ready) &&
-                table.getPlayer(1).getState().equals(Player.STATE.Ready) &&
-                table.getPlayer(2).getState().equals(Player.STATE.Ready) &&
-                table.getPlayer(3).getState().equals(Player.STATE.Ready)) {
+        if (isAllReady(table)) {
             Dealer dealer = table.getDealer();
             dealer.gameInit();
             dealer.shuffle();

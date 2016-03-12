@@ -131,32 +131,48 @@ public class MiniTablePane extends VBox {
                 rightLabel.setText(player.getNickName());
                 break;
         }
-
-        // TODO: 暂时用黑框标记，后面统一调整
-        setStyle("-fx-border-color: black");
     }
 
     public void unseat(Player player) {
         switch (player.getTablePosition()) {
             case Table.TOP:
+                tableView.setTopIdle();
                 topAvatar.update(idleImage, AvatarView.MINI);
                 topLabel.setText("");
                 break;
             case Table.BOTTOM:
+                tableView.setBottomIdle();
                 bottomAvatar.update(idleImage, AvatarView.MINI);
                 bottomLabel.setText("");
                 break;
             case Table.LEFT:
+                tableView.setLeftIdle();
                 leftAvatar.update(idleImage, AvatarView.MINI);
                 leftLabel.setText("");
                 break;
             case Table.RIGHT:
+                tableView.setRightIdle();
                 rightAvatar.update(idleImage, AvatarView.MINI);
                 rightLabel.setText("");
                 break;
         }
+    }
 
-        setStyle("");
+    public void ready(Player player) {
+        switch (player.getTablePosition()) {
+            case Table.TOP:
+                tableView.setTopReady();
+                break;
+            case Table.BOTTOM:
+                tableView.setBottomReady();
+                break;
+            case Table.LEFT:
+                tableView.setLeftReady();
+                break;
+            case Table.RIGHT:
+                tableView.setRightReady();
+                break;
+        }
     }
 
     public int getTableId() {

@@ -61,7 +61,8 @@ public class MainApplication extends Application {
         WClient.getInstance().setHandler(handler);
     }
 
-    public void showTable() {
+    public void showTable(Player player) {
+        tablePaneController.selfSeat(player);
         tableStage.show();
     }
 

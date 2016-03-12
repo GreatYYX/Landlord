@@ -1,5 +1,9 @@
 package com.watch0ut.landlord.client.view;
 
+import com.watch0ut.landlord.client.model.PlayerModel;
+import com.watch0ut.landlord.object.Player;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -9,6 +13,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
+import java.util.List;
 
 /**
  * 牌桌面板，包括玩家信息面板、玩家列表面板和聊天面板
@@ -58,6 +64,7 @@ public class TablePane extends BorderPane {
 
     private PlayerInfoPane playerInfoPane;
     private PlayerListTable playerListTable;
+    private ObservableList<PlayerModel> playerModels;
     private ChatPane chatPane;
 
     public TablePane() {
@@ -99,14 +106,6 @@ public class TablePane extends BorderPane {
         updateStartButtonPosition();
         frontPane.getChildren().add(startButton);
 
-        startButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                setState(TablePane.FULL);
-                updatePlayerPosition();
-            }
-        });
-
         StackPane centerPane = new StackPane();
         ImageView background = new ImageView();
         background.setFitWidth(CENTER_WIDTH);
@@ -126,6 +125,9 @@ public class TablePane extends BorderPane {
         playerListTable = new PlayerListTable();
         playerListTable.setMinHeight(112);
         playerListTable.setPrefHeight(139);
+        playerModels = FXCollections.observableArrayList();
+        playerListTable.setItems(playerModels);
+
         chatPane = new ChatPane();
         chatPane.setPrefSize(240, 477);
         VBox rightBox = new VBox(5);
@@ -168,5 +170,25 @@ public class TablePane extends BorderPane {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public void setOnStart(EventHandler<ActionEvent> handler) {
+        startButton.setOnAction(handler);
+    }
+
+    public void setPlayerInfo(Player player) {
+        playerInfoPane.update(player.getPhoto(), player.getNickName(), player.getScore());
+    }
+
+    public void addPlayer(PlayerModel playerModel) {
+        playerModels.add(playerModel);
+    }
+
+    public void selfSeat(Player player) {
+        self.seat(player.getPhoto(), player.getNickName());
+    }
+
+    public void selfReady() {
+        self.ready();
     }
 }

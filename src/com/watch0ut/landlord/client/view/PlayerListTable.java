@@ -73,4 +73,8 @@ public class PlayerListTable extends StackPane {
         tableView.setItems(value);
     }
 
+    public ObservableList<PlayerModel> getItems() {
+        return tableView.getItems();
+    }
+
 }

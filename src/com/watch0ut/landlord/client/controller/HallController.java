@@ -54,29 +54,31 @@ public class HallController {
             if (self == null)
                 continue;
             if (player.getId() == self.getId()) {
-                int tableId = player.getTableId();
-                if (tableId >= 0) {
-                    if (tableId != self.getTableId()) {
-                        self.setTableId(player.getTableId());
-                        self.setTablePosition(player.getTablePosition());
-                        seat(player);
-                    }
-                } else {
-                    if (tableId != self.getTableId()) {
-                        unseat(player);
-                    }
+                if (player.getState() == Player.STATE.Seated &&
+                        self.getState() == Player.STATE.Idle) {
+                    seat(player);
+                } else if (player.getState() == Player.STATE.Idle &&
+                        self.getState() != Player.STATE.Idle) {
+                    unseat(player);
+                } else if (player.getState() == Player.STATE.Ready &&
+                        self.getState() == Player.STATE.Seated) {
+                    ready(player);
                 }
+
             }
         }
     }
 
     private void seat(Player player) {
-        MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(self.getTableId());
+        MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(player.getTableId());
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                self.setTableId(player.getTableId());
+                self.setTablePosition(player.getTablePosition());
+                self.setState(player.getState());
                 miniTablePaneController.seat(player);
-                application.showTable();
+                application.showTable(player);
             }
         });
     }
@@ -89,6 +91,18 @@ public class HallController {
                 miniTablePaneController.unseat(self);
                 self.setTableId(player.getTableId());
                 self.setTablePosition(player.getTablePosition());
+                self.setState(player.getState());
+            }
+        });
+    }
+
+    private void ready(Player player) {
+        MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(self.getTableId());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                miniTablePaneController.ready(player);
+                self.setState(player.getState());
             }
         });
     }

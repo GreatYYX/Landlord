@@ -17,9 +17,9 @@ public class TableView extends StackPane {
 
     private ImageView backgroundImage;
     private GridPane gridPane;
-    private ImageView upReadyImage;
+    private ImageView topReadyImage;
     private ImageView leftReadyImage;
-    private ImageView downReadyImage;
+    private ImageView bottomReadyImage;
     private ImageView rightReadyImage;
 
     public TableView() {
@@ -41,20 +41,20 @@ public class TableView extends StackPane {
 
         gridPane = new GridPane();
 
-        upReadyImage = new ImageView();
-        upReadyImage.setFitWidth(16);
-        upReadyImage.setFitHeight(16);
-        gridPane.add(upReadyImage, 1, 0);
+        topReadyImage = new ImageView();
+        topReadyImage.setFitWidth(16);
+        topReadyImage.setFitHeight(16);
+        gridPane.add(topReadyImage, 1, 0);
 
         leftReadyImage = new ImageView();
         leftReadyImage.setFitWidth(16);
         leftReadyImage.setFitHeight(16);
         gridPane.add(leftReadyImage, 0, 1);
 
-        downReadyImage = new ImageView();
-        downReadyImage.setFitWidth(16);
-        downReadyImage.setFitHeight(16);
-        gridPane.add(downReadyImage, 1, 2);
+        bottomReadyImage = new ImageView();
+        bottomReadyImage.setFitWidth(16);
+        bottomReadyImage.setFitHeight(16);
+        gridPane.add(bottomReadyImage, 1, 2);
 
         rightReadyImage = new ImageView();
         rightReadyImage.setFitWidth(16);
@@ -65,35 +65,35 @@ public class TableView extends StackPane {
 
     }
 
-    public void setUpReady() {
-        upReadyImage.setImage(readyImage);
+    public void setTopReady() {
+        topReadyImage.setImage(readyImage);
     }
 
-    public void setUpLeave() {
-        upReadyImage.setImage(null);
+    public void setTopIdle() {
+        topReadyImage.setImage(null);
     }
 
     public void setLeftReady() {
         leftReadyImage.setImage(readyImage);
     }
 
-    public void setLeftLeave() {
+    public void setLeftIdle() {
         leftReadyImage.setImage(null);
     }
 
-    public void setDownReady() {
-        downReadyImage.setImage(readyImage);
+    public void setBottomReady() {
+        bottomReadyImage.setImage(readyImage);
     }
 
-    public void setDownLeave() {
-        downReadyImage.setImage(null);
+    public void setBottomIdle() {
+        bottomReadyImage.setImage(null);
     }
 
     public void setRightReady() {
         rightReadyImage.setImage(readyImage);
     }
 
-    public void setRightLeave() {
+    public void setRightIdle() {
         rightReadyImage.setImage(null);
     }
 
