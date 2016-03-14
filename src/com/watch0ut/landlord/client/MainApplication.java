@@ -109,6 +109,7 @@ public class MainApplication extends Application {
         @Override
         public void handle(WindowEvent event) {
             if (event.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
+                tablePaneController.selfUnSeat();
                 WClient.getInstance().sendCommand(new UnseatCommand());
             }
         }

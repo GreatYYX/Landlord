@@ -2,7 +2,6 @@ package com.watch0ut.landlord.client.controller;
 
 import com.watch0ut.landlord.client.model.PlayerModel;
 import com.watch0ut.landlord.client.view.PlayerListTable;
-import com.watch0ut.landlord.object.Player;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -24,53 +23,27 @@ public class PlayerListController {
         this.playerListTable.setItems(playerItems);
     }
 
-    public void addPlayers(List<Player> players) {
-        for (Player player : players) {
-            addPlayer(player);
+    public void addPlayers(List<PlayerModel> players) {
+        for (PlayerModel player : players) {
+            playerItems.add(player);
         }
     }
 
-    public void addPlayer(Player player) {
-        playerItems.add(new PlayerModel(
-                player.getId(),
-                player.getPhoto(),
-                player.getNickName(),
-                player.getScore()
-        ));
+    public void addPlayer(PlayerModel player) {
+        playerItems.add(player);
     }
 
-    public void removePlayer(Player player) {
-        for (int i = 0; i < playerItems.size(); i++) {
-            PlayerModel playerModel = playerItems.get(i);
-            if (playerModel.getId() == player.getId()) {
-                playerItems.remove(i);
-            }
-        }
+    public void removePlayer(PlayerModel player) {
+        playerItems.remove(player);
     }
 
-    public void removePlayers(List<Player> players) {
-        for (Player player : players) {
-            removePlayer(player);
+    public void removePlayers(List<PlayerModel> players) {
+        for (PlayerModel player : players) {
+            playerItems.remove(player);
         }
     }
 
     public void clear() {
         playerItems.clear();
-    }
-
-    public void updatePlayer(Player player) {
-        boolean isNotFound = true;
-        for (int i = 0; i < playerItems.size(); i++) {
-            PlayerModel playerModel = playerItems.get(i);
-            if (playerModel.getId() == player.getId()) {
-                isNotFound = false;
-                playerModel.setAvatar(player.getPhoto());
-                playerModel.setNickName(player.getNickName());
-                playerModel.setScore(player.getScore());
-            }
-        }
-        if (isNotFound) {
-            addPlayer(player);
-        }
     }
 }

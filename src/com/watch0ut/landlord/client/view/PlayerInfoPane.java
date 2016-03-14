@@ -1,8 +1,10 @@
 package com.watch0ut.landlord.client.view;
 
+import com.watch0ut.landlord.client.model.PlayerModel;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
@@ -20,6 +22,14 @@ public class PlayerInfoPane extends FlowPane {
         this(AvatarView.IDLE, "", 0);
     }
 
+    public PlayerInfoPane(PlayerModel playerModel) {
+        this(playerModel.getAvatar(), playerModel.getNickName(), playerModel.getScore());
+
+        avatarView.avatarProperty().bind(playerModel.avatarProperty());
+        nickNameLabel.textProperty().bind(playerModel.nickNameProperty());
+        scoreLabel.textProperty().bind(playerModel.scoreStringProperty());
+    }
+
     public PlayerInfoPane(String picture, String nickName, int score) {
         setMinSize(240, 68);
         setMaxSize(240, 68);
@@ -30,11 +40,33 @@ public class PlayerInfoPane extends FlowPane {
         avatarView = new AvatarView(picture, AvatarView.SMALL);
         getChildren().add(avatarView);
 
-        nickNameLabel = new Label("昵称：" + nickName);
-        scoreLabel = new Label("积分：" + score);
+        Label staticLabel = new Label("昵称：");
+        nickNameLabel = new Label(nickName);
+        HBox nickNameBox = new HBox();
+        nickNameBox.getChildren().addAll(staticLabel, nickNameLabel);
 
-        VBox vBox = new VBox(4, nickNameLabel, scoreLabel);
+        staticLabel = new Label("积分：");
+        scoreLabel = new Label(Integer.toString(score));
+        HBox scoreBox = new HBox();
+        scoreBox.getChildren().addAll(staticLabel, scoreLabel);
+
+        VBox vBox = new VBox(4, nickNameBox, scoreBox);
         getChildren().add(vBox);
+    }
+
+    public void bind(PlayerModel playerModel) {
+        updateAvatar(playerModel.getAvatar());
+        updateNickName(playerModel.getNickName());
+        updateScore(playerModel.getScore());
+        avatarView.avatarProperty().bind(playerModel.avatarProperty());
+        nickNameLabel.textProperty().bind(playerModel.nickNameProperty());
+        scoreLabel.textProperty().bind(playerModel.scoreStringProperty());
+    }
+
+    public void unbind() {
+        avatarView.avatarProperty().unbind();
+        nickNameLabel.textProperty().unbind();
+        scoreLabel.textProperty().unbind();
     }
 
     public void update(String photo, String nickName, int score) {
@@ -48,10 +80,10 @@ public class PlayerInfoPane extends FlowPane {
     }
 
     public void updateNickName(String nickName) {
-        nickNameLabel.setText("昵称：" + nickName);
+        nickNameLabel.setText(nickName);
     }
 
     public void updateScore(int score) {
-        scoreLabel.setText("积分：" + score);
+        scoreLabel.setText(Integer.toString(score));
     }
 }

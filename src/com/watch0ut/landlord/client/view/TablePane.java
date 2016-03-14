@@ -149,6 +149,7 @@ public class TablePane extends BorderPane {
                 startButton.setLayoutX(CENTER_X - startButton.getPrefWidth() / 2);
                 startButton.setLayoutY(CENTER_HEIGHT - startButton.getPrefHeight() - 20);
         }
+        startButton.setVisible(true);
     }
 
     public void updatePlayerPosition() {
@@ -184,11 +185,31 @@ public class TablePane extends BorderPane {
         playerModels.add(playerModel);
     }
 
+    public void updatePlayer(PlayerModel playerModel) {
+        for (int i = 0; i< playerModels.size(); i++) {
+            PlayerModel oldPlayer = playerModels.get(i);
+            if (oldPlayer.getId() == playerModel.getId()) {
+                oldPlayer.setAvatar(playerModel.getAvatar());
+                oldPlayer.setNickName(playerModel.getNickName());
+                oldPlayer.setScore(playerModel.getScore());
+            }
+        }
+    }
+
+    public void clearPlayers() {
+        playerModels.clear();
+    }
+
     public void selfSeat(Player player) {
         self.seat(player.getPhoto(), player.getNickName());
     }
 
+    public void selfUnSeat() {
+        self.unseat();
+    }
+
     public void selfReady() {
         self.ready();
+        startButton.setVisible(false);
     }
 }

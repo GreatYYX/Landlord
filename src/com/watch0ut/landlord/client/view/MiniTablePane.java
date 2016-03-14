@@ -6,7 +6,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
@@ -17,8 +16,6 @@ import javafx.scene.text.TextAlignment;
  * Created by Jack on 16/2/19.
  */
 public class MiniTablePane extends VBox {
-
-    private Image idleImage;
 
     private GridPane gridPane;
     private AvatarView topAvatar;
@@ -42,12 +39,6 @@ public class MiniTablePane extends VBox {
         gridPane.setHgap(4);
         gridPane.setVgap(4);
 
-        try {
-            idleImage = new Image(getClass().getResourceAsStream("icon/avatar/" + AvatarView.IDLE));
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
         initializeAvatars();
         initializeLabels();
 
@@ -61,22 +52,22 @@ public class MiniTablePane extends VBox {
     }
 
     private void initializeAvatars() {
-        topAvatar = new AvatarView(idleImage, AvatarView.MINI);
+        topAvatar = new AvatarView(null, AvatarView.MINI);
         gridPane.add(topAvatar, 1, 0);
         GridPane.setHalignment(topAvatar, HPos.CENTER);
         GridPane.setValignment(topAvatar, VPos.CENTER);
 
-        leftAvatar = new AvatarView(idleImage, AvatarView.MINI);
+        leftAvatar = new AvatarView(null, AvatarView.MINI);
         gridPane.add(leftAvatar, 0, 1);
         GridPane.setHalignment(leftAvatar, HPos.CENTER);
         GridPane.setValignment(leftAvatar, VPos.CENTER);
 
-        bottomAvatar = new AvatarView(idleImage, AvatarView.MINI);
+        bottomAvatar = new AvatarView(null, AvatarView.MINI);
         gridPane.add(bottomAvatar, 1, 2);
         GridPane.setHalignment(bottomAvatar, HPos.CENTER);
         GridPane.setValignment(bottomAvatar, VPos.CENTER);
 
-        rightAvatar = new AvatarView(idleImage, AvatarView.MINI);
+        rightAvatar = new AvatarView(null, AvatarView.MINI);
         gridPane.add(rightAvatar, 2, 1);
         GridPane.setHalignment(rightAvatar, HPos.CENTER);
         GridPane.setValignment(rightAvatar, VPos.CENTER);
@@ -137,22 +128,22 @@ public class MiniTablePane extends VBox {
         switch (player.getTablePosition()) {
             case Table.TOP:
                 tableView.setTopIdle();
-                topAvatar.update(idleImage, AvatarView.MINI);
+                topAvatar.update(null, AvatarView.MINI);
                 topLabel.setText("");
                 break;
             case Table.BOTTOM:
                 tableView.setBottomIdle();
-                bottomAvatar.update(idleImage, AvatarView.MINI);
+                bottomAvatar.update(null, AvatarView.MINI);
                 bottomLabel.setText("");
                 break;
             case Table.LEFT:
                 tableView.setLeftIdle();
-                leftAvatar.update(idleImage, AvatarView.MINI);
+                leftAvatar.update(null, AvatarView.MINI);
                 leftLabel.setText("");
                 break;
             case Table.RIGHT:
                 tableView.setRightIdle();
-                rightAvatar.update(idleImage, AvatarView.MINI);
+                rightAvatar.update(null, AvatarView.MINI);
                 rightLabel.setText("");
                 break;
         }

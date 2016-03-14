@@ -1,7 +1,7 @@
 package com.watch0ut.landlord.client.view;
 
 import com.watch0ut.landlord.client.controller.PlayerListController;
-import com.watch0ut.landlord.object.Player;
+import com.watch0ut.landlord.client.model.PlayerModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -21,10 +21,10 @@ import java.util.List;
 public class TestPlayerListTable {
 
     private static int id = 1;
-    private static List<Player> players;
+    private static List<PlayerModel> players;
 
     public static Parent initialize() {
-        players = new ArrayList<Player>();
+        players = new ArrayList<PlayerModel>();
 
         VBox parent = new VBox(10);
         parent.setAlignment(Pos.CENTER);
@@ -40,16 +40,11 @@ public class TestPlayerListTable {
             @Override
             public void handle(ActionEvent event) {
                 int score = (int)(Math.random() * 20 + 40);
-                Player player = new Player(
+                PlayerModel player = new PlayerModel(
                         id++,
-                        "jack",
-                        "Jack",
                         "J.png",
-                        score,
-                        30,
-                        20,
-                        10,
-                        5
+                        "Jack",
+                        score
                 );
                 players.add(player);
                 playerListController.addPlayer(player);
@@ -61,9 +56,8 @@ public class TestPlayerListTable {
             @Override
             public void handle(ActionEvent event) {
                 int i = (int)(Math.random() * players.size());
-                Player player = players.get(i);
+                PlayerModel player = players.get(i);
                 player.setScore((int)(Math.random() * 10 + 50));
-                playerListController.updatePlayer(player);
             }
         });
 

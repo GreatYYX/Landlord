@@ -2,6 +2,7 @@ package com.watch0ut.landlord.client.service;
 
 import com.watch0ut.landlord.client.controller.HallController;
 import com.watch0ut.landlord.client.controller.SignInController;
+import com.watch0ut.landlord.client.controller.TablePaneController;
 import com.watch0ut.landlord.command.AbstractCommand;
 import com.watch0ut.landlord.command.concrete.LoginResponseCommand;
 import com.watch0ut.landlord.command.concrete.RefreshPlayerListCommand;
@@ -19,6 +20,7 @@ public class WClientHandler extends IoHandlerAdapter {
 
     private SignInController signInController;
     private HallController hallController;
+    private TablePaneController tablePaneController;
 
     public void setSignInController(SignInController signInController) {
         this.signInController = signInController;

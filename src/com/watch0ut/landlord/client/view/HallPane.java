@@ -1,6 +1,7 @@
 package com.watch0ut.landlord.client.view;
 
 import com.watch0ut.landlord.Configuration;
+import com.watch0ut.landlord.client.model.PlayerModel;
 import com.watch0ut.landlord.object.Player;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -40,7 +41,7 @@ public class HallPane extends VBox {
         this(null);
     }
 
-    public HallPane(Player player) {
+    public HallPane(PlayerModel player) {
         setPrefSize(800, 620);
 
         initMenuBar();
@@ -65,11 +66,7 @@ public class HallPane extends VBox {
         if (player == null)
             playerInfoPane = new PlayerInfoPane();
         else {
-            playerInfoPane = new PlayerInfoPane(
-                    player.getPhoto(),
-                    player.getNickName(),
-                    player.getScore()
-            );
+            playerInfoPane = new PlayerInfoPane(player);
         }
         playerListTable = new PlayerListTable();
         VBox rightPart = new VBox();
@@ -98,12 +95,8 @@ public class HallPane extends VBox {
         getChildren().add(menuBar);
     }
 
-    public void updatePlayer(Player player) {
-        playerInfoPane.update(
-                player.getPhoto(),
-                player.getNickName(),
-                player.getScore()
-        );
+    public void updatePlayer(PlayerModel playerModel) {
+        playerInfoPane.bind(playerModel);
     }
 
     public List<MiniTablePane> getTableList() {

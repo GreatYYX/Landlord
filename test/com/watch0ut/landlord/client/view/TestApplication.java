@@ -20,8 +20,6 @@ public class TestApplication extends Application {
         primaryStage.show();
     }
 
-
-
     private void testPanes(Stage primaryStage) throws IOException {
         primaryStage.setTitle("Landlord");
 
@@ -41,10 +39,10 @@ public class TestApplication extends Application {
 //        primaryStage.setScene(new Scene(TestTableView.initialize(), 150, 200));
 
         // 测试PlayerListTable
-//        primaryStage.setScene(new Scene(TestPlayerListTable.initialize(), 250, 300));
+        primaryStage.setScene(new Scene(TestPlayerListTable.initialize(), 250, 300));
 
         // 测试HallPane
-        primaryStage.setScene(new Scene(new HallPane(), 800, 620));
+//        primaryStage.setScene(new Scene(new HallPane(), 800, 620));
 
         // 测试PlayedCardPane
 //        primaryStage.setScene(new Scene(TestPlayedCardPane.initialize(), 150, 105));

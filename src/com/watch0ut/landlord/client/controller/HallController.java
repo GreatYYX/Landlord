@@ -1,6 +1,7 @@
 package com.watch0ut.landlord.client.controller;
 
 import com.watch0ut.landlord.client.MainApplication;
+import com.watch0ut.landlord.client.model.PlayerModel;
 import com.watch0ut.landlord.client.service.WClient;
 import com.watch0ut.landlord.client.view.HallPane;
 import com.watch0ut.landlord.client.view.MiniTablePane;
@@ -21,12 +22,13 @@ import java.util.List;
  */
 public class HallController {
 
-    private Player self;
+    private PlayerModel self;
     private HallPane hallPane;
     private MainApplication application;
 
     private PlayerListController playerListController;
     private List<MiniTablePaneController> miniTablePaneControllers;
+    private List<PlayerModel> playerModels;
 
     public HallController(Application application, HallPane pane) {
         this.application = (MainApplication) application;
@@ -41,32 +43,81 @@ public class HallController {
             MiniTablePane miniTablePane = miniTablePanes.get(i);
             miniTablePaneControllers.add(new MiniTablePaneController(miniTablePane));
         }
+
+        playerModels = new ArrayList<>();
     }
 
     public void updatePlayer(Player player) {
-        self = player;
-        hallPane.updatePlayer(player);
+        self = new PlayerModel(
+                player.getId(),
+                player.getPhoto(),
+                player.getNickName(),
+                player.getScore()
+        );
+        playerModels.add(self);
+        hallPane.updatePlayer(self);
+    }
+
+    private void updatePlayModel(PlayerModel playerModel, Player player) {
+        if (!playerModel.getAvatar().equals(player.getPhoto())) {
+            playerModel.setAvatar(player.getPhoto());
+        }
+
+        if (!playerModel.getNickName().equals(player.getNickName())) {
+            playerModel.setNickName(player.getNickName());
+        }
+
+        if (playerModel.getScore() != player.getScore()) {
+            playerModel.setScore(player.getScore());
+        }
+    }
+
+    private void addPlayerModel(Player player) {
+        PlayerModel playerModel = new PlayerModel(
+                player.getId(),
+                player.getPhoto(),
+                player.getNickName(),
+                player.getScore()
+        );
+        playerModels.add(playerModel);
+        playerListController.addPlayer(playerModel);
     }
 
     public void updatePlayerList(List<Player> players) {
-        for (Player player : players) {
-            playerListController.updatePlayer(player);
-            if (self == null)
-                continue;
-            if (player.getId() == self.getId()) {
-                if (player.getState() == Player.STATE.Seated &&
-                        self.getState() == Player.STATE.Idle) {
-                    seat(player);
-                } else if (player.getState() == Player.STATE.Idle &&
-                        self.getState() != Player.STATE.Idle) {
-                    unseat(player);
-                } else if (player.getState() == Player.STATE.Ready &&
-                        self.getState() == Player.STATE.Seated) {
-                    ready(player);
+        for (int i = 0; i < playerModels.size(); i++) {
+            PlayerModel playerModel = playerModels.get(i);
+            for (int j = 0; j < players.size();) {
+                Player player = players.get(j);
+                if (playerModel.getId() == player.getId()) {
+                    updatePlayModel(playerModel, player);
+                    players.remove(j);
+                } else {
+                    j++;
                 }
-
             }
         }
+        for (int k = 0; k < players.size(); k++) {
+            Player player = players.get(k);
+            addPlayerModel(player);
+        }
+//        for (Player player : players) {
+//            playerListController.updatePlayer(player);
+//            if (self == null)
+//                continue;
+//            if (player.getId() == self.getId()) {
+//                if (player.getState() == Player.STATE.Seated &&
+//                        self.getState() == Player.STATE.Idle) {
+//                    seat(player);
+//                } else if (player.getState() == Player.STATE.Idle &&
+//                        self.getState() != Player.STATE.Idle) {
+//                    unseat(player);
+//                } else if (player.getState() == Player.STATE.Ready &&
+//                        self.getState() == Player.STATE.Seated) {
+//                    ready(player);
+//                }
+//
+//            }
+//        }
     }
 
     private void seat(Player player) {
@@ -74,9 +125,9 @@ public class HallController {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                self.setTableId(player.getTableId());
-                self.setTablePosition(player.getTablePosition());
-                self.setState(player.getState());
+//                self.setTableId(player.getTableId());
+//                self.setTablePosition(player.getTablePosition());
+//                self.setState(player.getState());
                 miniTablePaneController.seat(player);
                 application.showTable(player);
             }
@@ -84,25 +135,26 @@ public class HallController {
     }
 
     private void unseat(Player player) {
-        MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(self.getTableId());
+//        MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(self.getTableId());
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                miniTablePaneController.unseat(self);
-                self.setTableId(player.getTableId());
-                self.setTablePosition(player.getTablePosition());
-                self.setState(player.getState());
+//                miniTablePaneController.unseat(self);
+//                self.setTableId(player.getTableId());
+//                self.setTablePosition(player.getTablePosition());
+//                self.setState(player.getState());
             }
         });
     }
 
     private void ready(Player player) {
-        MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(self.getTableId());
+//        MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(self.getTableId());
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                miniTablePaneController.ready(player);
-                self.setState(player.getState());
+//                miniTablePaneController.ready(player);
+//                self.setState(player.getState());
+
             }
         });
     }
@@ -119,6 +171,7 @@ public class HallController {
     }
 
     public void logout() {
+        playerModels.clear();
         playerListController.clear();
         WClient client = WClient.getInstance();
         client.sendCommand(new LogoutCommand());

@@ -1,5 +1,9 @@
 package com.watch0ut.landlord.client.view;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -28,6 +32,8 @@ public class AvatarView extends ImageView {
     public final static int BIG = 5;
     public final static int LARGE = 6;
 
+    private final SimpleStringProperty avatar;
+
     /**
      * 构造函数，三个参数
      * @param picture 头像名称
@@ -35,6 +41,10 @@ public class AvatarView extends ImageView {
      * @param height 高度
      */
     public AvatarView(String picture, int width, int height) {
+        if (picture == null || picture.isEmpty())
+            picture = IDLE;
+        avatar = new SimpleStringProperty(picture);
+        avatar.addListener(new AvatarChangeListener());
         update(picture, width, height);
     }
 
@@ -44,12 +54,16 @@ public class AvatarView extends ImageView {
      * @param type 尺寸类型，比如Small，Middle和Big
      */
     public AvatarView(String picture, int type) {
+        if (picture == null || picture.isEmpty())
+            picture = IDLE;
+        avatar = new SimpleStringProperty(picture);
+        avatar.addListener(new AvatarChangeListener());
         update(picture, type);
     }
 
-    public AvatarView(Image image, int sizeType) {
-        update(image, sizeType);
-    }
+//    public AvatarView(Image image, int sizeType) {
+//        update(image, sizeType);
+//    }
 
     /**
      * 更新头像图片和尺寸
@@ -57,7 +71,10 @@ public class AvatarView extends ImageView {
      * @param width 头像宽度
      * @param height 头像高度
      */
-    public void update(String picture, int width, int height) {
+    public void update(String picture, double width, double height) {
+        if (picture == null || picture.isEmpty())
+            picture = IDLE;
+        avatar.set(picture);
         setFitWidth(width);
         setFitHeight(height);
 
@@ -80,13 +97,13 @@ public class AvatarView extends ImageView {
         update(picture, size, size);
     }
 
-    public void update(Image image, int sizeType) {
-        int size = getSizeByType(sizeType);
-        setFitWidth(size);
-        setFitHeight(size);
-
-        setImage(image);
-    }
+//    public void update(Image image, int sizeType) {
+//        int size = getSizeByType(sizeType);
+//        setFitWidth(size);
+//        setFitHeight(size);
+//
+//        setImage(image);
+//    }
 
     public static int getSizeByType(int sizeType) {
         switch (sizeType) {
@@ -104,6 +121,17 @@ public class AvatarView extends ImageView {
                 return LARGE_SIZE;
             default:
                 return 0;
+        }
+    }
+
+    public StringProperty avatarProperty() {
+        return avatar;
+    }
+
+    class AvatarChangeListener implements ChangeListener<String> {
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            update(newValue, getFitWidth(), getFitHeight());
         }
     }
 }
