@@ -34,12 +34,22 @@ public class Player implements Serializable {
     private ROLE role_;
 
     public enum STATE {
-        Idle,       //空闲
-        Seated,     //入坐
-        Ready,      //准备
-        Play,       //出牌
-        Wait,       //等待出牌
-        Finish      //结束
+        Idle(0),       //空闲
+        Seated(1),     //入坐
+        Ready(2),      //准备
+        Play(3),       //出牌
+        Wait(4),       //等待出牌
+        Finish(5);     //结束
+
+        private final int stateId_;
+        private STATE(int stateId) {
+            stateId_ = stateId;
+        }
+
+        public int get() {
+            return stateId_;
+        }
+
     }
     private STATE state_;
 
