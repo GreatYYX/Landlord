@@ -46,7 +46,15 @@ public class Player implements Serializable {
             stateId_ = stateId;
         }
 
-        public int get() {
+        public static STATE getState(int stateId) {
+            for (STATE state : STATE.values()) {
+                if (state.getValue() == stateId)
+                    return state;
+            }
+            return Idle;
+        }
+
+        public int getValue() {
             return stateId_;
         }
 

@@ -1,5 +1,6 @@
 package com.watch0ut.landlord.client.view;
 
+import com.watch0ut.landlord.client.model.PlayerModel;
 import com.watch0ut.landlord.object.Player;
 import com.watch0ut.landlord.object.Table;
 import javafx.geometry.HPos;
@@ -102,6 +103,22 @@ public class MiniTablePane extends VBox {
         GridPane.setValignment(rightLabel, VPos.BOTTOM);
         GridPane.setHalignment(rightLabel, HPos.CENTER);
     }
+
+    public void seat(PlayerModel player) {
+        switch (player.getTablePosition()) {
+            case Table.TOP:
+                tableView.topStateProperty().bind(player.stateProperty());
+                topAvatar.avatarProperty().bind(player.avatarProperty());
+                topLabel.textProperty().bind(player.nickNameProperty());
+                break;
+            case Table.BOTTOM:
+                break;
+            case Table.LEFT:
+                break;
+            case Table.RIGHT:
+                break;
+        }
+    }
     
     public void seat(Player player) {
         switch (player.getTablePosition()) {
@@ -120,6 +137,33 @@ public class MiniTablePane extends VBox {
             case Table.RIGHT:
                 rightAvatar.update(player.getPhoto(), AvatarView.MINI);
                 rightLabel.setText(player.getNickName());
+                break;
+        }
+    }
+
+    public void unseat(PlayerModel player) {
+        switch (player.getTablePosition()) {
+            case Table.TOP:
+//                tableView.setTopIdle();
+//                topAvatar.update(null, AvatarView.MINI);
+//                topLabel.setText("");
+                topAvatar.avatarProperty().unbind();
+                topLabel.textProperty().unbind();
+                break;
+            case Table.BOTTOM:
+                tableView.setBottomIdle();
+                bottomAvatar.update(null, AvatarView.MINI);
+                bottomLabel.setText("");
+                break;
+            case Table.LEFT:
+                tableView.setLeftIdle();
+                leftAvatar.update(null, AvatarView.MINI);
+                leftLabel.setText("");
+                break;
+            case Table.RIGHT:
+                tableView.setRightIdle();
+                rightAvatar.update(null, AvatarView.MINI);
+                rightLabel.setText("");
                 break;
         }
     }

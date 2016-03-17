@@ -8,7 +8,7 @@ public class TestPlayer {
 
     public static void main(String[] args) {
         Player.STATE state = Player.STATE.Seated;
-        System.out.println(state.get());
+        System.out.println(state.getValue());
         System.out.println(state);
     }
 }

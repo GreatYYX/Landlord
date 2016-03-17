@@ -1,5 +1,11 @@
 package com.watch0ut.landlord.client.view;
 
+import com.watch0ut.landlord.client.model.PlayerModel;
+import com.watch0ut.landlord.object.Player;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -21,6 +27,11 @@ public class TableView extends StackPane {
     private ImageView leftReadyImage;
     private ImageView bottomReadyImage;
     private ImageView rightReadyImage;
+
+    private SimpleIntegerProperty topState;
+    private IntegerProperty leftState;
+    private IntegerProperty bottomState;
+    private IntegerProperty rightState;
 
     public TableView() {
         setMinSize(48, 48);
@@ -63,6 +74,29 @@ public class TableView extends StackPane {
 
         getChildren().add(gridPane);
 
+        topState = new SimpleIntegerProperty(Player.STATE.Idle.getValue());
+        topState.addListener(new StateChangeListener());
+        leftState = new SimpleIntegerProperty(Player.STATE.Idle.getValue());
+        leftState.addListener(new StateChangeListener());
+        bottomState = new SimpleIntegerProperty(Player.STATE.Idle.getValue());
+        rightState = new SimpleIntegerProperty(Player.STATE.Idle.getValue());
+
+    }
+
+    public IntegerProperty topStateProperty() {
+        return topState;
+    }
+
+    public IntegerProperty leftStateProperty() {
+        return leftState;
+    }
+
+    public IntegerProperty bottomStateProperty() {
+        return bottomState;
+    }
+
+    public IntegerProperty rightStateProperty() {
+        return rightState;
     }
 
     public void setTopReady() {
@@ -103,5 +137,78 @@ public class TableView extends StackPane {
 
     public void setTableNormal() {
         backgroundImage.setImage(tableImage);
+    }
+
+    private void topStateChange(Integer oldValue, Integer newValue) {
+        Player.STATE oldState = Player.STATE.getState(oldValue);
+        Player.STATE newState = Player.STATE.getState(newValue);
+        if (!oldState.equals(Player.STATE.Idle) && newState.equals(Player.STATE.Idle)) {
+            // 玩家离座
+            topState.unbind();
+            setTopIdle();
+            return;
+        }
+
+//        if (oldState.equals(Player.STATE.Idle) && newState.equals(Player.STATE.Seated)) {
+//            // 玩家入座
+//            setTopReady();
+//            return;
+//        }
+
+        if (oldState.equals(Player.STATE.Seated) && newState.equals(Player.STATE.Ready)) {
+            // 玩家准备
+            setTopReady();
+            return;
+        }
+
+    }
+
+    private void bottomStateChange(Integer oldValue, Integer newValue) {
+
+    }
+
+    private void leftStateChange(Integer oldValue, Integer newValue) {
+
+    }
+
+    private void rightStateChange(Integer oldValue, Integer newValue) {
+        
+    }
+
+    private boolean isAllReady() {
+        Player.STATE top = Player.STATE.getState(topState.getValue());
+        if (!top.equals(Player.STATE.Ready))
+            return false;
+        Player.STATE bottom = Player.STATE.getState(bottomState.getValue());
+        if (!bottom.equals(Player.STATE.Ready))
+            return false;
+        Player.STATE left = Player.STATE.getState(leftState.getValue());
+        if (!left.equals(Player.STATE.Ready))
+            return false;
+        Player.STATE right = Player.STATE.getState(rightState.getValue());
+        if (!right.equals(Player.STATE.Ready))
+            return false;
+        return true;
+    }
+
+    class StateChangeListener implements ChangeListener<Number> {
+        @Override
+        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+            IntegerProperty source = (IntegerProperty)observable;
+            if (source.equals(topState)) {
+                topStateChange((Integer) oldValue, (Integer) newValue);
+            } else if (source.equals(bottomState)) {
+                bottomStateChange((Integer) oldValue, (Integer) newValue);
+            } else if (source.equals(leftState)) {
+                leftStateChange((Integer) oldValue, (Integer) newValue);
+            } else if (source.equals(rightState)) {
+                rightStateChange((Integer) oldValue, (Integer) newValue);
+            }
+            if (isAllReady()) {
+                setTablePlay();
+            } else {
+                setTableNormal();
+            }
+        }
     }
 }

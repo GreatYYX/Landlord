@@ -10,12 +10,12 @@ import javafx.beans.property.SimpleStringProperty;
  * Created by Jack on 16/2/27.
  */
 public class PlayerModel {
-    public final static int IDLE = 0;
-    public final static int SEATED = 1;
-    public final static int READY = 2;
-    public final static int PLAY = 3;
-    public final static int WAIT = 4;
-    public final static int FINISH = 5;
+//    public final static int IDLE = 0;
+//    public final static int SEATED = 1;
+//    public final static int READY = 2;
+//    public final static int PLAY = 3;
+//    public final static int WAIT = 4;
+//    public final static int FINISH = 5;
 
     private int id;
     private int tablePosition;
@@ -32,7 +32,7 @@ public class PlayerModel {
         this.nickName = new SimpleStringProperty(nickName);
         this.score = new SimpleIntegerProperty(score);
         this.scoreString = new SimpleStringProperty(Integer.toString(score));
-        this.state = new SimpleIntegerProperty(IDLE);
+        this.state = new SimpleIntegerProperty(0);
     }
 
     public int getState() {

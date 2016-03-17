@@ -70,6 +70,10 @@ public class HallController {
         if (playerModel.getScore() != player.getScore()) {
             playerModel.setScore(player.getScore());
         }
+
+        if (playerModel.getState() != player.getState().getValue()) {
+            playerModel.setState(player.getState().getValue());
+        }
     }
 
     private void addPlayerModel(Player player) {
@@ -100,24 +104,6 @@ public class HallController {
             Player player = players.get(k);
             addPlayerModel(player);
         }
-//        for (Player player : players) {
-//            playerListController.updatePlayer(player);
-//            if (self == null)
-//                continue;
-//            if (player.getId() == self.getId()) {
-//                if (player.getState() == Player.STATE.Seated &&
-//                        self.getState() == Player.STATE.Idle) {
-//                    seat(player);
-//                } else if (player.getState() == Player.STATE.Idle &&
-//                        self.getState() != Player.STATE.Idle) {
-//                    unseat(player);
-//                } else if (player.getState() == Player.STATE.Ready &&
-//                        self.getState() == Player.STATE.Seated) {
-//                    ready(player);
-//                }
-//
-//            }
-//        }
     }
 
     private void seat(Player player) {
