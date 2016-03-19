@@ -148,7 +148,7 @@ public class Player implements Serializable {
      */
     public boolean removeCards(List<Card> cards) {
         if(cards_.containsAll(cards)) {
-            return cards.removeAll(cards);
+            return cards_.removeAll(cards);
         }
         return false;
     }
@@ -187,18 +187,30 @@ public class Player implements Serializable {
     /**
      * 出牌
      */
-    public CardType play(CardType prevType, List<Card> cards) {
-        return play(prevType, findType(cards));
+    public CardType play(CardType prevType, CardType currType) {
+
+        CardType tried = tryToPlay(prevType, currType);
+        if(tried != null) {
+            removeCards(currType.getCards());
+        }
+
+        return tried;
     }
 
     /**
-     * 出牌
+     * 尝试出牌（重载）
+     */
+    public static CardType tryToPlay(CardType prevType, List<Card> cards) {
+        return tryToPlay(prevType, findType(cards));
+    }
+
+    /**
+     * 尝试出牌，并没有真正从手牌中扣除，扣除牌需调用removeCards或play
      * @param prevType 之前玩家出的最大牌，null则说明没有大过当前玩家上一轮的牌（本轮仍然当前玩家出牌）
      * @param currType 需要出的牌，null则为不出
      * @return 合法则返回实例化的CardType对象，否则返回null（不出或比上家小）
      */
-    public CardType play(CardType prevType, CardType currType) {
-
+    public static CardType tryToPlay(CardType prevType, CardType currType) {
         if(currType == null) { // 不出牌
             return null;
         }
@@ -215,9 +227,7 @@ public class Player implements Serializable {
 
             //牌面大于上家
             if(currType.compareTo(prevType) > 0) {
-                if(removeCards(currType.getCards())) {
-                    return currType;
-                }
+                return currType;
             }
         }
         return null;
@@ -229,7 +239,7 @@ public class Player implements Serializable {
      * @param first 第一次出牌则为true，其余皆为false
      * @return 合法则返回实例化的CardType对象，否则返回null
      */
-    private CardType findType(List<Card> cards, boolean first) {
+    private static CardType findType(List<Card> cards, boolean first) {
 
         int len = cards.size();
         CardType cardType = null;
@@ -276,7 +286,7 @@ public class Player implements Serializable {
      * @param cards
      * @return
      */
-    private CardType findType(List<Card> cards) {
+    private static CardType findType(List<Card> cards) {
         return findType(cards, false);
     }
 
@@ -284,7 +294,7 @@ public class Player implements Serializable {
      * 点数优先排序
      * @param cards
      */
-    private void sortPointFirst(List<Card> cards) {
+    private static void sortPointFirst(List<Card> cards) {
         if(cards.size() <= 1) {
             return;
         }
@@ -317,7 +327,7 @@ public class Player implements Serializable {
      * 花色优先排序
      * @param cards
      */
-    private void sortSuitFirst(List<Card> cards) {
+    private static void sortSuitFirst(List<Card> cards) {
         if(cards.size() <= 1) {
             return;
         }
