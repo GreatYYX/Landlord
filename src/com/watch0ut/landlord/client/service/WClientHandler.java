@@ -2,7 +2,6 @@ package com.watch0ut.landlord.client.service;
 
 import com.watch0ut.landlord.client.controller.HallController;
 import com.watch0ut.landlord.client.controller.SignInController;
-import com.watch0ut.landlord.client.controller.TablePaneController;
 import com.watch0ut.landlord.command.AbstractCommand;
 import com.watch0ut.landlord.command.concrete.LoginResponseCommand;
 import com.watch0ut.landlord.command.concrete.RefreshPlayerListCommand;
@@ -20,7 +19,6 @@ public class WClientHandler extends IoHandlerAdapter {
 
     private SignInController signInController;
     private HallController hallController;
-    private TablePaneController tablePaneController;
 
     public void setSignInController(SignInController signInController) {
         this.signInController = signInController;
@@ -39,13 +37,12 @@ public class WClientHandler extends IoHandlerAdapter {
                 return;
             LoginResponseCommand command = (LoginResponseCommand) cmd;
             if (command.getStateCode() == LoginResponseCommand.SUCCESS) {
-                signInController.onLoginSucceeded(command.getPlayer());
+                signInController.onLoginSucceeded();
+                hallController.updatePlayer(command.getPlayer());
             } else {
                 signInController.onLoginFailed(command.getMessage());
             }
         } else if (name.equalsIgnoreCase("RefreshPlayerList")) {
-            if (hallController == null)
-                return;
             RefreshPlayerListCommand command = (RefreshPlayerListCommand) cmd;
             hallController.updatePlayerList(command.getPlayerList());
         } else if (name.equalsIgnoreCase("SeatResponse")) {

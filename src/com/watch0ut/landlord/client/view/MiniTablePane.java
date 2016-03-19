@@ -112,31 +112,19 @@ public class MiniTablePane extends VBox {
                 topLabel.textProperty().bind(player.nickNameProperty());
                 break;
             case Table.BOTTOM:
+                tableView.bottomStateProperty().bind(player.stateProperty());
+                bottomAvatar.avatarProperty().bind(player.avatarProperty());
+                bottomLabel.textProperty().bind(player.nickNameProperty());
                 break;
             case Table.LEFT:
+                tableView.leftStateProperty().bind(player.stateProperty());
+                leftAvatar.avatarProperty().bind(player.avatarProperty());
+                leftLabel.textProperty().bind(player.nickNameProperty());
                 break;
             case Table.RIGHT:
-                break;
-        }
-    }
-    
-    public void seat(Player player) {
-        switch (player.getTablePosition()) {
-            case Table.TOP:
-                topAvatar.update(player.getPhoto(), AvatarView.MINI);
-                topLabel.setText(player.getNickName());
-                break;
-            case Table.BOTTOM:
-                bottomAvatar.update(player.getPhoto(), AvatarView.MINI);
-                bottomLabel.setText(player.getNickName());
-                break;
-            case Table.LEFT:
-                leftAvatar.update(player.getPhoto(), AvatarView.MINI);
-                leftLabel.setText(player.getNickName());
-                break;
-            case Table.RIGHT:
-                rightAvatar.update(player.getPhoto(), AvatarView.MINI);
-                rightLabel.setText(player.getNickName());
+                tableView.rightStateProperty().bind(player.stateProperty());
+                rightAvatar.avatarProperty().bind(player.avatarProperty());
+                rightLabel.textProperty().bind(player.nickNameProperty());
                 break;
         }
     }
@@ -144,48 +132,33 @@ public class MiniTablePane extends VBox {
     public void unseat(PlayerModel player) {
         switch (player.getTablePosition()) {
             case Table.TOP:
-//                tableView.setTopIdle();
-//                topAvatar.update(null, AvatarView.MINI);
-//                topLabel.setText("");
+                tableView.topStateProperty().unbind();
                 topAvatar.avatarProperty().unbind();
                 topLabel.textProperty().unbind();
-                break;
-            case Table.BOTTOM:
-                tableView.setBottomIdle();
-                bottomAvatar.update(null, AvatarView.MINI);
-                bottomLabel.setText("");
-                break;
-            case Table.LEFT:
-                tableView.setLeftIdle();
-                leftAvatar.update(null, AvatarView.MINI);
-                leftLabel.setText("");
-                break;
-            case Table.RIGHT:
-                tableView.setRightIdle();
-                rightAvatar.update(null, AvatarView.MINI);
-                rightLabel.setText("");
-                break;
-        }
-    }
-
-    public void unseat(Player player) {
-        switch (player.getTablePosition()) {
-            case Table.TOP:
                 tableView.setTopIdle();
                 topAvatar.update(null, AvatarView.MINI);
                 topLabel.setText("");
                 break;
             case Table.BOTTOM:
+                tableView.bottomStateProperty().unbind();
+                bottomAvatar.avatarProperty().unbind();
+                bottomLabel.textProperty().unbind();
                 tableView.setBottomIdle();
                 bottomAvatar.update(null, AvatarView.MINI);
                 bottomLabel.setText("");
                 break;
             case Table.LEFT:
+                tableView.leftStateProperty().unbind();
+                leftAvatar.avatarProperty().unbind();
+                leftLabel.textProperty().unbind();
                 tableView.setLeftIdle();
                 leftAvatar.update(null, AvatarView.MINI);
                 leftLabel.setText("");
                 break;
             case Table.RIGHT:
+                tableView.rightStateProperty().unbind();
+                rightAvatar.avatarProperty().unbind();
+                rightLabel.textProperty().unbind();
                 tableView.setRightIdle();
                 rightAvatar.update(null, AvatarView.MINI);
                 rightLabel.setText("");

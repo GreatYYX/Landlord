@@ -74,7 +74,7 @@ public class AvatarView extends ImageView {
     public void update(String picture, double width, double height) {
         if (picture == null || picture.isEmpty())
             picture = IDLE;
-        avatar.set(picture);
+//        avatar.set(picture);
         setFitWidth(width);
         setFitHeight(height);
 

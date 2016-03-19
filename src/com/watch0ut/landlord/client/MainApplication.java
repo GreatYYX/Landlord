@@ -2,14 +2,13 @@ package com.watch0ut.landlord.client;
 
 import com.watch0ut.landlord.client.controller.HallController;
 import com.watch0ut.landlord.client.controller.SignInController;
-import com.watch0ut.landlord.client.controller.TablePaneController;
+import com.watch0ut.landlord.client.controller.TableController;
 import com.watch0ut.landlord.client.service.WClient;
 import com.watch0ut.landlord.client.service.WClientHandler;
 import com.watch0ut.landlord.client.view.HallPane;
 import com.watch0ut.landlord.client.view.SignInPane;
 import com.watch0ut.landlord.client.view.TablePane;
 import com.watch0ut.landlord.command.concrete.UnseatCommand;
-import com.watch0ut.landlord.object.Player;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -27,7 +26,7 @@ public class MainApplication extends Application {
     private Stage tableStage;
 
     private HallController hallController;
-    private TablePaneController tablePaneController;
+    private TableController tableController;
 
     @Override
     public void init() throws Exception {
@@ -51,24 +50,23 @@ public class MainApplication extends Application {
 
         tableStage = new Stage();
         TablePane tablePane = new TablePane();
-        tablePaneController = new TablePaneController(this, tablePane);
+        tableController = new TableController(this, tablePane);
         tableStage.setScene(new Scene(tablePane, 1164, 694));
         tableStage.setResizable(false);
         tableStage.setOnCloseRequest(new CloseRequestHandler());
 
+        hallController.setTableController(tableController);
         handler.setSignInController(new SignInController(this, signInPane));
         handler.setHallController(hallController);
         WClient.getInstance().setHandler(handler);
     }
 
-    public void showTable(Player player) {
-        tablePaneController.selfSeat(player);
-        tableStage.show();
+    public void showHall() {
+        hallStage.show();
     }
 
-    public void showHall(Player player) {
-        hallController.updatePlayer(player);
-        hallStage.show();
+    public void showTable() {
+        tableStage.show();
     }
 
     public void showSignIn() {
@@ -109,7 +107,7 @@ public class MainApplication extends Application {
         @Override
         public void handle(WindowEvent event) {
             if (event.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
-                tablePaneController.selfUnSeat();
+                tableController.selfUnSeat();
                 WClient.getInstance().sendCommand(new UnseatCommand());
             }
         }

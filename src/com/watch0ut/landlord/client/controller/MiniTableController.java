@@ -1,5 +1,6 @@
 package com.watch0ut.landlord.client.controller;
 
+import com.watch0ut.landlord.client.model.PlayerModel;
 import com.watch0ut.landlord.client.service.WClient;
 import com.watch0ut.landlord.client.view.MiniTablePane;
 import com.watch0ut.landlord.command.concrete.SeatCommand;
@@ -11,25 +12,25 @@ import javafx.scene.input.MouseEvent;
 /**
  * Created by Jack on 16/3/9.
  */
-public class MiniTablePaneController {
+public class MiniTableController {
 
     private MiniTablePane miniTablePane;
     private MouseClickedHandler mouseClickedHandler;
 
-    public MiniTablePaneController(MiniTablePane miniTablePane) {
+    public MiniTableController(MiniTablePane miniTablePane) {
         this.miniTablePane = miniTablePane;
         mouseClickedHandler = new MouseClickedHandler();
         setMouseClickedHandler();
     }
 
-    public void seat(Player player) {
-        miniTablePane.seat(player);
+    public void seat(PlayerModel playerModel) {
+        miniTablePane.seat(playerModel);
         // TODO: 暂时用黑框标记，后面统一调整
         miniTablePane.setStyle("-fx-border-color: black");
     }
 
-    public void unseat(Player player) {
-        miniTablePane.unseat(player);
+    public void unseat(PlayerModel playerModel) {
+        miniTablePane.unseat(playerModel);
         miniTablePane.setStyle("");
     }
 

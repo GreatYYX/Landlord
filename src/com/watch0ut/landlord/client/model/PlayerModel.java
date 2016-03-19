@@ -18,6 +18,7 @@ public class PlayerModel {
 //    public final static int FINISH = 5;
 
     private int id;
+    private int tableId;
     private int tablePosition;
     private final SimpleStringProperty avatar;
     private final SimpleStringProperty nickName;
@@ -27,6 +28,7 @@ public class PlayerModel {
 
     public PlayerModel(int id, String avatar, String nickName, int score) {
         this.id = id;
+        this.tableId = -1;
         this.tablePosition = Table.UNSEATED;
         this.avatar = new SimpleStringProperty(avatar);
         this.nickName = new SimpleStringProperty(nickName);
@@ -53,6 +55,14 @@ public class PlayerModel {
 
     public void setTablePosition(int tablePosition) {
         this.tablePosition = tablePosition;
+    }
+
+    public int getTableId() {
+        return tableId;
+    }
+
+    public void setTableId(int tableId) {
+        this.tableId = tableId;
     }
 
     public int getId() {

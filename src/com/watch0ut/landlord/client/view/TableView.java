@@ -1,6 +1,5 @@
 package com.watch0ut.landlord.client.view;
 
-import com.watch0ut.landlord.client.model.PlayerModel;
 import com.watch0ut.landlord.object.Player;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -28,7 +27,7 @@ public class TableView extends StackPane {
     private ImageView bottomReadyImage;
     private ImageView rightReadyImage;
 
-    private SimpleIntegerProperty topState;
+    private IntegerProperty topState;
     private IntegerProperty leftState;
     private IntegerProperty bottomState;
     private IntegerProperty rightState;
@@ -149,12 +148,6 @@ public class TableView extends StackPane {
             return;
         }
 
-//        if (oldState.equals(Player.STATE.Idle) && newState.equals(Player.STATE.Seated)) {
-//            // 玩家入座
-//            setTopReady();
-//            return;
-//        }
-
         if (oldState.equals(Player.STATE.Seated) && newState.equals(Player.STATE.Ready)) {
             // 玩家准备
             setTopReady();
@@ -164,15 +157,54 @@ public class TableView extends StackPane {
     }
 
     private void bottomStateChange(Integer oldValue, Integer newValue) {
+        Player.STATE oldState = Player.STATE.getState(oldValue);
+        Player.STATE newState = Player.STATE.getState(newValue);
+        if (!oldState.equals(Player.STATE.Idle) && newState.equals(Player.STATE.Idle)) {
+            // 玩家离座
+            bottomState.unbind();
+            setBottomIdle();
+            return;
+        }
 
+        if (oldState.equals(Player.STATE.Seated) && newState.equals(Player.STATE.Ready)) {
+            // 玩家准备
+            setBottomReady();
+            return;
+        }
     }
 
     private void leftStateChange(Integer oldValue, Integer newValue) {
+        Player.STATE oldState = Player.STATE.getState(oldValue);
+        Player.STATE newState = Player.STATE.getState(newValue);
+        if (!oldState.equals(Player.STATE.Idle) && newState.equals(Player.STATE.Idle)) {
+            // 玩家离座
+            leftState.unbind();
+            setLeftIdle();
+            return;
+        }
 
+        if (oldState.equals(Player.STATE.Seated) && newState.equals(Player.STATE.Ready)) {
+            // 玩家准备
+            setLeftReady();
+            return;
+        }
     }
 
     private void rightStateChange(Integer oldValue, Integer newValue) {
-        
+        Player.STATE oldState = Player.STATE.getState(oldValue);
+        Player.STATE newState = Player.STATE.getState(newValue);
+        if (!oldState.equals(Player.STATE.Idle) && newState.equals(Player.STATE.Idle)) {
+            // 玩家离座
+            rightState.unbind();
+            setRightIdle();
+            return;
+        }
+
+        if (oldState.equals(Player.STATE.Seated) && newState.equals(Player.STATE.Ready)) {
+            // 玩家准备
+            setRightReady();
+            return;
+        }
     }
 
     private boolean isAllReady() {

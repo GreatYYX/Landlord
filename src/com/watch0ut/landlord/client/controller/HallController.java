@@ -9,6 +9,8 @@ import com.watch0ut.landlord.command.concrete.LogoutCommand;
 import com.watch0ut.landlord.object.Player;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
@@ -25,9 +27,10 @@ public class HallController {
     private PlayerModel self;
     private HallPane hallPane;
     private MainApplication application;
+    private TableController tableController;
 
     private PlayerListController playerListController;
-    private List<MiniTablePaneController> miniTablePaneControllers;
+    private List<MiniTableController> miniTableControllers;
     private List<PlayerModel> playerModels;
 
     public HallController(Application application, HallPane pane) {
@@ -38,13 +41,17 @@ public class HallController {
         hallPane.setOnExit(new ExitHandler());
         playerListController = new PlayerListController(hallPane.getPlayerListTable());
         List<MiniTablePane> miniTablePanes = hallPane.getTableList();
-        miniTablePaneControllers = new ArrayList<>(miniTablePanes.size());
+        miniTableControllers = new ArrayList<>(miniTablePanes.size());
         for (int i = 0; i < miniTablePanes.size(); i++) {
             MiniTablePane miniTablePane = miniTablePanes.get(i);
-            miniTablePaneControllers.add(new MiniTablePaneController(miniTablePane));
+            miniTableControllers.add(new MiniTableController(miniTablePane));
         }
 
         playerModels = new ArrayList<>();
+    }
+
+    public void setTableController(TableController tableController) {
+        this.tableController = tableController;
     }
 
     public void updatePlayer(Player player) {
@@ -55,6 +62,7 @@ public class HallController {
                 player.getScore()
         );
         playerModels.add(self);
+        playerListController.addPlayer(self);
         hallPane.updatePlayer(self);
     }
 
@@ -72,7 +80,27 @@ public class HallController {
         }
 
         if (playerModel.getState() != player.getState().getValue()) {
-            playerModel.setState(player.getState().getValue());
+            switch (player.getState()) {
+                case Idle:
+                    unseat();
+                    playerModel.setState(player.getState().getValue());
+                    break;
+                case Seated:
+                    playerModel.setState(player.getState().getValue());
+                    playerModel.setTableId(player.getTableId());
+                    playerModel.setTablePosition(player.getTablePosition());
+                    seat(playerModel);
+                    break;
+                case Ready:
+                    playerModel.setState(player.getState().getValue());
+                    break;
+                case Play:
+                    break;
+                case Wait:
+                    break;
+                case Finish:
+                    break;
+            }
         }
     }
 
@@ -104,37 +132,43 @@ public class HallController {
             Player player = players.get(k);
             addPlayerModel(player);
         }
+
+        if (self == null)
+            return;
+        if (self.getState() == Player.STATE.Seated.getValue()) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    tableController.selfSeat(self);
+                    tableController.addPlayers(playerModels);
+                    tableController.show();
+                }
+            });
+        }
     }
 
-    private void seat(Player player) {
-        MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(player.getTableId());
+    private void seat(PlayerModel playerModel) {
+        MiniTableController miniTableController = miniTableControllers.get(playerModel.getTableId());
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-//                self.setTableId(player.getTableId());
-//                self.setTablePosition(player.getTablePosition());
-//                self.setState(player.getState());
-                miniTablePaneController.seat(player);
-                application.showTable(player);
+                miniTableController.seat(playerModel);
             }
         });
     }
 
-    private void unseat(Player player) {
-//        MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(self.getTableId());
+    private void unseat() {
+        MiniTableController miniTablePaneController = miniTableControllers.get(self.getTableId());
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-//                miniTablePaneController.unseat(self);
-//                self.setTableId(player.getTableId());
-//                self.setTablePosition(player.getTablePosition());
-//                self.setState(player.getState());
+                miniTablePaneController.unseat(self);
             }
         });
     }
 
     private void ready(Player player) {
-//        MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(self.getTableId());
+//        MiniTableController miniTablePaneController = miniTableControllers.get(self.getTableId());
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -146,9 +180,9 @@ public class HallController {
     }
 
     public void onSeatSucceed() {
-        for (int i = 0; i < miniTablePaneControllers.size(); i++) {
-            MiniTablePaneController miniTablePaneController = miniTablePaneControllers.get(i);
-            miniTablePaneController.removeMouseClickedHandler();
+        for (int i = 0; i < miniTableControllers.size(); i++) {
+            MiniTableController miniTableController = miniTableControllers.get(i);
+            miniTableController.removeMouseClickedHandler();
         }
     }
 
@@ -157,6 +191,8 @@ public class HallController {
     }
 
     public void logout() {
+        self = null;
+        hallPane.updatePlayer(self);
         playerModels.clear();
         playerListController.clear();
         WClient client = WClient.getInstance();
@@ -195,6 +231,13 @@ public class HallController {
         @Override
         public void handle(ActionEvent event) {
             exit();
+        }
+    }
+
+    class StateChangeListener implements ChangeListener<Integer> {
+        @Override
+        public void changed(ObservableValue<? extends Integer> observable, Integer oldValue, Integer newValue) {
+
         }
     }
 }

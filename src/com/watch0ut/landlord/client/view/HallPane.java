@@ -96,7 +96,10 @@ public class HallPane extends VBox {
     }
 
     public void updatePlayer(PlayerModel playerModel) {
-        playerInfoPane.bind(playerModel);
+        if (playerModel == null)
+            playerInfoPane.unbind();
+        else
+            playerInfoPane.bind(playerModel);
     }
 
     public List<MiniTablePane> getTableList() {

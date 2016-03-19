@@ -4,7 +4,6 @@ import com.watch0ut.landlord.client.MainApplication;
 import com.watch0ut.landlord.client.service.WClient;
 import com.watch0ut.landlord.client.view.SignInPane;
 import com.watch0ut.landlord.command.concrete.LoginCommand;
-import com.watch0ut.landlord.object.Player;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -43,17 +42,15 @@ public class SignInController {
         if (!client.isConnected())
             client.connect();
         client.sendCommand(new LoginCommand(username, password));
-//        application.closeSignIn();
-//        application.initHallStage(null);
     }
 
-    public void onLoginSucceeded(Player player) {
+    public void onLoginSucceeded() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 signInPane.onNormal();
                 application.closeSignIn();
-                application.showHall(player);
+                application.showHall();
             }
         });
     }
