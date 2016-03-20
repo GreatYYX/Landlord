@@ -28,7 +28,6 @@ public class TableController {
         this.application = application;
         this.tablePane = tablePane;
         this.tablePane.setOnStart(new StartHandler());
-
     }
 
     public void show() {
@@ -70,7 +69,9 @@ public class TableController {
         tablePane.updatePlayerPosition();
     }
 
+    public void onGameStart() {
 
+    }
 
     class StartHandler implements EventHandler<ActionEvent> {
         @Override

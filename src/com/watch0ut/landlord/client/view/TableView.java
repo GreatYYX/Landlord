@@ -74,12 +74,14 @@ public class TableView extends StackPane {
         getChildren().add(gridPane);
 
         topState = new SimpleIntegerProperty(Player.STATE.Idle.getValue());
-        topState.addListener(new StateChangeListener());
         leftState = new SimpleIntegerProperty(Player.STATE.Idle.getValue());
-        leftState.addListener(new StateChangeListener());
         bottomState = new SimpleIntegerProperty(Player.STATE.Idle.getValue());
         rightState = new SimpleIntegerProperty(Player.STATE.Idle.getValue());
-
+        StateChangeListener listener = new StateChangeListener();
+        topState.addListener(listener);
+        leftState.addListener(listener);
+        bottomState.addListener(listener);
+        rightState.addListener(listener);
     }
 
     public IntegerProperty topStateProperty() {
@@ -223,6 +225,18 @@ public class TableView extends StackPane {
         return true;
     }
 
+    private boolean hasIdle() {
+        if (topState.getValue() == Player.STATE.Idle.getValue())
+            return true;
+        if (bottomState.getValue() == Player.STATE.Idle.getValue())
+            return true;
+        if (leftState.getValue() == Player.STATE.Idle.getValue())
+            return true;
+        if (rightState.getValue() == Player.STATE.Idle.getValue())
+            return true;
+        return false;
+    }
+
     class StateChangeListener implements ChangeListener<Number> {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -238,7 +252,8 @@ public class TableView extends StackPane {
             }
             if (isAllReady()) {
                 setTablePlay();
-            } else {
+            }
+            if (hasIdle()) {
                 setTableNormal();
             }
         }

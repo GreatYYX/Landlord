@@ -348,14 +348,30 @@ public class TablePane extends BorderPane {
         }
     }
 
-    public boolean isAllReady() {
-        if (!selfState.equals(Player.STATE.Ready))
+//    public boolean isAllReady() {
+//        if (selfState.getValue() == Player.STATE.Idle.getValue() ||
+//                selfState.getValue() == Player.STATE.Seated.getValue())
+//            return false;
+//        if (earlyState.getValue() == Player.STATE.Idle.getValue() ||
+//                earlyState.getValue() == Player.STATE.Seated.getValue())
+//            return false;
+//        if (lateState.getValue() == Player.STATE.Idle.getValue() ||
+//                lateState.getValue() == Player.STATE.Seated.getValue())
+//            return false;
+//        if (oppositeState.getValue() == Player.STATE.Idle.getValue() ||
+//                oppositeState.getValue() == Player.STATE.Seated.getValue())
+//            return false;
+//        return true;
+//    }
+
+    private boolean isAllReady() {
+        if (selfState.getValue() != Player.STATE.Ready.getValue())
             return false;
-        if (!earlyState.equals(Player.STATE.Ready))
+        if (earlyState.getValue() != Player.STATE.Ready.getValue())
             return false;
-        if (!lateState.equals(Player.STATE.Ready))
+        if (lateState.getValue() != Player.STATE.Ready.getValue())
             return false;
-        if (!oppositeState.equals(Player.STATE.Ready))
+        if (oppositeState.getValue() != Player.STATE.Ready.getValue())
             return false;
         return true;
     }

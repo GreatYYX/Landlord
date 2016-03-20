@@ -58,6 +58,7 @@ public class MainApplication extends Application {
         hallController.setTableController(tableController);
         handler.setSignInController(new SignInController(this, signInPane));
         handler.setHallController(hallController);
+        handler.setTableController(tableController);
         WClient.getInstance().setHandler(handler);
     }
 

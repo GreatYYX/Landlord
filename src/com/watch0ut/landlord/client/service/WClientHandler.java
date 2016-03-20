@@ -2,6 +2,7 @@ package com.watch0ut.landlord.client.service;
 
 import com.watch0ut.landlord.client.controller.HallController;
 import com.watch0ut.landlord.client.controller.SignInController;
+import com.watch0ut.landlord.client.controller.TableController;
 import com.watch0ut.landlord.command.AbstractCommand;
 import com.watch0ut.landlord.command.concrete.LoginResponseCommand;
 import com.watch0ut.landlord.command.concrete.RefreshPlayerListCommand;
@@ -19,6 +20,7 @@ public class WClientHandler extends IoHandlerAdapter {
 
     private SignInController signInController;
     private HallController hallController;
+    private TableController tableController;
 
     public void setSignInController(SignInController signInController) {
         this.signInController = signInController;
@@ -26,6 +28,10 @@ public class WClientHandler extends IoHandlerAdapter {
 
     public void setHallController(HallController hallController) {
         this.hallController = hallController;
+    }
+
+    public void setTableController(TableController tableController) {
+        this.tableController = tableController;
     }
 
     @Override
@@ -54,6 +60,8 @@ public class WClientHandler extends IoHandlerAdapter {
             else {
                 LOGGER.info("Seat error message: {}", command.getMessage());
             }
+        } else if (name.equalsIgnoreCase("GameStart")) {
+            tableController.onGameStart();
         } else {
             LOGGER.warn("Command router missing: {} ", cmd.getClass());
         }
