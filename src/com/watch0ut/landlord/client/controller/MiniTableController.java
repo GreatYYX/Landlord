@@ -26,12 +26,12 @@ public class MiniTableController {
     public void seat(PlayerModel playerModel) {
         miniTablePane.seat(playerModel);
         // TODO: 暂时用黑框标记，后面统一调整
-        miniTablePane.setStyle("-fx-border-color: black");
+//        miniTablePane.setStyle("-fx-border-color: black");
     }
 
     public void unseat(PlayerModel playerModel) {
         miniTablePane.unseat(playerModel);
-        miniTablePane.setStyle("");
+//        miniTablePane.setStyle("");
     }
 
     public void ready(Player player) {

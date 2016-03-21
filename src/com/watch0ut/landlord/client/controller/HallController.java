@@ -66,7 +66,31 @@ public class HallController {
         hallPane.updatePlayer(self);
     }
 
-    private void updatePlayModel(PlayerModel playerModel, Player player) {
+    private void updatePlayerModelState(PlayerModel playerModel, Player player) {
+        switch (player.getState()) {
+            case Idle:
+                unseat(playerModel);
+                playerModel.setState(player.getState().getValue());
+                break;
+            case Seated:
+                playerModel.setState(player.getState().getValue());
+                playerModel.setTableId(player.getTableId());
+                playerModel.setTablePosition(player.getTablePosition());
+                seat(playerModel);
+                break;
+            case Ready:
+                playerModel.setState(player.getState().getValue());
+                break;
+            case Play:
+                break;
+            case Wait:
+                break;
+            case Finish:
+                break;
+        }
+    }
+
+    private void updatePlayerModel(PlayerModel playerModel, Player player) {
         if (!playerModel.getAvatar().equals(player.getPhoto())) {
             playerModel.setAvatar(player.getPhoto());
         }
@@ -80,27 +104,7 @@ public class HallController {
         }
 
         if (playerModel.getState() != player.getState().getValue()) {
-            switch (player.getState()) {
-                case Idle:
-                    unseat();
-                    playerModel.setState(player.getState().getValue());
-                    break;
-                case Seated:
-                    playerModel.setState(player.getState().getValue());
-                    playerModel.setTableId(player.getTableId());
-                    playerModel.setTablePosition(player.getTablePosition());
-                    seat(playerModel);
-                    break;
-                case Ready:
-                    playerModel.setState(player.getState().getValue());
-                    break;
-                case Play:
-                    break;
-                case Wait:
-                    break;
-                case Finish:
-                    break;
-            }
+            updatePlayerModelState(playerModel, player);
         }
     }
 
@@ -113,19 +117,52 @@ public class HallController {
         );
         playerModels.add(playerModel);
         playerListController.addPlayer(playerModel);
+        updatePlayerModelState(playerModel, player);
+        switch (player.getState()) {
+            case Idle:
+                playerModel.setState(player.getState().getValue());
+                break;
+            case Seated:
+                playerModel.setState(player.getState().getValue());
+                playerModel.setTableId(player.getTableId());
+                playerModel.setTablePosition(player.getTablePosition());
+                seat(playerModel);
+                break;
+            case Ready:
+                playerModel.setState(player.getState().getValue());
+                playerModel.setTableId(player.getTableId());
+                playerModel.setTablePosition(player.getTablePosition());
+                seat(playerModel);
+                playerModel.setState(player.getState().getValue());
+                break;
+            case Play:
+            case Wait:
+                break;
+            case Finish:
+                break;
+        }
     }
 
     public void updatePlayerList(List<Player> players) {
         for (int i = 0; i < playerModels.size(); i++) {
             PlayerModel playerModel = playerModels.get(i);
+            boolean isLogout = true;
             for (int j = 0; j < players.size();) {
                 Player player = players.get(j);
                 if (playerModel.getId() == player.getId()) {
-                    updatePlayModel(playerModel, player);
+                    isLogout = false;
+                    updatePlayerModel(playerModel, player);
                     players.remove(j);
                 } else {
                     j++;
                 }
+            }
+            if (isLogout) {
+                if (playerModel.getState() != Player.STATE.Idle.getValue()) {
+                    playerModel.setState(Player.STATE.Idle.getValue());
+                }
+                playerModels.remove(i);
+                playerListController.removePlayer(playerModel);
             }
         }
         for (int k = 0; k < players.size(); k++) {
@@ -157,12 +194,12 @@ public class HallController {
         });
     }
 
-    private void unseat() {
-        MiniTableController miniTablePaneController = miniTableControllers.get(self.getTableId());
+    private void unseat(PlayerModel playerModel) {
+        MiniTableController miniTablePaneController = miniTableControllers.get(playerModel.getTableId());
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                miniTablePaneController.unseat(self);
+                miniTablePaneController.unseat(playerModel);
             }
         });
     }

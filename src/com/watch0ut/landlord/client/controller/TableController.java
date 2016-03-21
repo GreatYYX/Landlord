@@ -49,6 +49,7 @@ public class TableController {
 
     public void selfSeat(PlayerModel playerModel) {
         self = playerModel;
+        tablePane.setSelf(playerModel);
         tablePane.setPlayerInfo(playerModel);
         tablePane.addPlayer(playerModel);
         tablePane.selfSeat(playerModel);

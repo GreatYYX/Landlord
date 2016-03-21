@@ -78,6 +78,7 @@ public class MiniTablePane extends VBox {
         topLabel = new Label();
         topLabel.setWrapText(true);
         topLabel.setTextAlignment(TextAlignment.RIGHT);
+        topLabel.setMaxWidth(32);
         gridPane.add(topLabel, 0, 0);
         GridPane.setHalignment(topLabel, HPos.RIGHT);
         GridPane.setValignment(topLabel, VPos.CENTER);
@@ -85,6 +86,7 @@ public class MiniTablePane extends VBox {
         leftLabel = new Label();
         leftLabel.setWrapText(true);
         leftLabel.setTextAlignment(TextAlignment.CENTER);
+        leftLabel.setMaxWidth(32);
         gridPane.add(leftLabel, 0, 2);
         GridPane.setValignment(leftLabel, VPos.TOP);
         GridPane.setHalignment(leftLabel, HPos.CENTER);
@@ -92,6 +94,7 @@ public class MiniTablePane extends VBox {
         bottomLabel = new Label();
         bottomLabel.setWrapText(true);
         bottomLabel.setTextAlignment(TextAlignment.LEFT);
+        bottomLabel.setMaxWidth(32);
         gridPane.add(bottomLabel, 2, 2);
         GridPane.setHalignment(bottomLabel, HPos.LEFT);
         GridPane.setValignment(bottomLabel, VPos.CENTER);
@@ -99,6 +102,7 @@ public class MiniTablePane extends VBox {
         rightLabel = new Label();
         rightLabel.setWrapText(true);
         rightLabel.setTextAlignment(TextAlignment.CENTER);
+        rightLabel.setMaxWidth(32);
         gridPane.add(rightLabel, 2, 0);
         GridPane.setValignment(rightLabel, VPos.BOTTOM);
         GridPane.setHalignment(rightLabel, HPos.CENTER);
