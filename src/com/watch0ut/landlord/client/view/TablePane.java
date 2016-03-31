@@ -201,23 +201,23 @@ public class TablePane extends BorderPane {
         startButton.setOnAction(handler);
     }
 
-    public void setSelf(PlayerModel playerModel) {
-        self = playerModel;
-    }
-
     public void setPlayerInfo(PlayerModel playerModel) {
+        if (self == null)
+            self = playerModel;
         playerInfoPane.bind(playerModel);
     }
 
     /**
-     * 添加玩家,由于添加时需要根据自己的位置来判断玩家位置,需先调用setSelf函数
+     * 添加玩家,由于添加时需要根据自己的位置来判断玩家位置
      * @param playerModel 待添加的玩家
      */
     public void addPlayer(PlayerModel playerModel) {
         playerModels.add(playerModel);
         if (self == null)
             return;
-        int delta = (playerModel.getTablePosition() - self.getTablePosition()) % 4;
+        int delta = (playerModel.getTablePosition() - self.getTablePosition());
+        if (delta < 0)
+            delta += 4;
         switch (delta) {
             case 1:
                 lateSeat(playerModel);
@@ -236,6 +236,8 @@ public class TablePane extends BorderPane {
     }
 
     public void selfSeat(PlayerModel playerModel) {
+        if (self == null)
+            self = playerModel;
         selfPane.seat(playerModel.getAvatar(), playerModel.getNickName());
         startButton.setVisible(true);
         selfState.bind(playerModel.stateProperty());

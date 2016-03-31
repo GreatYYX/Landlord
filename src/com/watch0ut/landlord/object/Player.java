@@ -29,7 +29,28 @@ public class Player implements Serializable {
     private int score_;
 
     public enum ROLE {
-        Landlord3A, Landlord3, LandlordA, Farmer
+        Landlord3A(3),
+        Landlord3(2),
+        LandlordA(1),
+        Farmer(0);
+
+        private final int roleId_;
+        private ROLE(int roleId) {
+            roleId_ = roleId;
+        }
+
+        public static ROLE getRole(int roleId) {
+            for (ROLE role : ROLE.values()) {
+                if (role.getValue() == roleId) {
+                    return role;
+                }
+            }
+            return Farmer;
+        }
+
+        public int getValue() {
+            return roleId_;
+        }
     }
     private ROLE role_;
 

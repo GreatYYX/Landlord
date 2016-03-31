@@ -7,6 +7,7 @@ import com.watch0ut.landlord.client.view.HallPane;
 import com.watch0ut.landlord.client.view.MiniTablePane;
 import com.watch0ut.landlord.command.concrete.LogoutCommand;
 import com.watch0ut.landlord.object.Player;
+import com.watch0ut.landlord.object.Table;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -117,7 +118,6 @@ public class HallController {
         );
         playerModels.add(playerModel);
         playerListController.addPlayer(playerModel);
-        updatePlayerModelState(playerModel, player);
         switch (player.getState()) {
             case Idle:
                 playerModel.setState(player.getState().getValue());
@@ -268,13 +268,6 @@ public class HallController {
         @Override
         public void handle(ActionEvent event) {
             exit();
-        }
-    }
-
-    class StateChangeListener implements ChangeListener<Integer> {
-        @Override
-        public void changed(ObservableValue<? extends Integer> observable, Integer oldValue, Integer newValue) {
-
         }
     }
 }

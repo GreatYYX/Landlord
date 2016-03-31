@@ -1,48 +1,40 @@
 package com.watch0ut.landlord.client.view;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import com.watch0ut.landlord.client.model.PlayerModel;
+import com.watch0ut.landlord.object.Player;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 
 /**
  * 玩家面板
  *
  * Created by Jack on 16/2/25.
  */
-public class PlayerPane extends VBox {
+public class PlayerPane extends AnchorPane {
 
     public final static int WIDTH = 128;
-    public final static int HEIGHT = 148;
+    public final static int HEIGHT = 180;
 
-    private AnchorPane idleParent;
-    private VBox playedParent;
-
-    private ActionView actionView;
+    private RoleView roleView;
     private AvatarPane avatarPane;
     private ImageView readyImage;
 
     public PlayerPane() {
-        setAlignment(Pos.CENTER);
-        setMinSize(128, 148);
+        setMinSize(WIDTH, HEIGHT);
+        setMaxSize(WIDTH, HEIGHT);
 
-        idleParent = new AnchorPane();
-        idleParent.setMinSize(WIDTH, HEIGHT);
-        idleParent.setMaxSize(WIDTH, HEIGHT);
-        idleParent.setStyle("-fx-border-color: black");
-
-        playedParent = new VBox(4);
-        playedParent.setAlignment(Pos.CENTER);
-        playedParent.setPadding(new Insets(2, 0, 2, 0));
-
-        actionView = new ActionView(ActionView.FARMER);
-        playedParent.getChildren().add(actionView);
+        roleView = new RoleView(Player.ROLE.Farmer);
+        roleView.setLayoutX(48);
+        roleView.setLayoutY(0);
+        roleView.setVisible(false);
+        getChildren().add(roleView);
 
         avatarPane = new AvatarPane("", AvatarView.LARGE, "");
         avatarPane.setLayoutX(0);
-        avatarPane.setLayoutY(0);
+        avatarPane.setLayoutY(32);
+        getChildren().add(avatarPane);
+
         readyImage = new ImageView();
         try {
             Image image = new Image(getClass().getResourceAsStream("icon/widget/ready.png"));
@@ -53,46 +45,44 @@ public class PlayerPane extends VBox {
         readyImage.setFitWidth(32);
         readyImage.setFitHeight(32);
         readyImage.setLayoutX(96);
-        readyImage.setLayoutY(96);
-
-        getChildren().add(idleParent);
+        readyImage.setLayoutY(128);
+        readyImage.setVisible(false);
+        getChildren().add(readyImage);
     }
 
     public void ready() {
-        idleParent.getChildren().add(readyImage);
-    }
-
-    public void play() {
-        getChildren().remove(idleParent);
-        idleParent.getChildren().removeAll(avatarPane, readyImage);
-        playedParent.getChildren().add(avatarPane);
-        getChildren().add(playedParent);
+        readyImage.setVisible(true);
     }
 
     public void unseat() {
-        if (getChildren().contains(playedParent)) {
-            getChildren().remove(playedParent);
-            updateAction(ActionView.FARMER);
-            getChildren().add(idleParent);
-        }
-        idleParent.getChildren().removeAll(avatarPane, readyImage);
+        avatarPane.avatarProperty().unbind();
+        avatarPane.nickNameProperty().unbind();
+        readyImage.setVisible(false);
+        avatarPane.updateAvatar(null);
+        avatarPane.updateNickName("");
+    }
+
+    public void seat(PlayerModel playerModel) {
+        avatarPane.updateNickName(playerModel.getNickName());
+        avatarPane.updateAvatar(playerModel.getAvatar());
+        avatarPane.avatarProperty().bind(playerModel.avatarProperty());
+        avatarPane.nickNameProperty().bind(playerModel.nickNameProperty());
     }
 
     public void seat(String picture, String nickName) {
         updatePlayer(picture, nickName);
-        idleParent.getChildren().add(avatarPane);
     }
 
-    public void updateAction(int action) {
-        if (actionView == null) {
-            actionView.setVisible(false);
-        } else {
-            actionView.update(action);
-        }
+    public void showRole() {
+        roleView.setVisible(true);
+    }
+
+    public void hideRole() {
+        roleView.setVisible(false);
     }
 
     public void updatePlayer(String picture, String nickName) {
         avatarPane.updateAvatar(picture);
-        avatarPane.updateUsername(nickName);
+        avatarPane.updateNickName(nickName);
     }
 }

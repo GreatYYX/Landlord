@@ -193,16 +193,16 @@ public class TableView extends StackPane {
     }
 
     private void rightStateChange(Integer oldValue, Integer newValue) {
-        Player.STATE oldState = Player.STATE.getState(oldValue);
-        Player.STATE newState = Player.STATE.getState(newValue);
-        if (!oldState.equals(Player.STATE.Idle) && newState.equals(Player.STATE.Idle)) {
+        if (oldValue != Player.STATE.Idle.getValue() &&
+                newValue == Player.STATE.Idle.getValue()) {
             // 玩家离座
             rightState.unbind();
             setRightIdle();
             return;
         }
 
-        if (oldState.equals(Player.STATE.Seated) && newState.equals(Player.STATE.Ready)) {
+        if (oldValue == Player.STATE.Seated.getValue() &&
+                newValue == Player.STATE.Ready.getValue()) {
             // 玩家准备
             setRightReady();
             return;
@@ -244,6 +244,7 @@ public class TableView extends StackPane {
             if (source.equals(topState)) {
                 topStateChange((Integer) oldValue, (Integer) newValue);
             } else if (source.equals(bottomState)) {
+                System.out.println("bottom state");
                 bottomStateChange((Integer) oldValue, (Integer) newValue);
             } else if (source.equals(leftState)) {
                 leftStateChange((Integer) oldValue, (Integer) newValue);

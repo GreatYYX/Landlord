@@ -1,5 +1,6 @@
 package com.watch0ut.landlord.client.view;
 
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -11,10 +12,9 @@ import javafx.scene.text.TextAlignment;
  * Created by Jack on 16/2/13.
  */
 public class AvatarPane extends VBox {
-//    private ActionView actionView;
     private AvatarView avatarView;
     private int avatarSizeType;
-    private Label usernameLabel;
+    private Label nickNameLabel;
 
     /**
      * 构造函数
@@ -25,28 +25,32 @@ public class AvatarPane extends VBox {
     public AvatarPane(String avatar, int sizeType, String username) {
         setAlignment(Pos.CENTER);
         setMaxWidth(AvatarView.getSizeByType(sizeType));
-//        actionView = new ActionView(action);
         avatarSizeType = sizeType;
         avatarView = new AvatarView(avatar, avatarSizeType);
-        usernameLabel =  new Label(username);
-        // 当用户昵称过长时就换行显示
-        usernameLabel.setWrapText(true);
-        usernameLabel.setTextAlignment(TextAlignment.CENTER);
 
-//        getChildren().add(actionView);
+        nickNameLabel =  new Label(username);
+        // 当用户昵称过长时就换行显示
+        nickNameLabel.setWrapText(true);
+        nickNameLabel.setTextAlignment(TextAlignment.CENTER);
+        nickNameLabel.setMaxWidth(AvatarView.getSizeByType(sizeType));
+
         getChildren().add(avatarView);
-        getChildren().add(usernameLabel);
+        getChildren().add(nickNameLabel);
     }
 
-//    public void updateAction(int action) {
-//        actionView.update(action);
-//    }
+    public StringProperty avatarProperty() {
+        return avatarView.avatarProperty();
+    }
+
+    public StringProperty nickNameProperty() {
+        return nickNameLabel.textProperty();
+    }
 
     public void updateAvatar(String avatar) {
         avatarView.update(avatar, avatarSizeType);
     }
 
-    public void updateUsername(String username) {
-        usernameLabel.setText(username);
+    public void updateNickName(String nickName) {
+        nickNameLabel.setText(nickName);
     }
 }

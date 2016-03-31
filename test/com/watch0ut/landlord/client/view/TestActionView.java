@@ -1,5 +1,6 @@
 package com.watch0ut.landlord.client.view;
 
+import com.watch0ut.landlord.object.Player;
 import javafx.scene.Parent;
 import javafx.scene.layout.FlowPane;
 
@@ -11,10 +12,10 @@ import javafx.scene.layout.FlowPane;
 public class TestActionView {
 
     public static Parent initialize() {
-        ActionView farmer = new ActionView(ActionView.FARMER);
-        ActionView landlord3 = new ActionView(ActionView.LANDLORD_3);
-        ActionView landlordA = new ActionView(ActionView.LANDLORD_A);
-        ActionView landlord3A = new ActionView(ActionView.LANDLORD_3A);
+        RoleView farmer = new RoleView(Player.ROLE.Farmer);
+        RoleView landlord3 = new RoleView(Player.ROLE.Landlord3);
+        RoleView landlordA = new RoleView(Player.ROLE.LandlordA);
+        RoleView landlord3A = new RoleView(Player.ROLE.Landlord3A);
 
         FlowPane parent = new FlowPane();
         parent.getChildren().addAll(farmer, landlord3, landlordA, landlord3A);

@@ -1,6 +1,5 @@
 package com.watch0ut.landlord.client.view;
 
-import com.watch0ut.landlord.client.view.PlayerPane;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -34,7 +33,7 @@ public class TestPlayerPane {
         playButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                playerPane.play();
+//                playerPane.play();
             }
         });
 
@@ -58,7 +57,7 @@ public class TestPlayerPane {
         actionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                playerPane.updateAction(ActionView.LANDLORD_3);
+//                playerPane.updateRole(RoleView.LANDLORD_3);
             }
         });
 

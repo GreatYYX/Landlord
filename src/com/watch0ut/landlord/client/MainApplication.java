@@ -47,15 +47,14 @@ public class MainApplication extends Application {
         HallPane hallPane = new HallPane();
         hallController = new HallController(this, hallPane);
         hallStage.setScene(new Scene(hallPane, 800, 620));
-        CloseRequestHandler closeRequestHandler = new CloseRequestHandler();
-        hallStage.setOnCloseRequest(closeRequestHandler);
+        hallStage.setOnCloseRequest(new HallCloseHandler());
 
         tableStage = new Stage();
         TablePane tablePane = new TablePane();
         tableController = new TableController(this, tablePane);
         tableStage.setScene(new Scene(tablePane, 1164, 694));
         tableStage.setResizable(false);
-        tableStage.setOnCloseRequest(closeRequestHandler);
+        tableStage.setOnCloseRequest(new TableCloseHandler());
 
         hallController.setTableController(tableController);
         handler.setSignInController(new SignInController(this, signInPane));
@@ -108,18 +107,22 @@ public class MainApplication extends Application {
         launch(args);
     }
 
-    class CloseRequestHandler implements EventHandler<WindowEvent> {
+    class HallCloseHandler implements EventHandler<WindowEvent> {
         @Override
         public void handle(WindowEvent event) {
             if (event.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
-                Stage stage = (Stage) event.getSource();
-                if (stage.equals(hallStage)) {
-                    if (tableStage.isShowing())
-                        tableStage.close();
-                } else if (stage.equals(tableStage)) {
-                    tableController.selfUnSeat();
-                    WClient.getInstance().sendCommand(new UnseatCommand());
-                }
+                if (tableStage.isShowing())
+                    tableStage.close();
+            }
+        }
+    }
+
+    class TableCloseHandler implements EventHandler<WindowEvent> {
+        @Override
+        public void handle(WindowEvent event) {
+            if (event.getEventType() == WindowEvent.WINDOW_CLOSE_REQUEST) {
+                tableController.selfUnSeat();
+                WClient.getInstance().sendCommand(new UnseatCommand());
             }
         }
     }
